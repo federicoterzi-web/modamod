@@ -57,7 +57,9 @@ def save_crop(im: Image.Image, bbox, name: str, pad: int = 10) -> None:
     dest = ITEM_DIR / f"{name}.png"
     tmp = ITEM_DIR / f".{name}.tmp.png"
     final = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    final.alpha_composite(canvas.resize((58, 58), Image.Resampling.LANCZOS), (3, 3))
+    # Minecraft's GUI item render is less forgiving than our review sheet:
+    # keep a real transparent gutter so pins/wrapped borders never get clipped.
+    final.alpha_composite(canvas.resize((52, 52), Image.Resampling.LANCZOS), (6, 6))
     final.save(tmp)
     os.replace(tmp, dest)
 
