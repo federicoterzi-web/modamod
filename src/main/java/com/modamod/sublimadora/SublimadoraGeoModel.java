@@ -38,9 +38,9 @@ public class SublimadoraGeoModel extends GeoModel<SublimadoraBlockEntity> {
             new com.modamod.render.PantallaLed.Rect(80, 16, 1, 1),  // rojo
             new com.modamod.render.PantallaLed.Rect(96, 16, 1, 1),  // amarillo
     };
-    private static final int VERDE = 0xFF00FF00, ROJO = 0xFF0000FF;
+    private static final int VERDE = 0xFF00FF00, ROJO = 0xFF0000FF, AMARILLO = 0xFF00FFFF;
 
-    /** Verde fijo al terminar, rojo titilando mientras prensa. Amarillo apagado — ver {@code ModeladoGeoModel.coloresLed}. */
+    /** Verde fijo al terminar, rojo titilando mientras prensa, amarillo titilando lento con la línea encendida. */
     static int[] coloresLed(SublimadoraBlockEntity be) {
         int verde = 0, rojo = 0, amarillo = 0;
         if (be.getEstado() == SublimadoraBlockEntity.Estado.LISTO) {
@@ -49,6 +49,8 @@ public class SublimadoraGeoModel extends GeoModel<SublimadoraBlockEntity> {
             long t = be.getWorld() == null ? 0 : be.getWorld().getTime();
             if (t % 20 < 10) rojo = ROJO;
         }
+        long t = be.getWorld() == null ? 0 : be.getWorld().getTime();
+        if (be.linea() && t % 40 < 20) amarillo = AMARILLO;
         return new int[]{verde, rojo, amarillo};
     }
 
@@ -96,10 +98,6 @@ public class SublimadoraGeoModel extends GeoModel<SublimadoraBlockEntity> {
     @Override
     public void setCustomAnimations(SublimadoraBlockEntity be, long instanceId, AnimationState<SublimadoraBlockEntity> state) {
         super.setCustomAnimations(be, instanceId, state);
-        // LED del botón de la línea de producción del frente (2026-10-08): visible solo con la línea encendida.
-        GeoBone ledLinea = getAnimationProcessor().getBone("led_linea");
-        if (ledLinea != null) ledLinea.setHidden(!be.linea());
-
         // LEDs del panel: rojo parpadeando mientras prensa, verde fijo cuando
         // esta lista, los dos apagados en reposo. Se prenden y apagan con
         // setHidden, igual que las barras de tinta.

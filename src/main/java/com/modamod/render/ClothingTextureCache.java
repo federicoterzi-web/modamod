@@ -28,7 +28,9 @@ public final class ClothingTextureCache {
     /** Para el HUD de rendimiento: telas compuestas en caché, imágenes base y los MB de estas últimas. */
     public static double[] estadoCache() {
         long bytes = 0;
-        for (NativeImage i : BASE_IMAGE_CACHE.values()) bytes += (long) i.getWidth() * i.getHeight() * 4;
+        for (NativeImage i : BASE_IMAGE_CACHE.values()) {
+            if (i != null) bytes += (long) i.getWidth() * i.getHeight() * 4;
+        }
         return new double[]{TINTED_CACHE.size(), BASE_IMAGE_CACHE.size(), bytes / 1048576.0};
     }
 

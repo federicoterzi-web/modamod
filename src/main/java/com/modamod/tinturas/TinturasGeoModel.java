@@ -47,12 +47,13 @@ public class TinturasGeoModel extends GeoModel<TinturasBlockEntity> {
             new com.modamod.render.PantallaLed.Rect(24, 16, 8, 8), // rojo
             new com.modamod.render.PantallaLed.Rect(32, 16, 8, 8), // amarillo
     };
-    private static final int VERDE = 0xFF00FF00, ROJO = 0xFF0000FF;
+    private static final int VERDE = 0xFF00FF00, ROJO = 0xFF0000FF, AMARILLO = 0xFF00FFFF;
 
     /**
      * Sin Estado.LISTO acá (a diferencia de Modeladora/Sublimadora) —
      * "listo" es REPOSO con algo en la salida esperando que lo saquen.
-     * Rojo titilando igual que las otras dos. Amarillo apagado.
+     * Rojo titilando igual que las otras dos; amarillo titilando más lento
+     * cuando la línea de producción está encendida.
      */
     static int[] coloresLed(TinturasBlockEntity be) {
         int verde = 0, rojo = 0, amarillo = 0;
@@ -62,6 +63,8 @@ public class TinturasGeoModel extends GeoModel<TinturasBlockEntity> {
             long t = be.getWorld() == null ? 0 : be.getWorld().getTime();
             if (t % 20 < 10) rojo = ROJO;
         }
+        long t = be.getWorld() == null ? 0 : be.getWorld().getTime();
+        if (be.linea() && t % 40 < 20) amarillo = AMARILLO;
         return new int[]{verde, rojo, amarillo};
     }
 
@@ -210,9 +213,6 @@ public class TinturasGeoModel extends GeoModel<TinturasBlockEntity> {
     @Override
     public void setCustomAnimations(TinturasBlockEntity be, long instanceId, AnimationState<TinturasBlockEntity> state) {
         super.setCustomAnimations(be, instanceId, state);
-        // LED del botón de la línea de producción del frente (2026-10-08): visible solo con la línea encendida.
-        GeoBone ledLinea = getAnimationProcessor().getBone("led_linea");
-        if (ledLinea != null) ledLinea.setHidden(!be.linea());
         for (int i = 0; i < HUESOS.length; i++) {
             GeoBone barra = getAnimationProcessor().getBone(HUESOS[i]);
             if (barra == null) continue;

@@ -1698,6 +1698,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         if (pin >= 0) {
             if (stack.getCount() > 1) stack.setCount(1);
             pinCambio(pin, antesPin, stack);
+            if (!stack.isEmpty() && pinCombo[pin] != null && chinchetaPin(pin)) sincronizar();
         }
         if (stack.getCount() > getMaxCountPerStack()) stack.setCount(getMaxCountPerStack());
         if (slot == PRENDA && !stack.isEmpty() && (com.modamod.util.InventarioUtil.enCadena && linea)

@@ -50,7 +50,7 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
         boton("-", this.x + 76, ly, 16, 16, TelarBlockEntity.BTN_LOTE_MENOS);
         boton("+", this.x + 94, ly, 16, 16, TelarBlockEntity.BTN_LOTE_MAS);
         boton("+10", this.x + 112, ly, 22, 16, TelarBlockEntity.BTN_LOTE_MAS_10);
-        this.addDrawableChild(new EstiloPergamino.BotonLinea(this.x + 112, this.y + 26, 56, 16,
+        this.addDrawableChild(new EstiloPergamino.BotonLinea(this.x + 112, this.y + 6, 56, 16,
                 () -> handler.host.linea(),
                 b -> this.client.interactionManager.clickButton(this.handler.syncId, TelarBlockEntity.BTN_LINEA)));
         ButtonWidget reiniciar = boton("↻", this.x + 138, ly, 18, 16, TelarBlockEntity.BTN_LOTE_REINICIAR);
@@ -111,6 +111,17 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
                 : Text.translatable("modamod.telar.sigue", Text.translatable("modamod.telar.prenda." + TelarPrenda.values()[v].clave()),
                         TelarPrenda.values()[v].lana, TelarPrenda.values()[v].hilo);
         c.drawText(textRenderer, sigue, x0 + 6, y0 + Y_TEXTO + 10, EstiloPergamino.TEXTO, false);
+        if (be.estado() == TelarBlockEntity.Estado.REPOSO && v >= 0) {
+            TelarPrenda p = TelarPrenda.values()[v];
+            int faltaLana = Math.max(0, p.lana - be.lana());
+            int faltaHilo = Math.max(0, p.hilo - be.hilo());
+            boolean lista = be.creativa() || (faltaLana == 0 && faltaHilo == 0);
+            Text estado = lista
+                    ? Text.translatable("modamod.telar.estado.listo")
+                    : Text.translatable("modamod.telar.estado.falta", faltaLana, faltaHilo);
+            c.drawText(textRenderer, estado, x0 + 6, y0 + Y_TEXTO + 20,
+                    lista ? 0xFF3F7A38 : 0xFF8A2E2E, false);
+        }
     }
 
     private void marco(DrawContext c, int sx, int sy) {
