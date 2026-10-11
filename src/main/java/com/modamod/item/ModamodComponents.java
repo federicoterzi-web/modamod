@@ -663,6 +663,38 @@ public final class ModamodComponents {
                     .packetCodec(PacketCodecs.VAR_INT.collect(PacketCodecs.toList()))
                     .build());
 
+    /** Borcegos (2026-10-08, slot de calzado): altura de la caña, suela, cómo se lleva el pantalón, colores y dibujo de sus 3 zonas. */
+    public static final ComponentType<BorcegoCana> BORCEGO_CANA = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "borcego_cana"),
+            ComponentType.<BorcegoCana>builder()
+                    .codec(StringIdentifiable.createCodec(BorcegoCana::values))
+                    .packetCodec(PacketCodecs.indexed(i -> BorcegoCana.values()[i], Enum::ordinal))
+                    .build());
+    public static final ComponentType<BorcegoSuela> BORCEGO_SUELA = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "borcego_suela"),
+            ComponentType.<BorcegoSuela>builder()
+                    .codec(StringIdentifiable.createCodec(BorcegoSuela::values))
+                    .packetCodec(PacketCodecs.indexed(i -> BorcegoSuela.values()[i], Enum::ordinal))
+                    .build());
+    public static final ComponentType<BorcegoBotamanga> BORCEGO_BOTAMANGA = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "borcego_botamanga"),
+            ComponentType.<BorcegoBotamanga>builder()
+                    .codec(StringIdentifiable.createCodec(BorcegoBotamanga::values))
+                    .packetCodec(PacketCodecs.indexed(i -> BorcegoBotamanga.values()[i], Enum::ordinal))
+                    .build());
+    public static final ComponentType<java.util.List<Integer>> COLORES_BORCEGOS = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "colores_borcegos"),
+            ComponentType.<java.util.List<Integer>>builder()
+                    .codec(com.mojang.serialization.Codec.INT.listOf())
+                    .packetCodec(PacketCodecs.VAR_INT.collect(PacketCodecs.toList()))
+                    .build());
+    public static final ComponentType<java.util.List<Integer>> PATRONES_BORCEGOS = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "patrones_borcegos"),
+            ComponentType.<java.util.List<Integer>>builder()
+                    .codec(com.mojang.serialization.Codec.INT.listOf())
+                    .packetCodec(PacketCodecs.VAR_INT.collect(PacketCodecs.toList()))
+                    .build());
+
     /** Dibujo de cada zona del sombrero (2026-10-05): ordinales de {@link SombreroPatron}, ala/cono/cinta. */
     public static final ComponentType<java.util.List<Integer>> PATRONES_SOMBRERO = Registry.register(
             Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "patrones_sombrero"),

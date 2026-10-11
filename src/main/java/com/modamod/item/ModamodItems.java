@@ -76,6 +76,9 @@ public final class ModamodItems {
     /** Banda: cinto o choker según su zona (2026-10-05), slots {@code torso/cinto} y {@code head/choker}. */
     public static final BandaItem BANDA = register("banda", new BandaItem(new Item.Settings().maxCount(16)));   // 2026-10-08: idem
 
+    /** Borcegos (2026-10-08, "un slot de calzado"), slot {@code socks/calzado}. */
+    public static final BorcegosItem BORCEGOS = register("borcegos", new BorcegosItem(new Item.Settings().maxCount(16)));
+
     // Moldes de correa (2026-10-05, Mesa de estilado): el estilo de la correa que se pone; no se gastan.
     public static final com.modamod.correa.MoldeCorreaItem MOLDE_CORREA_LISA = register("molde_correa_lisa",
             new com.modamod.correa.MoldeCorreaItem(new Item.Settings().maxCount(1), com.modamod.correa.EstiloCorrea.LISA));

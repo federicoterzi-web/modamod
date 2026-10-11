@@ -76,6 +76,23 @@ public class GuardarropasScreenHandler extends ScreenHandler {
         };
     }
 
+    /** El slot del calzado (2026-10-08), debajo del del sombrero; el marco lo dibuja la pantalla por código. */
+    public static final int Y_CALZADO = Y_SOMBRERO + 20;
+
+    public static Slot slotCalzado(net.minecraft.inventory.Inventory inv, java.util.function.BooleanSupplier puedeTocar) {
+        int index = GuardarropasBlockEntity.SLOT_CALZADO;
+        return new Slot(inv, index, X_ARMADURA, Y_CALZADO) {
+            @Override
+            public boolean canInsert(ItemStack stack) { return puedeTocar.getAsBoolean() && inv.isValid(index, stack); }
+
+            @Override
+            public boolean canTakeItems(PlayerEntity player) { return puedeTocar.getAsBoolean(); }
+
+            @Override
+            public int getMaxItemCount() { return 1; }
+        };
+    }
+
     private static final int INV_START = GuardarropasBlockEntity.TAMANO;
 
     public final GuardarropasBlockEntity be;
@@ -132,6 +149,7 @@ public class GuardarropasScreenHandler extends ScreenHandler {
 
         for (int i = 0; i < GuardarropasBlockEntity.SLOTS_ARMADURA.length; i++) addSlot(slotArmadura(be, i, this::puedeTocar));
         addSlot(slotSombrero(be, this::puedeTocar));
+        addSlot(slotCalzado(be, this::puedeTocar));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {

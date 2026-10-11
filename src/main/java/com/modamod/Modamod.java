@@ -122,6 +122,7 @@ public class Modamod implements ModInitializer {
             entries.add(ModamodItems.SOMBRERO_BRUJA);
             // Banda (2026-10-05): un cinto y un choker de fábrica, hasta que lleguen los moldes de la Modeladora.
             entries.add(ModamodItems.BANDA);
+            entries.add(ModamodItems.BORCEGOS);   // 2026-10-08
             entries.add(ModamodItems.MOLDE_CORREA_LISA);
             entries.add(ModamodItems.MOLDE_CORREA_CADENA);
             entries.add(ModamodItems.MOLDE_CORREA_CADENA_FINA);
@@ -243,6 +244,13 @@ public class Modamod implements ModInitializer {
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_HUESO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_CORAZON);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_MEDALLA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_CANA_BAJA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_CANA_MEDIA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_CANA_ALTA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_SUELA_CHATA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_SUELA_PLATAFORMA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_BOTAMANGA_ADENTRO);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_BOTAMANGA_AFUERA);
             })
             .build();
 

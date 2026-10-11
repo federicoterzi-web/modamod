@@ -182,6 +182,20 @@ public final class ModeladoMod {
             MoldeBandaItem.Tipo.HERRAJE_CORAZON);
     public static final MoldeBandaItem MOLDE_BANDA_HERRAJE_MEDALLA = new MoldeBandaItem(new Item.Settings().maxCount(1),
             MoldeBandaItem.Tipo.HERRAJE_MEDALLA);
+    public static final MoldeBorcegoItem MOLDE_BORCEGO_CANA_BAJA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
+            MoldeBorcegoItem.Tipo.CANA_BAJA);
+    public static final MoldeBorcegoItem MOLDE_BORCEGO_CANA_MEDIA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
+            MoldeBorcegoItem.Tipo.CANA_MEDIA);
+    public static final MoldeBorcegoItem MOLDE_BORCEGO_CANA_ALTA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
+            MoldeBorcegoItem.Tipo.CANA_ALTA);
+    public static final MoldeBorcegoItem MOLDE_BORCEGO_SUELA_CHATA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
+            MoldeBorcegoItem.Tipo.SUELA_CHATA);
+    public static final MoldeBorcegoItem MOLDE_BORCEGO_SUELA_PLATAFORMA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
+            MoldeBorcegoItem.Tipo.SUELA_PLATAFORMA);
+    public static final MoldeBorcegoItem MOLDE_BORCEGO_BOTAMANGA_ADENTRO = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
+            MoldeBorcegoItem.Tipo.BOTAMANGA_ADENTRO);
+    public static final MoldeBorcegoItem MOLDE_BORCEGO_BOTAMANGA_AFUERA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
+            MoldeBorcegoItem.Tipo.BOTAMANGA_AFUERA);
 
     // ── moldes de la chaqueta (2026-10-07) ──
     public static final MoldeChaquetaItem MOLDE_CHAQUETA_FRENTE_CERRADA = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
@@ -275,6 +289,13 @@ public final class ModeladoMod {
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_hueso"), MOLDE_BANDA_HERRAJE_HUESO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_corazon"), MOLDE_BANDA_HERRAJE_CORAZON);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_medalla"), MOLDE_BANDA_HERRAJE_MEDALLA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_cana_baja"), MOLDE_BORCEGO_CANA_BAJA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_cana_media"), MOLDE_BORCEGO_CANA_MEDIA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_cana_alta"), MOLDE_BORCEGO_CANA_ALTA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_suela_chata"), MOLDE_BORCEGO_SUELA_CHATA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_suela_plataforma"), MOLDE_BORCEGO_SUELA_PLATAFORMA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_botamanga_adentro"), MOLDE_BORCEGO_BOTAMANGA_ADENTRO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_botamanga_afuera"), MOLDE_BORCEGO_BOTAMANGA_AFUERA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_recto"), MOLDE_RUEDO_RECTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_ajustado"), MOLDE_RUEDO_AJUSTADO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_campana"), MOLDE_RUEDO_CAMPANA);

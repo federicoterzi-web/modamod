@@ -306,5 +306,6 @@ public class ManiquiScreen extends HandledScreen<ManiquiScreenHandler> {
         context.drawTexture(TEXTURE, this.x, this.y, 0, 0,
                 this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
         GuardarropasScreen.marcoSombrero(context, this.x, this.y);
+        GuardarropasScreen.marcoCalzado(context, this.x, this.y);
     }
 }

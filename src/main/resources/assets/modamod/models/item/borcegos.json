@@ -1,0 +1,7 @@
+{
+  "_comment": "Ícono plano de los borcegos (2026-10-08), dibujado por tools/generar_icono_borcegos.py.",
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modamod:item/borcegos"
+  }
+}

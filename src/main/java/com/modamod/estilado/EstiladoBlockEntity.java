@@ -235,7 +235,7 @@ public class EstiladoBlockEntity extends BlockEntity
                     // Sobre el ala o el cono (2026-10-05): el punto es de una caja del sombrero en el marco de la cabeza (y
                     // negativo = arriba), así que el rango llega hasta la punta y el borde del ala ancha.
                     x = MathHelper.clamp(x, -11, 11);
-                    y = MathHelper.clamp(y, -32, 4);
+                    y = MathHelper.clamp(y, -32, 14);   // hasta el piso de los borcegos (y 12 de la pierna)
                     z = MathHelper.clamp(z, -11, 11);
                 } else {
                     x = MathHelper.clamp(x, -8, 8);

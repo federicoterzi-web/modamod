@@ -176,6 +176,8 @@ public class GuardarropasScreen extends HandledScreen<GuardarropasScreenHandler>
         GarmentFeatureRenderer.previewOverride = prendas;
         ItemStack sombrero = inv.getStack(GuardarropasBlockEntity.SLOT_SOMBRERO);
         GarmentFeatureRenderer.sombreroOverride = sombrero.isEmpty() ? null : sombrero;
+        ItemStack calzado = inv.getStack(GuardarropasBlockEntity.SLOT_CALZADO);
+        GarmentFeatureRenderer.calzadoOverride = calzado.isEmpty() ? null : calzado;
         try {
             for (int i = 0; i < GuardarropasBlockEntity.SLOTS_ARMADURA.length; i++) {
                 ItemStack pieza = inv.getStack(GuardarropasBlockEntity.ARMADURA_INICIO + i);
@@ -185,6 +187,7 @@ public class GuardarropasScreen extends HandledScreen<GuardarropasScreenHandler>
         } finally {
             GarmentFeatureRenderer.previewOverride = null;
             GarmentFeatureRenderer.sombreroOverride = null;
+            GarmentFeatureRenderer.calzadoOverride = null;
             for (int i = 0; i < antes.length; i++) armadura.set(i, antes[i]);
         }
     }
@@ -201,6 +204,15 @@ public class GuardarropasScreen extends HandledScreen<GuardarropasScreenHandler>
         context.drawTexture(TEXTURE, this.x, this.y, 0, 0,
                 this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
         marcoSombrero(context, this.x, this.y);
+        marcoCalzado(context, this.x, this.y);
+    }
+
+    /** Marco del slot del calzado (2026-10-08), debajo del del sombrero. */
+    static void marcoCalzado(DrawContext c, int ox, int oy) {
+        int x0 = ox + GuardarropasScreenHandler.X_ARMADURA, y0 = oy + GuardarropasScreenHandler.Y_CALZADO;
+        c.fill(x0 - 1, y0 - 1, x0 + 17, y0 + 17, 0xFF2A180C);
+        c.fill(x0, y0, x0 + 16, y0 + 16, 0xFF5A4028);
+        c.drawTexture(Identifier.of("modamod", "textures/gui/slot/calzado.png"), x0, y0, 0, 0, 16, 16, 16, 16);
     }
 
     /** Marco del slot del sombrero (2026-10-05), dibujado por código como los de la grilla de la chaqueta. */

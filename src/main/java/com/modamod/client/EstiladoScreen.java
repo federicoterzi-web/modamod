@@ -796,6 +796,12 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
      * tocados, en px del marco de la cabeza; gana la superficie más cercana a quien mira (por donde sale el rayo).
      */
     @Nullable
+    /** Clave de traducción del nombre de la zona {@code i} del accesorio que hay en la mesa (sombrero, banda o borcegos). */
+    private String claveDeZona(int i) {
+        ItemStack prenda = handler.be.getStack(EstiladoBlockEntity.SLOT_PRENDA);
+        return prenda.getItem() instanceof com.modamod.item.ZonasTenibles zt ? zt.claveZona(prenda, i) : "modamod.sombrero.zona." + (i + 1);
+    }
+
     private Toque tocarSombrero(double mx, double my, ItemStack prenda) {
         Parte marco = ((com.modamod.item.ZonasTenibles) prenda.getItem()).marco(prenda);
         Matrix4f m = poses.get(marco);
@@ -1237,7 +1243,7 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
             if (zona >= 0) {
                 context.fill(mouseX - 3, mouseY, mouseX + 4, mouseY + 1, 0xFFFFFFFF);
                 context.fill(mouseX, mouseY - 3, mouseX + 1, mouseY + 4, 0xFFFFFFFF);
-                context.drawTooltip(this.textRenderer, Text.translatable(com.modamod.item.BandaItem.class.isInstance(handler.be.getStack(EstiladoBlockEntity.SLOT_PRENDA).getItem()) ? "modamod.banda.parte." + (zona + 1) : "modamod.sombrero.zona." + (zona + 1)), mouseX, mouseY);
+                context.drawTooltip(this.textRenderer, Text.translatable(claveDeZona(zona)), mouseX, mouseY);
             }
         } else if (!modoColor && !modoCorrea && dentroDeVista(mouseX, mouseY) && tocar(mouseX, mouseY) != null) {
             context.fill(mouseX - 3, mouseY, mouseX + 4, mouseY + 1, 0xFFFFFFFF);
@@ -1279,7 +1285,7 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
         }
         if (modoColor) {
             for (int z = 0; z < 3; z++) {
-                context.drawText(this.textRenderer, Text.translatable(handler.be.getStack(EstiladoBlockEntity.SLOT_PRENDA).getItem() instanceof com.modamod.item.BandaItem ? "modamod.banda.parte." + (z + 1) : "modamod.sombrero.zona." + (z + 1)),
+                context.drawText(this.textRenderer, Text.translatable(claveDeZona(z)),
                         X_DER, 66 + z * 22 + 4, EstiloPergamino.TEXTO, false);
             }
             if (handler.be.coloresDeLaFuente() == null) {

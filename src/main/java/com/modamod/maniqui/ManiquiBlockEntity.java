@@ -207,6 +207,9 @@ public class ManiquiBlockEntity extends BlockEntity
     /** El sombrero de bruja puesto (2026-10-05), o vacío. */
     public ItemStack sombrero() { return items.get(GuardarropasBlockEntity.SLOT_SOMBRERO); }
 
+    /** Los borcegos puestos (2026-10-08), o vacío. */
+    public ItemStack calzado() { return items.get(GuardarropasBlockEntity.SLOT_CALZADO); }
+
     /** La pieza de armadura de ese slot del cuerpo (HEAD/CHEST/LEGS/FEET), o vacío. */
     public ItemStack armadura(net.minecraft.entity.EquipmentSlot slot) {
         for (int i = 0; i < GuardarropasBlockEntity.SLOTS_ARMADURA.length; i++) {
@@ -267,6 +270,14 @@ public class ManiquiBlockEntity extends BlockEntity
             ItemStack delJugador = inv.getStack(0).copy();
             inv.setStack(0, items.get(GuardarropasBlockEntity.SLOT_SOMBRERO).copy());
             items.set(GuardarropasBlockEntity.SLOT_SOMBRERO, delJugador);
+        });
+        // Calzado (2026-10-08): también intercambia con el slot socks/calzado de Trinkets.
+        dev.emi.trinkets.api.TrinketsApi.getTrinketComponent(player).ifPresent(componente -> {
+            var inv = GuardarropasBlockEntity.inventarioCalzado(componente);
+            if (inv == null || inv.size() < 1) return;
+            ItemStack delJugador = inv.getStack(0).copy();
+            inv.setStack(0, items.get(GuardarropasBlockEntity.SLOT_CALZADO).copy());
+            items.set(GuardarropasBlockEntity.SLOT_CALZADO, delJugador);
         });
         // Armadura: slot por slot, vacíos incluidos (2026-09-30).
         for (int i = 0; i < GuardarropasBlockEntity.SLOTS_ARMADURA.length; i++) {

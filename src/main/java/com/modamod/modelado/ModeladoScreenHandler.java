@@ -49,6 +49,8 @@ public class ModeladoScreenHandler extends ScreenHandler {
             {{35, 109}, {172, 52}},
             // Banda (2026-10-05): Zona, Ancho, Herraje — sobre esquema_banda.png (tools/generar_esquema_banda.py).
             {{31, 101}, {137, 51}, {137, 107}},
+            // Borcegos (2026-10-08): Caña, Suela, Botamanga — provisorio, sobre esquema_borcegos.png (copia del de la banda).
+            {{31, 101}, {137, 51}, {137, 107}},
     });
 
     /**
@@ -65,6 +67,7 @@ public class ModeladoScreenHandler extends ScreenHandler {
             {{68, 48}, {67, 125}, {68, 86}, {189, 63}, {39, 125}, {0, 0}, {133, 144}, {192, 127}, {107, 144}},
             {{70, 82}, {70, 129}, {179, 49}, {70, 49}, {188, 93}},
             {{52, 108}, {189, 51}},
+            {{48, 100}, {154, 50}, {154, 106}},
             {{48, 100}, {154, 50}, {154, 106}},
     });
 

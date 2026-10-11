@@ -217,6 +217,24 @@ public final class PrendaModelado {
             }
         }
 
+        // Borcegos (2026-10-08): altura de la caña, suela y cómo se lleva la botamanga.
+        if (out.getItem() instanceof com.modamod.item.BorcegosItem && combo.pollera().isPresent()
+                && combo.pollera().get().chaqueta().isPresent() && combo.pollera().get().chaqueta().get().borcego().isPresent()) {
+            var bo = combo.pollera().get().chaqueta().get().borcego().get();
+            if (bo.cana().isPresent()) {
+                com.modamod.item.BorcegosItem.setCana(out, bo.cana().get());
+                cambio = true;
+            }
+            if (bo.suela().isPresent()) {
+                com.modamod.item.BorcegosItem.setSuela(out, bo.suela().get());
+                cambio = true;
+            }
+            if (bo.botamanga().isPresent()) {
+                com.modamod.item.BorcegosItem.setBotamanga(out, bo.botamanga().get());
+                cambio = true;
+            }
+        }
+
         // Banda (2026-10-05): zona, ancho y herraje.
         if (out.getItem() instanceof com.modamod.item.BandaItem && combo.pollera().isPresent()) {
             var p = combo.pollera().get();

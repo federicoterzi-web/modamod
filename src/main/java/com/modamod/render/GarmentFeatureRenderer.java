@@ -77,6 +77,31 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
     public static ItemStack sombreroOverride;
 
     /**
+     * Los borcegos de este dibujo (2026-10-08, slot de calzado), o null: el pantalón se adapta a ellos
+     * ({@link #dibujarPiezas}). {@code render0} lo fija con lo puesto; el Maniquí, que dibuja la tela por su cuenta, deja
+     * el suyo en {@link #calzadoDeTela} justo antes de llamar a {@link #dibujarTela}.
+     */
+    private static ItemStack calzado;
+    public static ItemStack calzadoDeTela;
+    /** Los borcegos que muestra el Guardarropas en su vista previa (junto al sombrero de {@link #sombreroOverride}). */
+    public static ItemStack calzadoOverride;
+
+    private static ItemStack calzadoDe(@Nullable LivingEntity entidad) {
+        if (calzadoOverride != null) return calzadoOverride;
+        if (sombreroOverride != null) {
+            return sombreroOverride.getItem() instanceof com.modamod.item.BorcegosItem ? sombreroOverride : null;
+        }
+        if (entidad == null) return null;
+        ItemStack[] hallado = {null};
+        TrinketsApi.getTrinketComponent(entidad).ifPresent(c -> {
+            for (var par : c.getAllEquipped()) {
+                if (par.getRight().getItem() instanceof com.modamod.item.BorcegosItem) hallado[0] = par.getRight();
+            }
+        });
+        return hallado[0];
+    }
+
+    /**
      * Click en la vista 3D de la Mesa de estilado (2026-10-01): si no es null,
      * el próximo {@link #render} guarda acá, por parte, la matriz que lleva del
      * espacio local de esa parte (en bloques, como los cuboides de ModelPart)
@@ -132,6 +157,7 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         if (!(getContextModel() instanceof BipedEntityModel<?> biped)) return;
 
         List<ItemStack> prendas = previewOverride != null ? previewOverride : equipadas(entidad);
+        calzado = calzadoDe(entidad);
         // Tela blanda de los apliques (2026-10-04): la inercia de esta entidad, o la de la vista previa.
         if (previewOverride != null) {
             FisicaApliques.preparar(FisicaApliques.CLAVE_VISTA_PREVIA, null, tickDelta, FisicaApliques.modoVistaPrevia);
@@ -515,8 +541,9 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
      */
     private static void dibujarSombrero(LivingEntity entidad, BipedEntityModel<?> biped, MatrixStack matrices,
                                         VertexConsumerProvider vertexConsumers, int luz, float dil) {
-        if (sombreroOverride != null) {
-            AccesorioRenderer.dibujar(sombreroOverride, biped, matrices, vertexConsumers, luz, dil);
+        if (sombreroOverride != null || calzadoOverride != null) {
+            if (sombreroOverride != null) AccesorioRenderer.dibujar(sombreroOverride, biped, matrices, vertexConsumers, luz, dil);
+            if (calzadoOverride != null) AccesorioRenderer.dibujar(calzadoOverride, biped, matrices, vertexConsumers, luz, dil);
             return;
         }
         TrinketsApi.getTrinketComponent(entidad).ifPresent(c -> {
@@ -736,6 +763,15 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
             VertexConsumerProvider vertexConsumers = EfectoTrim.envolver(origen.get(pieza), vcpBase);
             int desde = Math.max(0, Math.min(12, pieza.filaDesde()));
             int hasta = Math.max(desde, Math.min(12, pieza.filaHasta()));
+            // Calzado (2026-10-08, "quiero las dos opciones"): el pantalón con la botamanga por dentro se corta donde
+            // empieza la caña; por fuera baja entero y se infla sobre ella (más abajo, fila por fila).
+            int cana = 0;
+            boolean botamangaAfuera = false;
+            if (pierna && calzado != null && pieza != conVolumen && pieza.capa() >= Capa.PIERNA_EXTERIOR) {
+                cana = com.modamod.item.BorcegosItem.cana(calzado).alto;
+                botamangaAfuera = com.modamod.item.BorcegosItem.botamanga(calzado) == com.modamod.item.BorcegoBotamanga.AFUERA;
+                if (!botamangaAfuera) hasta = Math.max(desde, Math.min(hasta, 12 - cana));
+            }
             float base = pieza.dilatacion();
             if (conRelieve && parte != Parte.CABEZA) {
                 ItemStack prenda = origen.get(pieza);
@@ -766,6 +802,7 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
             int colgado = ruedoLibre ? calce.colgado : 0;
             // Una pierna entera no cuelga por debajo del pie (quedaría enterrada).
             if (pierna && hasta >= 12) colgado = 0;
+            if (cana > 0 && !botamangaAfuera) colgado = 0;     // la botamanga cortada no cuelga sobre el calzado
             if (hasta == desde) colgado = 0;
             // Elástico (puños y ruedo del hoodie): la banda sostiene la tela,
             // no cuelga — la caída queda como globo arriba de la banda.
@@ -792,6 +829,11 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                     // dentro del cuerpo (0.05 de aire).
                     if (pieza.elastico() && f == hasta - 1) d = Math.max(0.05F, base * 0.4F);
                     if (pieza.elasticoSup() && f == desde) d = Math.max(0.05F, base * 0.4F);
+                    // Botamanga por fuera: sobre la caña, más ancha que ella (las filas de la suela quedan adentro de la suela).
+                    if (botamangaAfuera && f >= 12 - cana
+                            && f < 12 - com.modamod.item.BorcegosItem.suela(calzado).filas) {
+                        d = Math.max(d, com.modamod.render.BorcegosRenderer.T + 0.12F);
+                    }
                     if (exterior[f] != Float.NEGATIVE_INFINITY) d = Math.max(d, exterior[f] + SEPARACION_CAPAS);
                     // Lo que va encima de la pollera (el hoodie) se abre por fuera de
                     // ella (2026-10-02, "el hoodie se abre por fuera"): la cintura de
@@ -1398,10 +1440,13 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                                    MatrixStack matrices, VertexConsumerProvider vertexConsumers, int luz,
                                    @Nullable com.modamod.render.relieve.BustoRender.Busto busto) {
         com.modamod.render.relieve.BustoRender.actual = busto;
+        calzado = calzadoDeTela;
+        calzadoDeTela = null;
         try {
             dibujarTelaConBusto(biped, slim, prendas, matrices, vertexConsumers, luz);
         } finally {
             com.modamod.render.relieve.BustoRender.actual = null;
+            calzado = null;
         }
     }
 

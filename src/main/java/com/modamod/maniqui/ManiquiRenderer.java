@@ -185,9 +185,15 @@ public class ManiquiRenderer extends GeoBlockRenderer<ManiquiBlockEntity> {
             if (!be.sombrero().isEmpty()) {
                 com.modamod.render.SombreroRenderer.dibujar(be.sombrero(), cuerpo, matrices, vertexConsumers, luz);
             }
+            // Calzado (2026-10-08): el pantalón se adapta a los borcegos (los dibuja la misma pasada de tela).
+            if (!be.calzado().isEmpty()) {
+                com.modamod.render.BorcegosRenderer.dibujar(be.calzado(), cuerpo, matrices, vertexConsumers, luz);
+                GarmentFeatureRenderer.calzadoDeTela = be.calzado();
+            }
             if (!prendas.isEmpty()) {
                 GarmentFeatureRenderer.dibujarTela(cuerpo, slim, prendas, matrices, vertexConsumers, luz, busto);
             }
+            GarmentFeatureRenderer.calzadoDeTela = null;
         } finally {
             com.modamod.render.relieve.BustoEnModelos.enEntidad = null;
             com.modamod.render.relieve.BustoEnModelos.modeloPrincipal = null;

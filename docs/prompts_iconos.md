@@ -145,3 +145,13 @@ por código: **hay que rehacerlo**), `oversized_hoodie`, `maid_outfit`, `estroge
 2. Ajustá el "color de destaque" hasta que se note sin pisar el papel.
 3. Pedí por tandas de una máquina a la vez, para que el destaque quede parejo.
 4. Bajá a 64×64, pegá en la ruta de arriba y avisame: los íconos de molde de aplique y los de prenda no necesitan más trabajo.
+
+## F. Borcegos (2026-10-08, provisorios)
+
+**Molde de Borcegos (7, PROVISORIOS = copia del de ancho de banda):** `molde_borcego_cana_baja`, `molde_borcego_cana_media`,
+`molde_borcego_cana_alta` (la bota de lado con la caña a esa altura), `molde_borcego_suela_chata`,
+`molde_borcego_suela_plataforma` (la suela de perfil, fina o gruesa), `molde_borcego_botamanga_adentro`,
+`molde_borcego_botamanga_afuera` (la pierna del pantalón metida en la bota o cayendo por fuera). Papel de fondo y destaque
+cobre como el resto de la Modeladora. **Esquema:** `esquema_borcegos.png` (960×544, paleta de 256) con una bota grande de
+lado y tres marcos de slot: Caña, Suela y Botamanga (hoy es una copia del de la banda). **Ítem:** `borcegos.png` (ya hay
+uno dibujado por código, 64×64; se puede rehacer).
