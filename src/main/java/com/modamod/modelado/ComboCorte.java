@@ -313,19 +313,27 @@ public record ComboCorte(
         return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.of(v)));
     }
 
-    public static ComboCorte borcegoCana(com.modamod.item.BorcegoCana v) {
+    /** Los borcegos llevan el lado del pie al que van (IZQUIERDA, DERECHA o AMBAS): usan el {@code lado} del combo. */
+    public static ComboCorte borcegoCana(com.modamod.item.BorcegoCana v, Lado lado) {
         return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.of(new BorcegoCorte(Optional.of(v), Optional.empty(), Optional.empty()))));
+                Optional.of(new BorcegoCorte(Optional.of(v), Optional.empty(), Optional.empty())))).conLado(lado);
     }
 
-    public static ComboCorte borcegoSuela(com.modamod.item.BorcegoSuela v) {
+    public static ComboCorte borcegoSuela(com.modamod.item.BorcegoSuela v, Lado lado) {
         return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.of(new BorcegoCorte(Optional.empty(), Optional.of(v), Optional.empty()))));
+                Optional.of(new BorcegoCorte(Optional.empty(), Optional.of(v), Optional.empty())))).conLado(lado);
     }
 
-    public static ComboCorte borcegoBotamanga(com.modamod.item.BorcegoBotamanga v) {
+    public static ComboCorte borcegoBotamanga(com.modamod.item.BorcegoBotamanga v, Lado lado) {
         return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.empty(),
-                Optional.of(new BorcegoCorte(Optional.empty(), Optional.empty(), Optional.of(v)))));
+                Optional.of(new BorcegoCorte(Optional.empty(), Optional.empty(), Optional.of(v))))).conLado(lado);
+    }
+
+    public ComboCorte conLado(Lado nuevo) {
+        return new ComboCorte(remeraLargo, remeraManga, remeraCuello, pantalonTiro,
+                pantalonLargoSuperior, pantalonLargoInferior, mediasLargoSuperior, mediasLargoInferior,
+                calientabrazosCoberturaSuperior, calientabrazosCoberturaInferior, calce, red,
+                capaPatron, nuevo, iconoOrigen, pollera);
     }
 
     private static ComboCorte conChaqueta(ChaquetaCorte c) {

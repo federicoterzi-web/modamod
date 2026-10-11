@@ -682,6 +682,37 @@ public final class ModamodComponents {
                     .codec(StringIdentifiable.createCodec(BorcegoBotamanga::values))
                     .packetCodec(PacketCodecs.indexed(i -> BorcegoBotamanga.values()[i], Enum::ordinal))
                     .build());
+    /** Pie izquierdo (2026-10-11, "no se puede independizar derecho e izquierdo?"): ausente = igual que el derecho. */
+    public static final ComponentType<BorcegoCana> BORCEGO_CANA_IZQ = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "borcego_cana_izq"),
+            ComponentType.<BorcegoCana>builder()
+                    .codec(StringIdentifiable.createCodec(BorcegoCana::values))
+                    .packetCodec(PacketCodecs.indexed(i -> BorcegoCana.values()[i], Enum::ordinal))
+                    .build());
+    public static final ComponentType<BorcegoSuela> BORCEGO_SUELA_IZQ = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "borcego_suela_izq"),
+            ComponentType.<BorcegoSuela>builder()
+                    .codec(StringIdentifiable.createCodec(BorcegoSuela::values))
+                    .packetCodec(PacketCodecs.indexed(i -> BorcegoSuela.values()[i], Enum::ordinal))
+                    .build());
+    public static final ComponentType<BorcegoBotamanga> BORCEGO_BOTAMANGA_IZQ = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "borcego_botamanga_izq"),
+            ComponentType.<BorcegoBotamanga>builder()
+                    .codec(StringIdentifiable.createCodec(BorcegoBotamanga::values))
+                    .packetCodec(PacketCodecs.indexed(i -> BorcegoBotamanga.values()[i], Enum::ordinal))
+                    .build());
+    public static final ComponentType<java.util.List<Integer>> COLORES_BORCEGOS_IZQ = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "colores_borcegos_izq"),
+            ComponentType.<java.util.List<Integer>>builder()
+                    .codec(com.mojang.serialization.Codec.INT.listOf())
+                    .packetCodec(PacketCodecs.VAR_INT.collect(PacketCodecs.toList()))
+                    .build());
+    public static final ComponentType<java.util.List<Integer>> PATRONES_BORCEGOS_IZQ = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "patrones_borcegos_izq"),
+            ComponentType.<java.util.List<Integer>>builder()
+                    .codec(com.mojang.serialization.Codec.INT.listOf())
+                    .packetCodec(PacketCodecs.VAR_INT.collect(PacketCodecs.toList()))
+                    .build());
     public static final ComponentType<java.util.List<Integer>> COLORES_BORCEGOS = Registry.register(
             Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "colores_borcegos"),
             ComponentType.<java.util.List<Integer>>builder()

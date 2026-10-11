@@ -49,8 +49,9 @@ public class ModeladoScreenHandler extends ScreenHandler {
             {{35, 109}, {172, 52}},
             // Banda (2026-10-05): Zona, Ancho, Herraje — sobre esquema_banda.png (tools/generar_esquema_banda.py).
             {{31, 101}, {137, 51}, {137, 107}},
-            // Borcegos (2026-10-08): Caña, Suela, Botamanga — provisorio, sobre esquema_borcegos.png (copia del de la banda).
-            {{31, 101}, {137, 51}, {137, 107}},
+            // Calzado (2026-10-11): Caña, Suela y Botamanga de cada pie (izq. y der. del dibujo) — provisorio, sobre
+            // esquema_borcegos.png (copia del de la banda: sin marcos propios todavía).
+            {{40, 50}, {160, 50}, {40, 90}, {160, 90}, {40, 130}, {160, 130}},
     });
 
     /**
@@ -68,7 +69,7 @@ public class ModeladoScreenHandler extends ScreenHandler {
             {{70, 82}, {70, 129}, {179, 49}, {70, 49}, {188, 93}},
             {{52, 108}, {189, 51}},
             {{48, 100}, {154, 50}, {154, 106}},
-            {{48, 100}, {154, 50}, {154, 106}},
+            {{57, 49}, {177, 49}, {57, 89}, {177, 89}, {57, 129}, {177, 129}},
     });
 
     /** Completa cada fila hasta {@code PINES_POR_CATEGORIA} con pines fuera de pantalla (0, 0). */

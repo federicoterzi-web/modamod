@@ -768,8 +768,9 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
             int cana = 0;
             boolean botamangaAfuera = false;
             if (pierna && calzado != null && pieza != conVolumen && pieza.capa() >= Capa.PIERNA_EXTERIOR) {
-                cana = com.modamod.item.BorcegosItem.cana(calzado).alto;
-                botamangaAfuera = com.modamod.item.BorcegosItem.botamanga(calzado) == com.modamod.item.BorcegoBotamanga.AFUERA;
+                boolean izqPie = parte == Parte.PIERNA_IZQ;   // cada pie con su caña, suela y botamanga
+                cana = com.modamod.item.BorcegosItem.cana(calzado, izqPie).alto;
+                botamangaAfuera = com.modamod.item.BorcegosItem.botamanga(calzado, izqPie) == com.modamod.item.BorcegoBotamanga.AFUERA;
                 if (!botamangaAfuera) hasta = Math.max(desde, Math.min(hasta, 12 - cana));
             }
             float base = pieza.dilatacion();
@@ -831,7 +832,7 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                     if (pieza.elasticoSup() && f == desde) d = Math.max(0.05F, base * 0.4F);
                     // Botamanga por fuera: sobre la caña, más ancha que ella (las filas de la suela quedan adentro de la suela).
                     if (botamangaAfuera && f >= 12 - cana
-                            && f < 12 - com.modamod.item.BorcegosItem.suela(calzado).filas) {
+                            && f < 12 - com.modamod.item.BorcegosItem.suela(calzado, parte == Parte.PIERNA_IZQ).filas) {
                         d = Math.max(d, com.modamod.render.BorcegosRenderer.T + 0.12F);
                     }
                     if (exterior[f] != Float.NEGATIVE_INFINITY) d = Math.max(d, exterior[f] + SEPARACION_CAPAS);

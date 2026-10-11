@@ -36,26 +36,28 @@ public final class BorcegosRenderer {
 
     public static void dibujar(ItemStack borcegos, BipedEntityModel<?> biped, MatrixStack matrices,
                                VertexConsumerProvider vertexConsumers, int luz) {
-        List<Integer> colores = BorcegosItem.colores(borcegos);
-        List<SombreroPatron> patrones = BorcegosItem.patrones(borcegos);
-        List<SombreroRenderer.Caja> cajas = cajas(borcegos);
-        for (ModelPart marco : new ModelPart[] {biped.rightLeg, biped.leftLeg}) {
+        for (boolean izq : new boolean[] {false, true}) {
+            ModelPart marco = izq ? biped.leftLeg : biped.rightLeg;
             if (!marco.visible) continue;
+            // Cada pie con lo suyo (2026-10-11, "no se puede independizar derecho e izquierdo?").
+            List<Integer> colores = BorcegosItem.colores(borcegos, izq);
+            List<SombreroPatron> patrones = BorcegosItem.patrones(borcegos, izq);
+            List<SombreroRenderer.Caja> cajas = cajas(borcegos, izq);
             for (int z = 0; z < 3; z++) {
-                ModelPart parte = parte(cajas, z, borcegos);
+                ModelPart parte = parte(cajas, z, borcegos, izq);
                 if (parte == null) continue;
                 GarmentFeatureRenderer.dibujarModelPart(parte, CuerpoGeometria.Superficie.CUERPO,
                         SombreroRenderer.textura(colores.get(z), patrones.get(z)), marco, matrices, vertexConsumers, luz);
             }
         }
-        // Apliques y correas: en el borcego derecho (el punto es del marco de la pierna derecha).
+        // Apliques y correas: cada uno en el pie en que se puso (su parte es la pierna derecha o la izquierda).
         ApliqueRenderer.dibujar(borcegos, 0f, biped, matrices, vertexConsumers, luz);
     }
 
     private static final Map<String, ModelPart> CACHE = new HashMap<>();
 
-    private static ModelPart parte(List<SombreroRenderer.Caja> cajas, int zona, ItemStack borcegos) {
-        String key = BorcegosItem.cana(borcegos) + "|" + BorcegosItem.suela(borcegos) + "|" + zona;
+    private static ModelPart parte(List<SombreroRenderer.Caja> cajas, int zona, ItemStack borcegos, boolean izq) {
+        String key = BorcegosItem.cana(borcegos, izq) + "|" + BorcegosItem.suela(borcegos, izq) + "|" + zona;
         ModelPart c = CACHE.get(key);
         if (c != null) return c;
         List<ModelPart.Cuboid> cubos = new ArrayList<>();
@@ -70,10 +72,15 @@ public final class BorcegosRenderer {
         return c;
     }
 
-    /** Las cajas de un borcego en el marco de la pierna (el izquierdo es igual): para dibujar y para apuntar con el mouse. */
+    /** Las cajas del borcego derecho en el marco de la pierna. */
     public static List<SombreroRenderer.Caja> cajas(ItemStack borcegos) {
-        BorcegoCana cana = BorcegosItem.cana(borcegos);
-        BorcegoSuela suela = BorcegosItem.suela(borcegos);
+        return cajas(borcegos, false);
+    }
+
+    /** Las cajas de un borcego en el marco de su pierna (la forma de cada pie puede ser distinta): para dibujar y apuntar con el mouse. */
+    public static List<SombreroRenderer.Caja> cajas(ItemStack borcegos, boolean izq) {
+        BorcegoCana cana = BorcegosItem.cana(borcegos, izq);
+        BorcegoSuela suela = BorcegosItem.suela(borcegos, izq);
         float piso = 12f, sf = suela.filas;
         float arriba = piso - cana.alto;
         float ancho = 2f + T, fondo = 2f + T;

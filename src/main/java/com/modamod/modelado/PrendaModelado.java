@@ -222,15 +222,15 @@ public final class PrendaModelado {
                 && combo.pollera().get().chaqueta().isPresent() && combo.pollera().get().chaqueta().get().borcego().isPresent()) {
             var bo = combo.pollera().get().chaqueta().get().borcego().get();
             if (bo.cana().isPresent()) {
-                com.modamod.item.BorcegosItem.setCana(out, bo.cana().get());
+                com.modamod.item.BorcegosItem.setCana(out, bo.cana().get(), lado);
                 cambio = true;
             }
             if (bo.suela().isPresent()) {
-                com.modamod.item.BorcegosItem.setSuela(out, bo.suela().get());
+                com.modamod.item.BorcegosItem.setSuela(out, bo.suela().get(), lado);
                 cambio = true;
             }
             if (bo.botamanga().isPresent()) {
-                com.modamod.item.BorcegosItem.setBotamanga(out, bo.botamanga().get());
+                com.modamod.item.BorcegosItem.setBotamanga(out, bo.botamanga().get(), lado);
                 cambio = true;
             }
         }

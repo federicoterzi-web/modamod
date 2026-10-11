@@ -216,7 +216,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         /** Ruedo de la botamanga, del borde de arriba y del de abajo de medias y calientabrazos (2026-10-08, tanda 2). */
         RUEDO_BOTA_IZQ, RUEDO_BOTA_DER, RUEDO_SUP_IZQ, RUEDO_SUP_DER, RUEDO_INF_IZQ, RUEDO_INF_DER,
         /** Borcegos (2026-10-08): altura de la caña, suela y botamanga (MoldeBorcegoItem). */
-        CANA_BORCEGO, SUELA_BORCEGO, BOTAMANGA_BORCEGO }
+        CANA_BORCEGO_IZQ, CANA_BORCEGO_DER, SUELA_BORCEGO_IZQ, SUELA_BORCEGO_DER,
+        BOTAMANGA_BORCEGO_IZQ, BOTAMANGA_BORCEGO_DER }
 
     /** Rol de cada uno de los 8 pines por categoría — MISMO orden que {@code ModeladoScreenHandler#PIN_POS}. */
     public static final Rol[][] ROLES = rellenarRoles(new Rol[][]{
@@ -244,7 +245,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             {Rol.ZONA_BANDA, Rol.ANCHO_BANDA, Rol.HERRAJE_BANDA, Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO,
                     Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO},
             // Borcegos (2026-10-08): Caña, Suela y Botamanga.
-            {Rol.CANA_BORCEGO, Rol.SUELA_BORCEGO, Rol.BOTAMANGA_BORCEGO}
+            // (2026-10-11, "independizar derecho e izquierdo": un pin por pie; con la simetría activa mandan los dos.)
+            {Rol.CANA_BORCEGO_IZQ, Rol.CANA_BORCEGO_DER, Rol.SUELA_BORCEGO_IZQ, Rol.SUELA_BORCEGO_DER,
+                    Rol.BOTAMANGA_BORCEGO_IZQ, Rol.BOTAMANGA_BORCEGO_DER}
     });
 
     private static Rol[][] rellenarRoles(Rol[][] filas) {
@@ -869,7 +872,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 yield c == null ? ComboCorte.VACIO : c;
             }
             case CALZADO -> {
-                ComboCorte c = comboDeMoldeBorcego(activo.getItem());
+                ComboCorte c = comboDeMoldeBorcego(activo.getItem(), Lado.AMBAS);
                 yield c == null ? ComboCorte.VACIO : c;
             }
         };
@@ -1016,14 +1019,14 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case HERRAJE_BANDA -> {
                 if (item instanceof MoldeBandaItem m && m.tipo.esHerraje()) c = comboDeMoldeBanda(item);
             }
-            case CANA_BORCEGO -> {
-                if (item instanceof MoldeBorcegoItem m && m.tipo.esCana()) c = comboDeMoldeBorcego(item);
+            case CANA_BORCEGO_IZQ, CANA_BORCEGO_DER -> {
+                if (item instanceof MoldeBorcegoItem m && m.tipo.esCana()) c = comboDeMoldeBorcego(item, lado);
             }
-            case SUELA_BORCEGO -> {
-                if (item instanceof MoldeBorcegoItem m && m.tipo.esSuela()) c = comboDeMoldeBorcego(item);
+            case SUELA_BORCEGO_IZQ, SUELA_BORCEGO_DER -> {
+                if (item instanceof MoldeBorcegoItem m && m.tipo.esSuela()) c = comboDeMoldeBorcego(item, lado);
             }
-            case BOTAMANGA_BORCEGO -> {
-                if (item instanceof MoldeBorcegoItem m && m.tipo.esBotamanga()) c = comboDeMoldeBorcego(item);
+            case BOTAMANGA_BORCEGO_IZQ, BOTAMANGA_BORCEGO_DER -> {
+                if (item instanceof MoldeBorcegoItem m && m.tipo.esBotamanga()) c = comboDeMoldeBorcego(item, lado);
             }
             case ALA_SOMBRERO -> {
                 if (item instanceof MoldeSombreroItem m && m.tipo.esAla()) c = comboDeMoldeSombrero(item);
@@ -1066,11 +1069,11 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
 
     /** El corte de un {@link MoldeBorcegoItem} (caña, suela o botamanga), o null. */
     @Nullable
-    private static ComboCorte comboDeMoldeBorcego(Item item) {
+    private static ComboCorte comboDeMoldeBorcego(Item item, Lado lado) {
         if (!(item instanceof MoldeBorcegoItem m)) return null;
-        if (m.tipo.esCana()) return ComboCorte.borcegoCana(m.tipo.cana);
-        if (m.tipo.esSuela()) return ComboCorte.borcegoSuela(m.tipo.suela);
-        return ComboCorte.borcegoBotamanga(m.tipo.botamanga);
+        if (m.tipo.esCana()) return ComboCorte.borcegoCana(m.tipo.cana, lado);
+        if (m.tipo.esSuela()) return ComboCorte.borcegoSuela(m.tipo.suela, lado);
+        return ComboCorte.borcegoBotamanga(m.tipo.botamanga, lado);
     }
 
     /** El corte de un {@link MoldeBandaItem} (zona, ancho o herraje), o null. */
@@ -1184,9 +1187,11 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         if (remeraSimetria) return Lado.AMBAS;
         Lado lado = switch (ROLES[cat.ordinal()][i]) {
             case MANGA_IZQ, BOTA_IZQ, SUP_IZQ, INF_IZQ, PERS_IZQ1, PERS_IZQ2, PERS_IZQ3, RUEDO_PUNO_IZQ,
-                 RUEDO_BOTA_IZQ, RUEDO_SUP_IZQ, RUEDO_INF_IZQ -> Lado.IZQUIERDA;
+                 RUEDO_BOTA_IZQ, RUEDO_SUP_IZQ, RUEDO_INF_IZQ, CANA_BORCEGO_IZQ, SUELA_BORCEGO_IZQ,
+                 BOTAMANGA_BORCEGO_IZQ -> Lado.IZQUIERDA;
             case MANGA_DER, BOTA_DER, SUP_DER, INF_DER, PERS_DER1, PERS_DER2, PERS_DER3, RUEDO_PUNO_DER,
-                 RUEDO_BOTA_DER, RUEDO_SUP_DER, RUEDO_INF_DER -> Lado.DERECHA;
+                 RUEDO_BOTA_DER, RUEDO_SUP_DER, RUEDO_INF_DER, CANA_BORCEGO_DER, SUELA_BORCEGO_DER,
+                 BOTAMANGA_BORCEGO_DER -> Lado.DERECHA;
             default -> Lado.AMBAS;
         };
         // Todos los esquemas se leen "de frente" (izquierda del dibujo = izquierda de pantalla), pero la Izq.

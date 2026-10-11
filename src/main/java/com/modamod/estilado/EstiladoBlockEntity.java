@@ -81,6 +81,11 @@ public class EstiladoBlockEntity extends BlockEntity
     public static final int BTN_COLOR_BASE = 300, BTN_COLOR_ENTERO = 320;
     /** {@code BTN_PATRON_BASE + zona}: pasa la zona del sombrero al siguiente dibujo (liso, rayas, lunares...) — 2026-10-05, patrones por zona. */
     public static final int BTN_PATRON_BASE = 330;
+    /**
+     * Los mismos botones de color y dibujo para el pie IZQUIERDO de los borcegos (2026-10-11, "no se puede independizar
+     * derecho e izquierdo?"): {@code BTN_PIE_IZQ + id} (800..832). Sin este corrimiento, el pie derecho.
+     */
+    public static final int BTN_PIE_IZQ = 500;
     /** Quita la última correa libre de la prenda (2026-10-05, "correas libres"). */
     public static final int BTN_CORREA_QUITAR = 360;
     /**
@@ -427,15 +432,8 @@ public class EstiladoBlockEntity extends BlockEntity
             guardarCorreas(l);
             return true;
         }
-        if (id >= BTN_PATRON_BASE && id < BTN_PATRON_BASE + 3) {
-            ItemStack prenda = items.get(SLOT_PRENDA);
-            if (!(prenda.getItem() instanceof com.modamod.item.ZonasTenibles z)) return false;
-            int zona = id - BTN_PATRON_BASE;
-            z.conPatronDe(prenda, zona, z.patronesDe(prenda).get(zona).siguiente());
-            markDirty();
-            return true;
-        }
-        if (id >= BTN_COLOR_BASE && id <= BTN_COLOR_ENTERO) return colorearSombrero(id);
+        if (id >= BTN_COLOR_BASE && id <= BTN_PATRON_BASE + 2) return botonDeZona(id, false);
+        if (id >= BTN_PIE_IZQ + BTN_COLOR_BASE && id <= BTN_PIE_IZQ + BTN_PATRON_BASE + 2) return botonDeZona(id - BTN_PIE_IZQ, true);
         List<Aplique> actuales = new ArrayList<>(apliques());
         if (id >= BTN_SELECCIONAR_BASE && id < BTN_SELECCIONAR_BASE + Aplique.MAXIMO_POR_PRENDA) {
             int i = id - BTN_SELECCIONAR_BASE;
@@ -579,11 +577,25 @@ public class EstiladoBlockEntity extends BlockEntity
                 MathHelper.clamp(p.z(), -24, 24), p.cara());
     }
 
-    private boolean colorearSombrero(int id) {
+    /** Dibujo o color de una zona de un accesorio de 3 zonas; {@code izq}: el pie izquierdo de los borcegos. */
+    private boolean botonDeZona(int id, boolean izq) {
+        if (id >= BTN_PATRON_BASE && id < BTN_PATRON_BASE + 3) {
+            ItemStack prenda = items.get(SLOT_PRENDA);
+            if (!(prenda.getItem() instanceof com.modamod.item.ZonasTenibles z)) return false;
+            int zona = id - BTN_PATRON_BASE;
+            z.conPatronDe(prenda, zona, z.patronesDe(prenda, izq).get(zona).siguiente(), izq);
+            markDirty();
+            return true;
+        }
+        if (id >= BTN_COLOR_BASE && id <= BTN_COLOR_ENTERO) return colorearSombrero(id, izq);
+        return false;
+    }
+
+    private boolean colorearSombrero(int id, boolean izq) {
         ItemStack prenda = items.get(SLOT_PRENDA);
         List<Integer> fuente = coloresDeLaFuente();
         if (!(prenda.getItem() instanceof com.modamod.item.ZonasTenibles z) || fuente == null) return false;
-        List<Integer> actuales = z.coloresDe(prenda);
+        List<Integer> actuales = z.coloresDe(prenda, izq);
         int[] nuevos = {actuales.get(0), actuales.get(1), actuales.get(2)};
         if (id == BTN_COLOR_ENTERO) {
             for (int i = 0; i < 3; i++) nuevos[i] = fuente.get(i);
@@ -592,7 +604,7 @@ public class EstiladoBlockEntity extends BlockEntity
             if (zona > 2 || color > 2) return false;
             nuevos[zona] = fuente.get(color);
         }
-        z.conColoresDe(prenda, nuevos[0], nuevos[1], nuevos[2]);
+        z.conColoresDe(prenda, nuevos[0], nuevos[1], nuevos[2], izq);
         markDirty();
         return true;
     }

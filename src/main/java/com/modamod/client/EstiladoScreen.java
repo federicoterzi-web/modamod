@@ -72,6 +72,13 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
     /** Controles del aplique de objeto (2026-10-04): arriba de la vista, solo con uno elegido. */
     private ButtonWidget btnObjModo, btnObjVariante;
     /**
+     * Borcegos (2026-10-11, "no se puede independizar derecho e izquierdo?"): cada pie lleva lo suyo. {@code espejarPie}
+     * (de fábrica prendido) repite lo que hacés en un pie, espejado, en el otro; {@code pieActivoIzq} es el pie al que
+     * van los botones de color y dibujo (se cambia con el botón o clickeando un borcego en la vista).
+     */
+    private boolean espejarPie = true, pieActivoIzq = false;
+    private ButtonWidget btnEspejo, btnPie;
+    /**
      * Colorear el sombrero de bruja (2026-10-05, "que se le apliquen los colores en la mesa de estilado sobre todo si
      * tiene tres areas"): con un sombrero en la prenda hay un botón que cambia los controles de apliques por 3 filas
      * (ala, cono, cinta) con un botón por cada color del retazo, y "retazo entero".
@@ -129,6 +136,29 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
 
     private void clickBoton(int id) {
         this.client.interactionManager.clickButton(this.handler.syncId, id);
+    }
+
+    /** ¿El accesorio de la prenda tiene dos pies que se pintan por separado (los borcegos)? */
+    private boolean conPares() {
+        ItemStack p = handler.be.getStack(EstiladoBlockEntity.SLOT_PRENDA);
+        return p.getItem() instanceof com.modamod.item.ZonasTenibles zt && zt.tienePares();
+    }
+
+    /** Color o dibujo de una zona: en los borcegos va al pie activo y, con "Espejar", también al otro. */
+    private void clickZona(int id) {
+        if (!conPares()) {
+            clickBoton(id);
+            return;
+        }
+        clickBoton(pieActivoIzq ? id + EstiladoBlockEntity.BTN_PIE_IZQ : id);
+        if (espejarPie) clickBoton(pieActivoIzq ? id : id + EstiladoBlockEntity.BTN_PIE_IZQ);
+    }
+
+    /** El mismo toque en el pie de enfrente: la otra pierna, x al revés y las caras este/oeste cambiadas. */
+    private static Toque espejoDe(Toque t) {
+        Parte otra = t.parte() == Parte.PIERNA_DER ? Parte.PIERNA_IZQ : t.parte() == Parte.PIERNA_IZQ ? Parte.PIERNA_DER : t.parte();
+        Direction c = t.cara() == Direction.EAST ? Direction.WEST : t.cara() == Direction.WEST ? Direction.EAST : t.cara();
+        return new Toque(otra, -t.x(), t.y(), t.z(), c, t.profundidad(), t.superficie(), t.padre());
     }
 
     @Override
@@ -216,17 +246,17 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
                 btnColorZona[z][c] = boton(X_DER + 46 + c * 17, 66 + z * 22, 15, Text.literal("■"),
                         "modamod.estilado.tooltip.color_zona", () -> {
                             colorActivo = color;
-                            clickBoton(id);
+                            clickZona(id);
                         });
             }
         }
         for (int z = 0; z < 3; z++) {
             final int id = EstiladoBlockEntity.BTN_PATRON_BASE + z;
             btnPatronZona[z] = boton(X_DER + 98, 66 + z * 22, 64, Text.empty(), "modamod.estilado.tooltip.patron_zona",
-                    () -> clickBoton(id));
+                    () -> clickZona(id));
         }
         btnColorEntero = boton(X_DER, 132, 96, Text.translatable("modamod.estilado.color.entero"),
-                "modamod.estilado.tooltip.color_entero", () -> clickBoton(EstiladoBlockEntity.BTN_COLOR_ENTERO));
+                "modamod.estilado.tooltip.color_entero", () -> clickZona(EstiladoBlockEntity.BTN_COLOR_ENTERO));
         // Sacudir (2026-10-04, "boton de sacudir... alternar mover el muñeco"): prende y apaga el vaivén.
         btnSacudir = boton(X_DER + 98, 132, 64, Text.empty(), "modamod.estilado.tooltip.sacudir",
                 () -> sacudiendo = !sacudiendo);
@@ -237,6 +267,8 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
                 () -> clickBoton(EstiladoBlockEntity.BTN_OBJ_MODO));
         btnObjVariante = boton(PX1 + 64, by, 58, Text.empty(), "modamod.estilado.tooltip.obj_variante",
                 () -> clickBoton(EstiladoBlockEntity.BTN_OBJ_VARIANTE));
+        btnEspejo = boton(PX1 + 124, by, 72, Text.empty(), "modamod.estilado.tooltip.espejo", () -> espejarPie = !espejarPie);
+        btnPie = boton(X_DER, 44, 80, Text.empty(), "modamod.estilado.tooltip.pie", () -> pieActivoIzq = !pieActivoIzq);
         // Mesa creativa (2026-10-01): elegir cualquier molde sin tenerlo.
         ButtonWidget moldeCreativo = boton(X_DER + 110, 48, 52, Text.translatable("modamod.estilado.siguiente_molde"),
                 "modamod.estilado.tooltip.siguiente_molde", () -> clickBoton(EstiladoBlockEntity.BTN_SIGUIENTE_MOLDE));
@@ -670,36 +702,47 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
     private int zonaDelSombrero(double mx, double my) {
         ItemStack prenda = handler.be.getStack(EstiladoBlockEntity.SLOT_PRENDA);
         if (!(prenda.getItem() instanceof com.modamod.item.ZonasTenibles zt)) return -1;
-        Matrix4f m = poses.get(zt.marco(prenda));
-        if (m == null || Math.abs(m.determinant()) < 1e-12f) return -1;
-        Matrix4f inversa = new Matrix4f(m).invert();
-        final float Z = 10000f;
-        Vector3f p0 = inversa.transformPosition(new Vector3f((float) mx, (float) my, -Z));
-        Vector3f p1 = inversa.transformPosition(new Vector3f((float) mx, (float) my, Z));
-        float[] o = { p0.x, p0.y, p0.z };
-        float[] d = { p1.x - p0.x, p1.y - p0.y, p1.z - p0.z };
         int mejor = -1;
         float mejorT = -Float.MAX_VALUE;
-        for (com.modamod.render.SombreroRenderer.Caja c : com.modamod.render.AccesorioRenderer.cajas(prenda)) {
-            float tMin = -Float.MAX_VALUE, tMax = Float.MAX_VALUE;
-            boolean fuera = false;
-            for (int i = 0; i < 3 && !fuera; i++) {
-                float mn = c.min()[i] / 16f, mx2 = c.max()[i] / 16f;   // px del modelo a bloques
-                if (Math.abs(d[i]) < 1e-9f) {
-                    if (o[i] < mn || o[i] > mx2) fuera = true;
-                    continue;
+        for (Parte marco : marcosDe(prenda, zt)) {
+            Matrix4f m = poses.get(marco);
+            if (m == null || Math.abs(m.determinant()) < 1e-12f) continue;
+            Matrix4f inversa = new Matrix4f(m).invert();
+            final float Z = 10000f;
+            Vector3f p0 = inversa.transformPosition(new Vector3f((float) mx, (float) my, -Z));
+            Vector3f p1 = inversa.transformPosition(new Vector3f((float) mx, (float) my, Z));
+            float[] o = { p0.x, p0.y, p0.z };
+            float[] d = { p1.x - p0.x, p1.y - p0.y, p1.z - p0.z };
+            for (com.modamod.render.SombreroRenderer.Caja c : com.modamod.render.AccesorioRenderer.cajas(prenda, marco)) {
+                float tMin = -Float.MAX_VALUE, tMax = Float.MAX_VALUE;
+                boolean fuera = false;
+                for (int i = 0; i < 3 && !fuera; i++) {
+                    float mn = c.min()[i] / 16f, mx2 = c.max()[i] / 16f;   // px del modelo a bloques
+                    if (Math.abs(d[i]) < 1e-9f) {
+                        if (o[i] < mn || o[i] > mx2) fuera = true;
+                        continue;
+                    }
+                    float t1 = (mn - o[i]) / d[i], t2 = (mx2 - o[i]) / d[i];
+                    tMin = Math.max(tMin, Math.min(t1, t2));
+                    tMax = Math.min(tMax, Math.max(t1, t2));
                 }
-                float t1 = (mn - o[i]) / d[i], t2 = (mx2 - o[i]) / d[i];
-                tMin = Math.max(tMin, Math.min(t1, t2));
-                tMax = Math.min(tMax, Math.max(t1, t2));
-            }
-            if (fuera || tMin > tMax || tMax < 0 || tMax > 1) continue;
-            if (tMax > mejorT) {
-                mejorT = tMax;
-                mejor = c.zona();
+                if (fuera || tMin > tMax || tMax < 0 || tMax > 1) continue;
+                if (tMax > mejorT) {
+                    mejorT = tMax;
+                    mejor = c.zona();
+                    pieIzquierdo = marco == Parte.PIERNA_IZQ;
+                }
             }
         }
         return mejor;
+    }
+
+    /** El pie en el que cayó el último click sobre una zona (borcegos): lo fija {@link #zonaDelSombrero}. */
+    private boolean pieIzquierdo = false;
+
+    /** Los marcos donde se dibuja un accesorio: uno solo, o las dos piernas en los borcegos (2026-10-11). */
+    private static List<Parte> marcosDe(ItemStack prenda, com.modamod.item.ZonasTenibles zt) {
+        return zt.tienePares() ? List.of(Parte.PIERNA_DER, Parte.PIERNA_IZQ) : List.of(zt.marco(prenda));
     }
 
     /** El slot de armadura (o de mano) de un ítem que se pone, o null. */
@@ -803,45 +846,47 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
     }
 
     private Toque tocarSombrero(double mx, double my, ItemStack prenda) {
-        Parte marco = ((com.modamod.item.ZonasTenibles) prenda.getItem()).marco(prenda);
-        Matrix4f m = poses.get(marco);
-        if (m == null || Math.abs(m.determinant()) < 1e-12f) return null;
-        Matrix4f inversa = new Matrix4f(m).invert();
-        final float Z = 10000f;
-        Vector3f p0 = inversa.transformPosition(new Vector3f((float) mx, (float) my, -Z));
-        Vector3f p1 = inversa.transformPosition(new Vector3f((float) mx, (float) my, Z));
-        float[] o = { p0.x, p0.y, p0.z };
-        float[] d = { p1.x - p0.x, p1.y - p0.y, p1.z - p0.z };
+        var zt = (com.modamod.item.ZonasTenibles) prenda.getItem();
         Toque mejor = null;
-        for (com.modamod.render.SombreroRenderer.Caja c : com.modamod.render.AccesorioRenderer.cajas(prenda)) {
-            float tMin = -Float.MAX_VALUE, tMax = Float.MAX_VALUE;
-            int eje = -1;
-            float signo = 0;
-            boolean fuera = false;
-            for (int i = 0; i < 3 && !fuera; i++) {
-                float mn = c.min()[i] / 16f, mx2 = c.max()[i] / 16f;
-                if (Math.abs(d[i]) < 1e-9f) {
-                    if (o[i] < mn || o[i] > mx2) fuera = true;
-                    continue;
+        for (Parte marco : marcosDe(prenda, zt)) {
+            Matrix4f m = poses.get(marco);
+            if (m == null || Math.abs(m.determinant()) < 1e-12f) continue;
+            Matrix4f inversa = new Matrix4f(m).invert();
+            final float Z = 10000f;
+            Vector3f p0 = inversa.transformPosition(new Vector3f((float) mx, (float) my, -Z));
+            Vector3f p1 = inversa.transformPosition(new Vector3f((float) mx, (float) my, Z));
+            float[] o = { p0.x, p0.y, p0.z };
+            float[] d = { p1.x - p0.x, p1.y - p0.y, p1.z - p0.z };
+            for (com.modamod.render.SombreroRenderer.Caja c : com.modamod.render.AccesorioRenderer.cajas(prenda, marco)) {
+                float tMin = -Float.MAX_VALUE, tMax = Float.MAX_VALUE;
+                int eje = -1;
+                float signo = 0;
+                boolean fuera = false;
+                for (int i = 0; i < 3 && !fuera; i++) {
+                    float mn = c.min()[i] / 16f, mx2 = c.max()[i] / 16f;
+                    if (Math.abs(d[i]) < 1e-9f) {
+                        if (o[i] < mn || o[i] > mx2) fuera = true;
+                        continue;
+                    }
+                    float t1 = (mn - o[i]) / d[i], t2 = (mx2 - o[i]) / d[i];
+                    float cerca = Math.min(t1, t2), lejos = Math.max(t1, t2);
+                    if (cerca > tMin) tMin = cerca;
+                    if (lejos < tMax) {
+                        tMax = lejos;
+                        eje = i;
+                        signo = d[i] > 0 ? 1 : -1;
+                    }
                 }
-                float t1 = (mn - o[i]) / d[i], t2 = (mx2 - o[i]) / d[i];
-                float cerca = Math.min(t1, t2), lejos = Math.max(t1, t2);
-                if (cerca > tMin) tMin = cerca;
-                if (lejos < tMax) {
-                    tMax = lejos;
-                    eje = i;
-                    signo = d[i] > 0 ? 1 : -1;
+                if (fuera || eje < 0 || tMin > tMax || tMax < 0 || tMax > 1) continue;
+                float[] p = { o[0] + d[0] * tMax, o[1] + d[1] * tMax, o[2] + d[2] * tMax };
+                for (int i = 0; i < 3; i++) {
+                    float mn = c.min()[i] / 16f, mx2 = c.max()[i] / 16f;
+                    p[i] = i == eje ? (signo > 0 ? mx2 : mn) : Math.max(mn, Math.min(mx2, p[i]));
                 }
+                Direction cara = Direction.getFacing(eje == 0 ? signo : 0, eje == 1 ? signo : 0, eje == 2 ? signo : 0);
+                Toque t = new Toque(marco, p[0] * 16f, p[1] * 16f, p[2] * 16f, cara, tMax);
+                if (mejor == null || t.profundidad() > mejor.profundidad()) mejor = t;
             }
-            if (fuera || eje < 0 || tMin > tMax || tMax < 0 || tMax > 1) continue;
-            float[] p = { o[0] + d[0] * tMax, o[1] + d[1] * tMax, o[2] + d[2] * tMax };
-            for (int i = 0; i < 3; i++) {
-                float mn = c.min()[i] / 16f, mx2 = c.max()[i] / 16f;
-                p[i] = i == eje ? (signo > 0 ? mx2 : mn) : Math.max(mn, Math.min(mx2, p[i]));
-            }
-            Direction cara = Direction.getFacing(eje == 0 ? signo : 0, eje == 1 ? signo : 0, eje == 2 ? signo : 0);
-            Toque t = new Toque(marco, p[0] * 16f, p[1] * 16f, p[2] * 16f, cara, tMax);
-            if (mejor == null || t.profundidad() > mejor.profundidad()) mejor = t;
         }
         return mejor;
     }
@@ -989,6 +1034,7 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
             ClientPlayNetworking.send(new com.modamod.estilado.PonerCorreaPayload(be.getPos(), t.parte().ordinal(),
                     new float[] {t.x(), t.y(), t.z()}, t.cara().ordinal(), new float[] {t.x(), t.y(), t.z()}, t.cara().ordinal(),
                     correaModo.ordinal(), correaAncho, t.superficie().ordinal(), correaLargo));
+            enviarCorreaEspejo(t, t);
         } else if (correaInicio == null) {
             aviso = null;
             correaInicio = t;
@@ -1001,8 +1047,20 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
                     new float[] {correaInicio.x(), correaInicio.y(), correaInicio.z()}, correaInicio.cara().ordinal(),
                     new float[] {t.x(), t.y(), t.z()}, t.cara().ordinal(), correaModo.ordinal(), correaAncho,
                     t.superficie().ordinal(), correaLargo));
+            enviarCorreaEspejo(correaInicio, t);
             correaInicio = null;
         }
+    }
+
+    /** Con borcegos y "Espejar", la misma correa en el otro pie (2026-10-11). */
+    private void enviarCorreaEspejo(Toque a, Toque b) {
+        EstiladoBlockEntity be = handler.be;
+        if (!conPares() || !espejarPie || a.superficie() != Aplique.Superficie.CAJA
+                || be.correas().size() + 1 >= com.modamod.correa.Correa.MAXIMO_POR_PRENDA) return;
+        Toque ea = espejoDe(a), eb = espejoDe(b);
+        ClientPlayNetworking.send(new com.modamod.estilado.PonerCorreaPayload(be.getPos(), ea.parte().ordinal(),
+                new float[] {ea.x(), ea.y(), ea.z()}, ea.cara().ordinal(), new float[] {eb.x(), eb.y(), eb.z()}, eb.cara().ordinal(),
+                correaModo.ordinal(), correaAncho, eb.superficie().ordinal(), correaLargo));
     }
 
     /** Dónde cae en pantalla el punto de inicio de la correa (px de la GUI), o null. */
@@ -1036,7 +1094,8 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
                 else if (zona < 0) aviso = Text.translatable("modamod.estilado.aviso.fuera");
                 else {
                     aviso = null;
-                    clickBoton(EstiladoBlockEntity.BTN_COLOR_BASE + zona * 4 + colorActivo);
+                    if (conPares()) pieActivoIzq = pieIzquierdo;    // el pie que tocaste
+                    clickZona(EstiladoBlockEntity.BTN_COLOR_BASE + zona * 4 + colorActivo);
                 }
                 return true;
             }
@@ -1057,6 +1116,12 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
                     aviso = null;
                     ClientPlayNetworking.send(new PonerApliquePayload(be.getPos(), t.parte().ordinal(),
                             t.x(), t.y(), t.z(), t.cara().ordinal(), t.superficie().ordinal(), t.padre()));
+                    if (conPares() && espejarPie && t.superficie() == Aplique.Superficie.CAJA && t.padre() < 0
+                            && be.apliques().size() + 1 < Aplique.MAXIMO_POR_PRENDA) {
+                        Toque e = espejoDe(t);
+                        ClientPlayNetworking.send(new PonerApliquePayload(be.getPos(), e.parte().ordinal(),
+                                e.x(), e.y(), e.z(), e.cara().ordinal(), e.superficie().ordinal(), e.padre()));
+                    }
                 }
                 return true;
             }
@@ -1065,7 +1130,7 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
     }
 
     private List<ButtonWidget> objetoBotones() {
-        return List.of(btnObjModo, btnObjVariante);
+        return List.of(btnObjModo, btnObjVariante, btnEspejo);
     }
 
     @Override
@@ -1163,10 +1228,15 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
         }
         btnColorEntero.visible = modoColor;
         btnColorEntero.active = fuente != null;
+        boolean pares = sombrero && ((com.modamod.item.ZonasTenibles) enPrenda.getItem()).tienePares();
+        btnEspejo.visible = pares;
+        btnEspejo.setMessage(Text.translatable(espejarPie ? "modamod.estilado.espejo.si" : "modamod.estilado.espejo.no"));
+        btnPie.visible = pares && modoColor;
+        btnPie.setMessage(Text.translatable(pieActivoIzq ? "modamod.estilado.pie.izq" : "modamod.estilado.pie.der"));
         for (int z = 0; z < 3; z++) {
             btnPatronZona[z].visible = modoColor;
             if (enPrenda.getItem() instanceof com.modamod.item.ZonasTenibles zt) btnPatronZona[z].setMessage(Text.translatable(
-                    zt.patronesDe(enPrenda).get(z).traduccion()));
+                    zt.patronesDe(enPrenda, pieActivoIzq).get(z).traduccion()));
         }
         btnGiro.active = btnEscala.active = btnQuitar.active = hay;
         actualizarPanel(hay ? apliques.get(sel) : null);
