@@ -144,9 +144,7 @@ public class Modamod implements ModInitializer {
             entries.add(ModamodItems.MAID_OUTFIT);
             // El Buzo Oversize viejo (armadura) se reemplazó por el hoodie
             // (2026-09-30): sigue registrado para no romper mundos, fuera de la pestaña.
-            entries.add(ModamodItems.PATTERN_STRIPE_TOP);
-            entries.add(ModamodItems.PATTERN_STRIPE_ALT);
-            entries.add(ModamodItems.PATTERN_TRIPLE_STRIPE);
+            entries.add(ModamodItems.PATTERN_RAYAS);
             entries.add(ModamodItems.PATTERN_CORAZONES);
             entries.add(ModamodItems.PATTERN_ESTRELLAS);
             entries.add(ModamodItems.PATTERN_LUNARES);

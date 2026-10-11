@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ITEM_DIR = ROOT / "src/main/resources/assets/modamod/textures/item"
 GEN_DIR = Path(r"C:/Users/feder/.codex/generated_images/01a11ed5-d9e5-7eb2-86f4-0f97c96f0646")
 
-TRAMA_SHEET = GEN_DIR / "call_kAHPaJAy1otFFzB1RhWlhsO9.png"
+TRAMA_SHEET = GEN_DIR / "call_AxLSUb6S0CbZ6zBfwHBwthU1.png"
 RAYAS_SINGLE = GEN_DIR / "call_aYNCUi2KLpuwIV4yBYBABhV2.png"
 ARNES_SHEET = GEN_DIR / "call_BdAGOHviNqSSbGQkYqpXyq5a.png"
 
@@ -57,9 +57,7 @@ def save_crop(im: Image.Image, bbox, name: str, pad: int = 10) -> None:
     dest = ITEM_DIR / f"{name}.png"
     tmp = ITEM_DIR / f".{name}.tmp.png"
     final = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    # Minecraft's GUI item render is less forgiving than our review sheet:
-    # keep a real transparent gutter so pins/wrapped borders never get clipped.
-    final.alpha_composite(canvas.resize((52, 52), Image.Resampling.LANCZOS), (6, 6))
+    final.alpha_composite(canvas.resize((56, 56), Image.Resampling.LANCZOS), (4, 4))
     final.save(tmp)
     os.replace(tmp, dest)
 
@@ -112,7 +110,7 @@ def main() -> None:
 
     rayas = Image.open(RAYAS_SINGLE).convert("RGBA")
     x0, y0, x1, y1 = rayas.getchannel("A").getbbox()
-    save_crop(rayas, (x0, y0, x1, y1, 0), "molde_red_rayas", pad=8)
+    save_crop(rayas, (x0, y0, x1, y1, 0), "molde_red_rayas", pad=18)
 
     arnes, arnes_boxes = components(ARNES_SHEET)
     for name, box in zip(["molde_red_arnes_x", "molde_red_arnes_tirantes", "molde_red_arnes_bandas"], arnes_boxes):
