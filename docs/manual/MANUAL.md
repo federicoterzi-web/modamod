@@ -712,3 +712,5 @@ Al componer, cada pixel parte del color base de la tela y cada capa se **funde**
 **Cuello de camisa de malla** (2026-10-11; sin probar en el juego): el cuello de camisa ya no se arma con cajitas. El aro alrededor del cuello es un anillo redondeado de tela del color liso de la prenda, y las dos puntas son una tira de tela continua pegada al borde real del escote, con la textura de la prenda (llevan sus patrones y estampas). Si la tela todavía no se compuso, usa el color liso.
 
 **Cuello de camisa teñible** (2026-10-11; sin probar en el juego): el cuello de camisa (el aro y las dos puntas) sale igual que la prenda y se tiñe aparte con la zona **Solapas** de la Estación de Tintes, junto con las solapas si la prenda las tiene. Una remera de cuello camisa sin solapas también usa esa zona.
+
+**Cuello de camisa sin aro** (2026-10-11; sin probar en el juego): el cuello de camisa ya no lleva el aro alrededor del cuello; quedan las dos puntas de tela, que siguen el escote y se tiñen con la zona Solapas.

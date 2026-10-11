@@ -215,19 +215,8 @@ public final class CuelloYCapucha {
                 float dc = Math.max(d, dMax) + 0.3F;
                 int color = RemeraItem.color(s);
                 Identifier lisa = texturaLisa(color, false);
-                // El aro del cuello como malla (por encima del torso, como el cuello partido de la polera).
                 float[] bordeC = bordeDelEscote(s);
                 Identifier telaC = telaDelTorso(s);
-                // El aro toma un texel de la prenda justo en el arranque de la punta del cuello (así sigue su color y
-                // se tiñe con la misma zona); sin tela compuesta, color liso.
-                float ux = 0.5F, vy = 0.5F;
-                Identifier telaAro = lisa;
-                if (bordeC != null && telaC != null) {
-                    telaAro = telaC;
-                    ux = (24F + bordeC[SUB / 2] + 0.2F) / 64F;
-                    vy = 20.3F / 64F;
-                }
-                SolapaMalla.aro(telaAro, ux, vy, color, dc * 0.5F, biped, matrices, vertexConsumers, luz);
                 // Las puntas, de tela continua pegada al borde del escote: con la textura de la prenda si ya está
                 // compuesta (lleva sus patrones y estampas) y, si no, de color liso.
                 if (bordeC != null) {
