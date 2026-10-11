@@ -28,8 +28,16 @@ public final class BandaRenderer {
     private BandaRenderer() {}
 
     /** Altura de la cintura en el torso (px desde arriba) y del choker bajo la cabeza. */
-    private static final float Y_CINTURA = 7.6f, Y_COLLAR = 0f;
+    private static final float Y_CINTURA = 7.6f, Y_COLLAR = -0.2f;
     private static final float GROSOR = 0.7f, BORDE_ALTO = 0.35f, BORDE_SALE = 0.12f;
+    // Medidas del collar calcadas de la proporción del de Player Collars (2026-10-11, "el choker tiene que ser como el
+    // collar de leashable collars... va como en el pecho"): anillo de ~8,5 × 6 px, de 0,85 px de grosor, que apenas
+    // sobresale de los costados del torso y 1 px de frente y espalda (antes 4 + 0,7 por lado: pasaba por los hombros).
+    private static final float COLLAR_HX = 3.4f, COLLAR_HZ = 2.15f, COLLAR_GROSOR = 0.85f;
+
+    private static float hx(BandaZona z, float dil) { return (z == BandaZona.CINTURA ? 4f : COLLAR_HX) + dil; }
+    private static float hz(BandaZona z, float dil) { return (z == BandaZona.CINTURA ? 2f : COLLAR_HZ) + dil; }
+    private static float grosor(BandaZona z) { return z == BandaZona.CINTURA ? GROSOR : COLLAR_GROSOR; }
 
     public static void dibujar(ItemStack banda, BipedEntityModel<?> biped, MatrixStack matrices,
                                VertexConsumerProvider vertexConsumers, int luz, float dil) {
@@ -48,8 +56,8 @@ public final class BandaRenderer {
         }
         if (BandaItem.herraje(banda).esColgante()) {
             float y0 = zona == BandaZona.CINTURA ? Y_CINTURA : Y_COLLAR;
-            float hz = 2f + dil;
-            dibujarColgante(BandaItem.herraje(banda), y0 + BandaItem.ancho(banda).alto(zona), -(hz + GROSOR + BORDE_SALE),
+            float hz = hz(zona, dil);
+            dibujarColgante(BandaItem.herraje(banda), y0 + BandaItem.ancho(banda).alto(zona), -(hz + grosor(zona) + BORDE_SALE),
                     SombreroRenderer.textura(colores.get(2), patrones.get(2)), marco, matrices, vertexConsumers, luz);
         }
         // Los colgantes: apliques apoyados en la banda (el punto es de una de sus cajas, en el marco de la parte).
@@ -89,7 +97,7 @@ public final class BandaRenderer {
         boolean cintura = zona == BandaZona.CINTURA;
         float y0 = cintura ? Y_CINTURA : Y_COLLAR;
         float h = ancho.alto(zona);
-        float hx = 4f + dil, hz = 2f + dil, t = GROSOR;
+        float hx = hx(zona, dil), hz = hz(zona, dil), t = grosor(zona);
         List<SombreroRenderer.Caja> out = new ArrayList<>();
         // Banda: frente, espalda y los dos costados.
         losas(out, 0, hx, hz, t, y0, y0 + h, 0f);
