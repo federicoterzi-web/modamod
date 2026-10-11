@@ -1162,5 +1162,7 @@
   "modamod.ruedo.volado_recto": "Volado recto",
   "modamod.ruedo.volado_circular": "Volado circular",
   "item.modamod.sombrero_bruja.vincha": "Vincha",
-  "item.modamod.sombrero_bruja.cofia": "Cofia"
+  "item.modamod.sombrero_bruja.cofia": "Cofia",
+  "modamod.modelado.rol.volado_lateral_delantal": "Volado de costados",
+  "modamod.modelado.rol.volado_superior_delantal": "Volado de arriba"
 }

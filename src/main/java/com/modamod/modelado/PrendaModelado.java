@@ -247,6 +247,8 @@ public final class PrendaModelado {
             if (d.forma().isPresent()) { com.modamod.item.DelantalItem.setForma(out, d.forma().get()); cambio = true; }
             if (d.esquinas().isPresent()) { com.modamod.item.DelantalItem.setEsquinas(out, d.esquinas().get()); cambio = true; }
             if (d.volado().isPresent()) { com.modamod.item.DelantalItem.setVolado(out, d.volado().get()); cambio = true; }
+            if (d.lateral().isPresent()) { com.modamod.item.DelantalItem.setVoladoLateral(out, d.lateral().get()); cambio = true; }
+            if (d.superior().isPresent()) { com.modamod.item.DelantalItem.setVoladoSuperior(out, d.superior().get()); cambio = true; }
         }
 
         // Banda (2026-10-05): zona, ancho y herraje.
@@ -296,14 +298,15 @@ public final class PrendaModelado {
     /** Si el ruedo {@code r} tiene sentido en esa zona de esta prenda (el borde decorativo solo en la pollera). */
     private static boolean ruedoVale(ItemStack prenda, com.modamod.item.ZonaRuedo zona, com.modamod.item.Ruedo r) {
         return switch (zona) {
-            case TORSO, PUNO_IZQ, PUNO_DER -> prenda.getItem() instanceof com.modamod.sublimadora.RemeraItem && r.valeEnTela();
+            case TORSO -> prenda.getItem() instanceof com.modamod.sublimadora.RemeraItem && r.valeEnTela();
+            case PUNO_IZQ, PUNO_DER -> prenda.getItem() instanceof com.modamod.sublimadora.RemeraItem;
             case POLLERA -> prenda.getItem() instanceof com.modamod.item.PolleraItem;
             case DELANTAL -> prenda.getItem() instanceof com.modamod.item.DelantalItem;
             case BOTA_IZQ, BOTA_DER -> prenda.getItem() instanceof PantalonItem
-                    && (r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal() || r.volado() != null);
+                    && (r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal() || r.volado() != null || r.borde() != null);
             case SUP_IZQ, SUP_DER, INF_IZQ, INF_DER -> (prenda.getItem() == ModamodItems.SOCKS_SOLID
                     || prenda.getItem() instanceof CalientabrazosItem)
-                    && (r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal() || r.volado() != null);
+                    && (r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal() || r.volado() != null || r.borde() != null);
             default -> false;
         };
     }

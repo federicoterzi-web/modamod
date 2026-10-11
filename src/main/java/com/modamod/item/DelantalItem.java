@@ -93,6 +93,26 @@ public class DelantalItem extends ClothingTrinketItem {
         else stack.set(ModamodComponents.DELANTAL_VOLADO, v);
     }
 
+    @Nullable
+    public static PolleraVolado voladoLateral(ItemStack stack) {
+        return stack.get(ModamodComponents.DELANTAL_VOLADO_LATERAL);
+    }
+
+    @Nullable
+    public static PolleraVolado voladoSuperior(ItemStack stack) {
+        return stack.get(ModamodComponents.DELANTAL_VOLADO_SUPERIOR);
+    }
+
+    public static void setVoladoLateral(ItemStack stack, @Nullable PolleraVolado v) {
+        if (v == null) stack.remove(ModamodComponents.DELANTAL_VOLADO_LATERAL);
+        else stack.set(ModamodComponents.DELANTAL_VOLADO_LATERAL, v);
+    }
+
+    public static void setVoladoSuperior(ItemStack stack, @Nullable PolleraVolado v) {
+        if (v == null) stack.remove(ModamodComponents.DELANTAL_VOLADO_SUPERIOR);
+        else stack.set(ModamodComponents.DELANTAL_VOLADO_SUPERIOR, v);
+    }
+
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);

@@ -29,6 +29,27 @@ public enum DelantalForma implements StringIdentifiable {
     /** Radio de las esquinas de abajo cuando son redondeadas. */
     public static final float RADIO_ESQUINA = 2.4f;
 
+    /** Media anchura de la silueta a la altura {@code y} (px desde el borde de arriba). */
+    public float medio(float y, float largo) {
+        return switch (this) {
+            case TRAPECIO -> 3.9f + (MEDIO_ANCHO - 3.9f) * Math.min(1f, y / Math.max(1f, largo));
+            case PETO -> {
+                float yb = Math.min(largo - 2f, Math.max(3.5f, largo * 0.32f));
+                float t = Math.max(0f, Math.min(1f, (y - yb) / 2.2f));
+                t = t * t * (3f - 2f * t);
+                yield 2.9f + (MEDIO_ANCHO - 2.9f) * t;
+            }
+            default -> MEDIO_ANCHO;
+        };
+    }
+
+    /** Dónde empieza la silueta por arriba, a {@code a} px del centro (0 salvo en el corazón, con sus dos lóbulos). */
+    public float tope(float a) {
+        if (this != CORAZON) return 0f;
+        float d = a - 2.0f;
+        return a > 4.0f ? 2.0f : 2.0f - (float) Math.sqrt(Math.max(0f, 4f - d * d));
+    }
+
     /** ¿El punto (s, y) cae adentro de la silueta de un delantal de {@code largo} px? */
     public boolean contiene(float s, float y, float largo, boolean esquinasRedondas) {
         if (y < 0f || y > largo) return false;

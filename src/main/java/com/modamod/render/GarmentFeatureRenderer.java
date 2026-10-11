@@ -543,12 +543,17 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         float cola = busto == null ? 0f : busto.cola();
         List<com.modamod.aplique.Aplique> apliques = ApliqueRenderer.apliquesEn(stack, com.modamod.aplique.Aplique.Superficie.DELANTAL);
         float finalDilatacion = dilatacion;
+        PolleraMalla.AdornoDelantal adorno = com.modamod.item.DelantalItem.voladoLateral(stack) == null
+                && com.modamod.item.DelantalItem.voladoSuperior(stack) == null ? null
+                : new PolleraMalla.AdornoDelantal(com.modamod.item.DelantalItem.forma(stack), largo,
+                        com.modamod.item.DelantalItem.voladoLateral(stack), com.modamod.item.DelantalItem.voladoSuperior(stack));
         MallaCapturada malla = grabar("delantal", !apliques.isEmpty()
                 || CorreaRenderer.hayEn(stack, com.modamod.correa.Correa.Superficie.DELANTAL), () ->
                 PolleraMalla.dibujarDelantal(matrices, buffer, luz, finalDilatacion,
                 new PolleraMalla.Piernas(biped.body, biped.rightLeg, biped.leftLeg), mov, twirl, cola, delJugador.pitch,
                 inicio, largo, com.modamod.item.DelantalItem.volado(stack),
-                com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.DELANTAL), extra));
+                com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.DELANTAL), extra,
+                adorno));
         matrices.pop();
         if (malla != null) {
             ApliqueRenderer.dibujarEnMalla(stack, com.modamod.aplique.Aplique.Superficie.DELANTAL, malla, vertexConsumers, luz, matrices.peek().getNormalMatrix());
@@ -861,7 +866,8 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
     }
 
     /** El anillo de volado de {@link VoladoMalla} en el borde {@code y} (fila) de {@code parte}. */
-    private static void dibujarVolado(com.modamod.item.PolleraVolado volado, Parte parte, boolean slim, Identifier textura,
+    private static void dibujarVolado(@Nullable com.modamod.item.PolleraVolado volado,
+                                      @Nullable com.modamod.item.PolleraBorde borde, Parte parte, boolean slim, Identifier textura,
                                       int y, float dil, int filaTextura, float hacia, ModelPart delModelo,
                                       MatrixStack matrices, VertexConsumerProvider vertexConsumers, int luz) {
         float[] c = ApliqueRenderer.caja(parte, slim);
@@ -878,7 +884,7 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         matrices.push();
         delModelo.rotate(matrices);
         VertexConsumer vc = vertexConsumers.getBuffer(ClothingTextureCache.capaDeRender(textura));
-        VoladoMalla.dibujar(matrices.peek(), vc, luz, volado, hacia, c[0], c[2], c[3], c[5], c[1] + y, dil,
+        VoladoMalla.dibujar(matrices.peek(), vc, luz, volado, borde, hacia, c[0], c[2], c[3], c[5], c[1] + y, dil,
                 uv[0], v);
         matrices.pop();
     }
@@ -1090,13 +1096,13 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
 
             // Volado de malla en el borde de abajo o de arriba (2026-10-11, puños de maid): un anillo ondulado.
             if (parte != Parte.CABEZA && hasta > desde) {
-                if (pieza.ruedo().volado() != null) {
-                    dibujarVolado(pieza.ruedo().volado(), parte, slim, pieza.textura(), hasta + colgado,
+                if (pieza.ruedo().volado() != null || pieza.ruedo().borde() != null) {
+                    dibujarVolado(pieza.ruedo().volado(), pieza.ruedo().borde(), parte, slim, pieza.textura(), hasta + colgado,
                             (colgado > 0 ? dilColgado : fila[hasta - 1]) + 0.05F, Math.min(11, hasta - 1 + colgado), 1F,
                             delModelo, matrices, vertexConsumers, luz);
                 }
-                if (pieza.ruedoSup().volado() != null) {
-                    dibujarVolado(pieza.ruedoSup().volado(), parte, slim, pieza.textura(), desde,
+                if (pieza.ruedoSup().volado() != null || pieza.ruedoSup().borde() != null) {
+                    dibujarVolado(pieza.ruedoSup().volado(), pieza.ruedoSup().borde(), parte, slim, pieza.textura(), desde,
                             fila[desde] + 0.05F, desde, -1F, delModelo, matrices, vertexConsumers, luz);
                 }
             }

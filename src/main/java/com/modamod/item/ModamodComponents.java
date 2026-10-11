@@ -509,6 +509,19 @@ public final class ModamodComponents {
                     .codec(com.mojang.serialization.Codec.intRange(0, 6))
                     .packetCodec(PacketCodecs.VAR_INT)
                     .build());
+    /** Volados de los costados y del borde de arriba del delantal (2026-10-11); ausente = sin volado. */
+    public static final ComponentType<PolleraVolado> DELANTAL_VOLADO_LATERAL = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_volado_lateral"),
+            ComponentType.<PolleraVolado>builder()
+                    .codec(StringIdentifiable.createCodec(PolleraVolado::values))
+                    .packetCodec(PacketCodecs.indexed(i -> PolleraVolado.values()[i], Enum::ordinal))
+                    .build());
+    public static final ComponentType<PolleraVolado> DELANTAL_VOLADO_SUPERIOR = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_volado_superior"),
+            ComponentType.<PolleraVolado>builder()
+                    .codec(StringIdentifiable.createCodec(PolleraVolado::values))
+                    .packetCodec(PacketCodecs.indexed(i -> PolleraVolado.values()[i], Enum::ordinal))
+                    .build());
     /** Silueta del delantal; ausente = RECTO. */
     public static final ComponentType<DelantalForma> DELANTAL_FORMA = Registry.register(
             Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_forma"),

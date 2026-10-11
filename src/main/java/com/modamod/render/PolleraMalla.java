@@ -125,7 +125,7 @@ public final class PolleraMalla {
                                com.modamod.item.Ruedo hem, float dil, @Nullable Piernas piernas,
                                CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura) {
         dibujar(matrices, vc, luz, forma, largo, voladoRuedo, voladoTodo, hem, dil, piernas, mov, twirl, cola, inclinacion,
-                cintura, Float.NaN, Float.NaN, 0, null, Float.NaN, -1, -1);
+                cintura, Float.NaN, Float.NaN, 0, null, Float.NaN, -1, -1, null);
     }
 
     /**
@@ -139,7 +139,7 @@ public final class PolleraMalla {
                                      float twirl, float cola, float inclinacion, float cintura,
                                      float vDesde, float vHasta, int hueco, @Nullable float[] extraPorFila) {
         dibujar(matrices, vc, luz, forma, largo, null, null, com.modamod.item.Ruedo.RECTO, dil, piernas, mov, twirl, cola,
-                inclinacion, cintura, vDesde, vHasta, hueco, extraPorFila, Float.NaN, -1, -1);
+                inclinacion, cintura, vDesde, vHasta, hueco, extraPorFila, Float.NaN, -1, -1, null);
     }
 
     private static void dibujar(MatrixStack matrices, VertexConsumer vc, int luz, PolleraForma forma,
@@ -147,7 +147,7 @@ public final class PolleraMalla {
                                 com.modamod.item.Ruedo hem, float dil, @Nullable Piernas piernas,
                                 CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura,
                                 float vDesde, float vHasta, int hueco, @Nullable float[] extraPorFila,
-                                float lPx, int colDesde, int colHasta) {
+                                float lPx, int colDesde, int colHasta, @Nullable AdornoDelantal adorno) {
         float[][][] p = new float[FILAS + 1][COLUMNAS + 1][];
         PolleraBorde borde = hem.borde();
         float l = Float.isNaN(lPx) ? largo.pixeles : lPx;
@@ -247,6 +247,109 @@ public final class PolleraMalla {
                 emitir(vc, e, p, f + 1, c, luz, ov);
             }
         }
+        if (adorno != null) adornar(p, adorno, e, vc, luz, ov);
+    }
+
+    /** Los volados de los costados y del borde de arriba del delantal (2026-10-11) y la silueta a la que se pegan. */
+    public record AdornoDelantal(com.modamod.item.DelantalForma forma, float largo, @Nullable PolleraVolado lateral,
+                                 @Nullable PolleraVolado superior) {}
+
+    private static final int SUB = FILAS * 2, TRAMOS = 3;
+
+    /** Un punto de la malla: fila fraccionaria {@code rowF} (0..FILAS) y arco {@code arcPx} desde el centro del frente (px). */
+    private static float[] punto(float[][][] p, float rowF, float arcPx) {
+        float rf = Math.max(0f, Math.min(FILAS, rowF));
+        int f0 = Math.min(FILAS - 1, (int) rf);
+        float tf = rf - f0;
+        float[] a = enFila(p[f0], 24f + arcPx), b = enFila(p[f0 + 1], 24f + arcPx);
+        return new float[]{a[0] + (b[0] - a[0]) * tf, a[1] + (b[1] - a[1]) * tf, a[2] + (b[2] - a[2]) * tf};
+    }
+
+    private static float[] enFila(float[][] fila, float uObj) {
+        int c0 = COL_FRENTE - DELANTAL_COLUMNAS, c1 = COL_FRENTE + DELANTAL_COLUMNAS;
+        int c = c0;
+        while (c < c1 - 1 && fila[c + 1][3] * 64f < uObj) c++;
+        float u0 = fila[c][3] * 64f, u1 = fila[c + 1][3] * 64f;
+        float t = Math.abs(u1 - u0) < 1e-4f ? 0f : (uObj - u0) / (u1 - u0);
+        return new float[]{fila[c][0] + (fila[c + 1][0] - fila[c][0]) * t, fila[c][1] + (fila[c + 1][1] - fila[c][1]) * t,
+                fila[c][2] + (fila[c + 1][2] - fila[c][2]) * t};
+    }
+
+    private static float[] unitario(float x, float y, float z) {
+        float l = (float) Math.sqrt(x * x + y * y + z * z);
+        return l < 1e-5f ? new float[]{0f, 0f, -1f} : new float[]{x / l, y / l, z / l};
+    }
+
+    /**
+     * Los volados del delantal: tiras de malla que salen del borde de la silueta — a los costados hacia afuera, arriba
+     * hacia arriba — y ondulan como los de la pollera (recto = ondas finas, circular = pocas y grandes). Toman el
+     * texel del borde de la silueta, así llevan su color y dibujo.
+     */
+    private static void adornar(float[][][] p, AdornoDelantal ad, MatrixStack.Entry e, VertexConsumer vc, int luz, int ov) {
+        float largo = ad.largo();
+        if (ad.lateral() != null) {
+            boolean circ = ad.lateral() == PolleraVolado.CIRCULAR;
+            float L = circ ? 3.0f : 2.0f, amp = circ ? 0.8f : 0.3f, per = circ ? 2.7f : 1.0f;
+            for (int sgn = -1; sgn <= 1; sgn += 2) {
+                float[][][] g = new float[SUB + 1][TRAMOS + 1][];
+                for (int j = 0; j <= SUB; j++) {
+                    float y = j / (float) SUB * largo;
+                    float arc = sgn * Math.max(0.5f, ad.forma().medio(y, largo) - 0.15f);
+                    float rowF = y / largo * FILAS;
+                    float[] b = punto(p, rowF, arc), dentro = punto(p, rowF, arc - sgn * 0.6f);
+                    float[] d = unitario(b[0] - dentro[0], b[1] - dentro[1], b[2] - dentro[2]);
+                    float[] n = unitario(b[0], 0f, b[2]);
+                    for (int k = 0; k <= TRAMOS; k++) {
+                        float t = k / (float) TRAMOS;
+                        float onda = amp * t * (float) Math.sin(2.0 * Math.PI * y / per);
+                        g[j][k] = new float[]{b[0] + d[0] * L * t + n[0] * onda, b[1] + d[1] * L * t + n[1] * onda,
+                                b[2] + d[2] * L * t + n[2] * onda, (24f + arc) / 64f, (20f + y) / 64f};
+                    }
+                }
+                emitirTira(g, e, vc, luz, ov);
+            }
+        }
+        if (ad.superior() != null) {
+            boolean circ = ad.superior() == PolleraVolado.CIRCULAR;
+            float L = circ ? 3.0f : 2.0f, amp = circ ? 0.8f : 0.3f, per = circ ? 2.7f : 1.0f;
+            float m = Math.max(0.5f, ad.forma().medio(0f, largo) - 0.15f);
+            float[][][] g = new float[SUB + 1][TRAMOS + 1][];
+            for (int i = 0; i <= SUB; i++) {
+                float s = -m + 2f * m * i / SUB;
+                float y = ad.forma().tope(Math.abs(s)) + 0.3f;
+                float rowF = y / largo * FILAS;
+                float[] b = punto(p, rowF, s), abajo = punto(p, rowF + 0.6f, s);
+                float[] d = unitario(b[0] - abajo[0], b[1] - abajo[1], b[2] - abajo[2]);
+                float[] n = unitario(b[0], 0f, b[2]);
+                for (int k = 0; k <= TRAMOS; k++) {
+                    float t = k / (float) TRAMOS;
+                    float onda = amp * t * (float) Math.sin(2.0 * Math.PI * s / per);
+                    g[i][k] = new float[]{b[0] + d[0] * L * t + n[0] * onda, b[1] + d[1] * L * t + n[1] * onda,
+                            b[2] + d[2] * L * t + n[2] * onda, (24f + s) / 64f, (20f + y) / 64f};
+                }
+            }
+            emitirTira(g, e, vc, luz, ov);
+        }
+    }
+
+    private static void emitirTira(float[][][] g, MatrixStack.Entry e, VertexConsumer vc, int luz, int ov) {
+        for (int j = 0; j < g.length - 1; j++) {
+            for (int k = 0; k < g[j].length - 1; k++) {
+                float[][] q = {g[j][k], g[j + 1][k], g[j + 1][k + 1], g[j][k + 1]};
+                float[] n = unitario(
+                        (q[1][1] - q[0][1]) * (q[3][2] - q[0][2]) - (q[1][2] - q[0][2]) * (q[3][1] - q[0][1]),
+                        (q[1][2] - q[0][2]) * (q[3][0] - q[0][0]) - (q[1][0] - q[0][0]) * (q[3][2] - q[0][2]),
+                        (q[1][0] - q[0][0]) * (q[3][1] - q[0][1]) - (q[1][1] - q[0][1]) * (q[3][0] - q[0][0]));
+                for (float[] v : q) {
+                    vc.vertex(e.getPositionMatrix(), v[0] / 16f, v[1] / 16f, v[2] / 16f)
+                            .color(0xFFFFFFFF)
+                            .texture(v[3], v[4])
+                            .overlay(ov)
+                            .light(luz)
+                            .normal(e, n[0], n[1], n[2]);
+                }
+            }
+        }
     }
 
     /** Columnas de cada lado del centro del frente que cubre el delantal (0,5 px por columna → 6 px a cada lado). */
@@ -261,10 +364,10 @@ public final class PolleraMalla {
     public static void dibujarDelantal(MatrixStack matrices, VertexConsumer vc, int luz, float dil, @Nullable Piernas piernas,
                                        CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion,
                                        float inicio, float largoPx, @Nullable PolleraVolado volado,
-                                       com.modamod.item.Ruedo hem, @Nullable float[] extraPorFila) {
+                                       com.modamod.item.Ruedo hem, @Nullable float[] extraPorFila, @Nullable AdornoDelantal adorno) {
         dibujar(matrices, vc, luz, PolleraForma.TUBO, PolleraLargo.MAXIMO, volado, null, hem, dil, piernas, mov, twirl, cola,
                 inclinacion, inicio, 20f, 20f + largoPx, 0, extraPorFila, largoPx,
-                COL_FRENTE - DELANTAL_COLUMNAS, COL_FRENTE + DELANTAL_COLUMNAS);
+                COL_FRENTE - DELANTAL_COLUMNAS, COL_FRENTE + DELANTAL_COLUMNAS, adorno);
     }
 
     /**

@@ -746,3 +746,7 @@ las botamangas y los bordes de medias y calentadores de brazos: pegan un anillo 
 con volado en los dos cortes lleva uno arriba y otro abajo). En la categoría Sombrero, el pin Ala acepta también el molde
 **Vincha** (un arco con moño sobre la cabeza) y el molde **Cofia** (una tira de tela al frente con volado y moño): el ítem pasa
 a llamarse Vincha o Cofia y se tiñe por zonas (banda, moño, vivo) como el sombrero.
+
+Los bordes decorativos de la pollera (ondulado, festoneado, pico) también se pueden poner en el casillero de ruedo de los
+puños, botamangas y calentadores: dejan una faldilla corta con ese recorte. El delantal suma dos pines de volado más: **Volado de
+costados** y **Volado de arriba** (los mismos moldes de volado recto y circular), que salen del borde de la forma elegida.

@@ -233,7 +233,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         /** Faldón de malla del Top (2026-10-11, "las chaquetas de malla"): largo por molde de rango. */
         FALDON_TOP,
         /** Delantal (2026-10-11): forma, largo, inicio (cajón del largo), esquinas, volado y ruedo (cajón del volado). */
-        FORMA_DELANTAL, LARGO_DELANTAL, INICIO_DELANTAL, ESQUINAS_DELANTAL, VOLADO_DELANTAL, RUEDO_DELANTAL }
+        FORMA_DELANTAL, LARGO_DELANTAL, INICIO_DELANTAL, ESQUINAS_DELANTAL, VOLADO_DELANTAL, RUEDO_DELANTAL,
+        /** Volados de los costados y del borde de arriba del delantal (2026-10-11). */
+        VOLADO_LATERAL_DELANTAL, VOLADO_SUPERIOR_DELANTAL }
 
     /** Rol de cada uno de los 8 pines por categoría — MISMO orden que {@code ModeladoScreenHandler#PIN_POS}. */
     public static final Rol[][] ROLES = rellenarRoles(new Rol[][]{
@@ -267,7 +269,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             // Delantal (2026-10-11): Forma, Largo (con el Inicio en su cajón), Calce, Trama, Volado (con el Ruedo en su
             // cajón) y Esquinas — sobre esquema_delantal.png (provisoriamente el de la pollera).
             {Rol.FORMA_DELANTAL, Rol.LARGO_DELANTAL, Rol.CALCE, Rol.MAT1, Rol.INICIO_DELANTAL, Rol.NINGUNO,
-                    Rol.VOLADO_DELANTAL, Rol.ESQUINAS_DELANTAL, Rol.RUEDO_DELANTAL}
+                    Rol.VOLADO_DELANTAL, Rol.ESQUINAS_DELANTAL, Rol.RUEDO_DELANTAL,
+                    Rol.VOLADO_LATERAL_DELANTAL, Rol.VOLADO_SUPERIOR_DELANTAL}
     });
 
     private static Rol[][] rellenarRoles(Rol[][] filas) {
@@ -1092,6 +1095,12 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case VOLADO_DELANTAL -> {
                 if (item instanceof MoldeVoladoItem m) c = ComboCorte.delantalVolado(m.valor);
             }
+            case VOLADO_LATERAL_DELANTAL -> {
+                if (item instanceof MoldeVoladoItem m) c = ComboCorte.delantalLateral(m.valor);
+            }
+            case VOLADO_SUPERIOR_DELANTAL -> {
+                if (item instanceof MoldeVoladoItem m) c = ComboCorte.delantalSuperior(m.valor);
+            }
             case RUEDO_DELANTAL -> {
                 if (item instanceof MoldeRuedoItem m) c = ComboCorte.ruedo(com.modamod.item.ZonaRuedo.DELANTAL, m.valor, false);
             }
@@ -1137,7 +1146,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     /** El ruedo que pone este molde en una extremidad: el de un molde de ruedo de tela, o el volado de malla. */
     @Nullable
     private static com.modamod.item.Ruedo ruedoDeMolde(Item item) {
-        if (item instanceof MoldeRuedoItem m && m.valor.valeEnTela()) return m.valor;
+        // Los bordes decorativos también valen en las extremidades (2026-10-11): una faldilla con ese recorte.
+        if (item instanceof MoldeRuedoItem m) return m.valor;
         if (item instanceof MoldeVoladoItem v) {
             return v.valor == com.modamod.item.PolleraVolado.CIRCULAR
                     ? com.modamod.item.Ruedo.VOLADO_CIRCULAR : com.modamod.item.Ruedo.VOLADO_RECTO;

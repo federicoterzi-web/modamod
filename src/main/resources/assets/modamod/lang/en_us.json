@@ -1162,5 +1162,7 @@
   "modamod.ruedo.volado_recto": "Straight ruffle",
   "modamod.ruedo.volado_circular": "Circular ruffle",
   "item.modamod.sombrero_bruja.vincha": "Headband",
-  "item.modamod.sombrero_bruja.cofia": "Maid cap"
+  "item.modamod.sombrero_bruja.cofia": "Maid cap",
+  "modamod.modelado.rol.volado_lateral_delantal": "Side ruffle",
+  "modamod.modelado.rol.volado_superior_delantal": "Top ruffle"
 }

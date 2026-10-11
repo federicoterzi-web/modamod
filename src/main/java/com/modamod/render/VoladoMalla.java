@@ -27,11 +27,21 @@ final class VoladoMalla {
      */
     static void dibujar(MatrixStack.Entry e, VertexConsumer vc, int luz, PolleraVolado volado, float hacia,
                         float x0, float z0, float w, float d, float yBorde, float dil, float uOrigen, float v) {
+        dibujar(e, vc, luz, volado, null, hacia, x0, z0, w, d, yBorde, dil, uOrigen, v);
+    }
+
+    /**
+     * Con {@code borde} (2026-10-11, "el recorte de formas del puño"): sin volado, una faldilla chata y apenas abierta
+     * cuyo borde de abajo sigue el dibujo decorativo de la pollera (ondulado, festoneado, pico).
+     */
+    static void dibujar(MatrixStack.Entry e, VertexConsumer vc, int luz, @org.jetbrains.annotations.Nullable PolleraVolado volado,
+                        @org.jetbrains.annotations.Nullable com.modamod.item.PolleraBorde borde, float hacia,
+                        float x0, float z0, float w, float d, float yBorde, float dil, float uOrigen, float v) {
         boolean circular = volado == PolleraVolado.CIRCULAR;
-        float largo = circular ? 3.2f : 2.2f;
-        float abrir = circular ? 2.2f : 0.9f;
+        float largo = volado == null ? 2.6f : circular ? 3.2f : 2.2f;
+        float abrir = volado == null ? 0.45f : circular ? 2.2f : 0.9f;
         float ondas = circular ? 6f : 16f;
-        float amplitud = circular ? 0.8f : 0.3f;
+        float amplitud = volado == null ? 0f : circular ? 0.8f : 0.3f;
         int ancho = Math.round(w), hondo = Math.round(d);
         float perimetro = 2f * (ancho + hondo);
         float cx = x0 + w / 2f, cz = z0 + d / 2f;
@@ -42,12 +52,16 @@ final class VoladoMalla {
             float t = f / (float) FILAS;
             float off = 0.05f + abrir * (float) Math.pow(t, 1.25) + (f == 0 ? 0f : 0f);
             float y = yBorde + hacia * largo * t;
+            final float tt = t;
             for (int k = 0; k <= pasos; k++) {
                 float s = k / (float) pasos * perimetro;
                 float[] q = enPerimetro(s, ancho, hondo);      // -1..1 en x y z de la sección
                 float onda = amplitud * t * (float) Math.sin(2.0 * Math.PI * ondas * s / perimetro);
                 float rx = sx + off + onda, rz = sz + off + onda;
-                p[f][k] = new float[]{cx + q[0] * rx, y, cz + q[1] * rz, s};
+                float yy = y;
+                // El borde decorativo baja (o sube) más hacia la última fila, según el dibujo a lo largo de la vuelta.
+                if (borde != null) yy += hacia * borde.baja(s / perimetro) * tt * tt;
+                p[f][k] = new float[]{cx + q[0] * rx, yy, cz + q[1] * rz, s};
             }
         }
         for (int f = 0; f < FILAS; f++) {
