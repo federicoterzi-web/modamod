@@ -207,12 +207,22 @@ public final class CuelloYCapucha {
                 float d = Math.max(0F, Calce.dilatacionEfectiva(s));
                 float dc = Math.max(d, dMax) + 0.3F;
                 int color = RemeraItem.color(s);
-                Identifier tela = texturaLisa(color, false);
-                // El aro del cuello, por encima del torso (como el cuello partido de la polera).
-                GarmentFeatureRenderer.dibujarModelPart(cuelloAro(dc * 0.5F), CuerpoGeometria.Superficie.CUERPO,
-                        tela, biped.body, matrices, vertexConsumers, luz);
-                dibujarFilas("camisa", pegarAlBorde(CUELLO_CAMISA, bordeDelEscote(s)), dc, s, color, biped, matrices,
-                        vertexConsumers, luz);
+                Identifier lisa = texturaLisa(color, false);
+                // El aro del cuello como malla (por encima del torso, como el cuello partido de la polera).
+                SolapaMalla.aro(lisa, color, dc * 0.5F, biped, matrices, vertexConsumers, luz);
+                // Las puntas, de tela continua pegada al borde del escote: con la textura de la prenda si ya está
+                // compuesta (lleva sus patrones y estampas) y, si no, de color liso.
+                float[] bordeC = bordeDelEscote(s);
+                Identifier telaC = telaDelTorso(s);
+                if (bordeC != null) {
+                    float[] anchos = new float[CUELLO_CAMISA.length];
+                    for (int i = 0; i < anchos.length; i++) anchos[i] = CUELLO_CAMISA[i].w;
+                    SolapaMalla.dibujar(telaC != null ? telaC : lisa, bordeC, SUB, anchos, dc,
+                            com.modamod.render.relieve.BustoRender.carpaDe(Calce.leer(s)), 0.2F, 0.6F,
+                            biped, matrices, vertexConsumers, luz);
+                } else {
+                    dibujarFilas("camisa", CUELLO_CAMISA, dc, s, color, biped, matrices, vertexConsumers, luz);
+                }
             }
         }
     }
