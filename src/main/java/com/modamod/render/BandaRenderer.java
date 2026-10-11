@@ -50,6 +50,13 @@ public final class BandaRenderer {
         List<SombreroPatron> patrones = BandaItem.patrones(banda);
         List<SombreroRenderer.Caja> cajas = cajas(banda, dil);
         for (int z = 0; z < 3; z++) {
+            // El collar (2026-10-11, "me lo estas haciendo cuadrado... como el de leashable collars"): la banda y su borde
+            // son anillos de malla redondeados; el herraje sigue siendo de cajas. Las cajas quedan para apuntar el mouse.
+            if (zona == BandaZona.CUELLO && z < 2) {
+                dibujarAnilloCollar(banda, z, SombreroRenderer.textura(colores.get(z), patrones.get(z)), marco, dil,
+                        matrices, vertexConsumers, luz);
+                continue;
+            }
             ModelPart parte = parte(cajas, z, zona, banda, dil);
             if (parte == null) continue;
             GarmentFeatureRenderer.dibujarModelPart(parte, CuerpoGeometria.Superficie.CUERPO,
@@ -63,6 +70,22 @@ public final class BandaRenderer {
         }
         // Los colgantes: apliques apoyados en la banda (el punto es de una de sus cajas, en el marco de la parte).
         ApliqueRenderer.dibujar(banda, 0f, biped, matrices, vertexConsumers, luz);
+    }
+
+    /** La banda (zona 0) o su borde (zona 1, dos tiras finas arriba y abajo) del collar como anillos de malla. */
+    private static void dibujarAnilloCollar(ItemStack banda, int zonaTinte, net.minecraft.util.Identifier tela, ModelPart marco,
+                                            float dil, MatrixStack matrices, VertexConsumerProvider vcp, int luz) {
+        float t = grosor(BandaZona.CUELLO);
+        float hx = hx(BandaZona.CUELLO, dil), hz = hz(BandaZona.CUELLO, dil);
+        float h = BandaItem.ancho(banda).alto(BandaZona.CUELLO);
+        float y0 = Y_COLLAR, y1 = Y_COLLAR + h;
+        if (zonaTinte == 0) {
+            SolapaMalla.anillo(tela, 0.05F, 0.95F, 0.1F, 0.9F, hx + t, hz + t, t, y0, y1, marco, matrices, vcp, luz);
+        } else {
+            float o = hx + t + BORDE_SALE, oz = hz + t + BORDE_SALE;
+            SolapaMalla.anillo(tela, 0.05F, 0.95F, 0.1F, 0.9F, o, oz, t + BORDE_SALE, y0 - 0.1F, y0 + BORDE_ALTO, marco, matrices, vcp, luz);
+            SolapaMalla.anillo(tela, 0.05F, 0.95F, 0.1F, 0.9F, o, oz, t + BORDE_SALE, y1 - BORDE_ALTO, y1 + 0.1F, marco, matrices, vcp, luz);
+        }
     }
 
     /** Las cajas de cada zona con la holgura por defecto — para apuntar el mouse en la Mesa de estilado. */

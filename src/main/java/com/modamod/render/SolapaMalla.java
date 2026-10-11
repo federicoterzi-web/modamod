@@ -1,6 +1,7 @@
 package com.modamod.render;
 
 import com.modamod.render.relieve.BustoRender;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -89,6 +90,66 @@ final class SolapaMalla {
             }
         }
         matrices.pop();
+    }
+
+    /**
+     * Anillo redondeado de malla (2026-10-11, "el choker me lo estas haciendo cuadrado... como el de leashable collars"):
+     * una banda cerrada de sección superelíptica (esquinas redondas), de {@code grosor} px, entre {@code y0} y {@code y1}, con
+     * pared de afuera, pared de adentro y tapas. {@code ox}/{@code oz} = semiejes de la pared de AFUERA (px). Va en el marco
+     * de {@code marco}. Las UV recorren la textura de {@code u0..u1} a lo largo del perímetro y de {@code v0..v1} de arriba a abajo.
+     */
+    static void anillo(Identifier tela, float u0, float u1, float v0, float v1, float ox, float oz, float grosor,
+                       float y0, float y1, ModelPart marco, MatrixStack matrices, VertexConsumerProvider vcp, int luz) {
+        VertexConsumer vc = vcp.getBuffer(ClothingTextureCache.capaDeRender(tela));
+        matrices.push();
+        marco.rotate(matrices);
+        Matrix4f m = matrices.peek().getPositionMatrix();
+        Matrix3f nm = matrices.peek().getNormalMatrix();
+        final int seg = 40;
+        final double n = 4.0;
+        final float ix = Math.max(0.2F, ox - grosor), iz = Math.max(0.2F, oz - grosor);
+        float[][] fuera = new float[seg + 1][2], dentro = new float[seg + 1][2], norma = new float[seg + 1][2];
+        for (int i = 0; i <= seg; i++) {
+            double t = Math.PI * 2 * i / seg;
+            double c = Math.cos(t), s = Math.sin(t);
+            double px = Math.signum(c) * Math.pow(Math.abs(c), 2.0 / n), pz = Math.signum(s) * Math.pow(Math.abs(s), 2.0 / n);
+            fuera[i][0] = (float) px * ox;
+            fuera[i][1] = (float) pz * oz;
+            dentro[i][0] = (float) px * ix;
+            dentro[i][1] = (float) pz * iz;
+            // Gradiente de |x/a|^n + |z/b|^n: la normal de la pared de afuera.
+            double gx = Math.signum(px) * Math.pow(Math.abs(px), n - 1) / ox, gz = Math.signum(pz) * Math.pow(Math.abs(pz), n - 1) / oz;
+            double l = Math.max(1e-6, Math.hypot(gx, gz));
+            norma[i][0] = (float) (gx / l);
+            norma[i][1] = (float) (gz / l);
+        }
+        for (int i = 0; i < seg; i++) {
+            float ua = u0 + (u1 - u0) * i / seg, ub = u0 + (u1 - u0) * (i + 1) / seg;
+            float um = (ua + ub) / 2F, vm = (v0 + v1) / 2F;
+            // Pared de afuera, pared de adentro, tapa de abajo y tapa de arriba.
+            quadUv(m, nm, vc, luz, new Vector3f(norma[i][0], 0, norma[i][1]),
+                    new float[]{fuera[i][0], y0, fuera[i][1], ua, v0}, new float[]{fuera[i + 1][0], y0, fuera[i + 1][1], ub, v0},
+                    new float[]{fuera[i + 1][0], y1, fuera[i + 1][1], ub, v1}, new float[]{fuera[i][0], y1, fuera[i][1], ua, v1});
+            quadUv(m, nm, vc, luz, new Vector3f(-norma[i][0], 0, -norma[i][1]),
+                    new float[]{dentro[i][0], y0, dentro[i][1], ua, v0}, new float[]{dentro[i + 1][0], y0, dentro[i + 1][1], ub, v0},
+                    new float[]{dentro[i + 1][0], y1, dentro[i + 1][1], ub, v1}, new float[]{dentro[i][0], y1, dentro[i][1], ua, v1});
+            quadUv(m, nm, vc, luz, new Vector3f(0, 1, 0),
+                    new float[]{fuera[i][0], y1, fuera[i][1], um, vm}, new float[]{fuera[i + 1][0], y1, fuera[i + 1][1], um, vm},
+                    new float[]{dentro[i + 1][0], y1, dentro[i + 1][1], um, vm}, new float[]{dentro[i][0], y1, dentro[i][1], um, vm});
+            quadUv(m, nm, vc, luz, new Vector3f(0, -1, 0),
+                    new float[]{dentro[i][0], y0, dentro[i][1], um, vm}, new float[]{dentro[i + 1][0], y0, dentro[i + 1][1], um, vm},
+                    new float[]{fuera[i + 1][0], y0, fuera[i + 1][1], um, vm}, new float[]{fuera[i][0], y0, fuera[i][1], um, vm});
+        }
+        matrices.pop();
+    }
+
+    /** Un cuadrilátero con UV propias por vértice ({@code {x, y, z, u, v}} en px). */
+    private static void quadUv(Matrix4f m, Matrix3f nm, VertexConsumer vc, int luz, Vector3f normal, float[]... p) {
+        Vector3f nn = nm.transform(new Vector3f(normal)).normalize();
+        for (float[] q : p) {
+            Vector3f w = m.transformPosition(q[0] / 16F, q[1] / 16F, q[2] / 16F, new Vector3f());
+            vc.vertex(w.x, w.y, w.z, 0xFFFFFFFF, q[3], q[4], OverlayTexture.DEFAULT_UV, luz, nn.x, nn.y, nn.z);
+        }
     }
 
     /** Ancho de la solapa a la altura {@code y} (px), interpolado entre los centros de las filas. */

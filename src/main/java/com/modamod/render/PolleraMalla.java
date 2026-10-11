@@ -58,7 +58,7 @@ public final class PolleraMalla {
     public static final float CINTURA_MIN = 3f, CINTURA_MAX = 11f;
     private static final int COLUMNAS = 48;
     /** 24 filas (2026-10-05, volados): tres filas de volado necesitan resolución para que se lea el borde de cada una. */
-    private static final int FILAS = 24;
+    static final int FILAS = 24;
     private static final int TABLAS = 12;
     /** Largo del perímetro de la caja del torso en la textura (4+8+4+8). */
     private static final float PERIMETRO = 24f;
@@ -125,7 +125,7 @@ public final class PolleraMalla {
                                com.modamod.item.Ruedo hem, float dil, @Nullable Piernas piernas,
                                CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura) {
         dibujar(matrices, vc, luz, forma, largo, voladoRuedo, voladoTodo, hem, dil, piernas, mov, twirl, cola, inclinacion,
-                cintura, Float.NaN, Float.NaN, 0);
+                cintura, Float.NaN, Float.NaN, 0, null);
     }
 
     /**
@@ -137,16 +137,16 @@ public final class PolleraMalla {
     public static void dibujarFaldon(MatrixStack matrices, VertexConsumer vc, int luz, PolleraForma forma,
                                      PolleraLargo largo, float dil, @Nullable Piernas piernas, CapaMalla.Movimiento mov,
                                      float twirl, float cola, float inclinacion, float cintura,
-                                     float vDesde, float vHasta, int hueco) {
+                                     float vDesde, float vHasta, int hueco, @Nullable float[] extraPorFila) {
         dibujar(matrices, vc, luz, forma, largo, null, null, com.modamod.item.Ruedo.RECTO, dil, piernas, mov, twirl, cola,
-                inclinacion, cintura, vDesde, vHasta, hueco);
+                inclinacion, cintura, vDesde, vHasta, hueco, extraPorFila);
     }
 
     private static void dibujar(MatrixStack matrices, VertexConsumer vc, int luz, PolleraForma forma,
                                 PolleraLargo largo, @Nullable PolleraVolado voladoRuedo, @Nullable PolleraVolado voladoTodo,
                                 com.modamod.item.Ruedo hem, float dil, @Nullable Piernas piernas,
                                 CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura,
-                                float vDesde, float vHasta, int hueco) {
+                                float vDesde, float vHasta, int hueco, @Nullable float[] extraPorFila) {
         float[][][] p = new float[FILAS + 1][COLUMNAS + 1][];
         PolleraBorde borde = hem.borde();
         float l = largo.pixeles;
@@ -196,6 +196,16 @@ public final class PolleraMalla {
                     float k = hem == com.modamod.item.Ruedo.AJUSTADO ? 1f - 0.35f * w * w : 1f + 0.5f * w * w;
                     x *= k;
                     z *= k;
+                }
+                // Faldón sobre una pollera (2026-10-11, "el faldon tiene que colisionar con la pollera"): esta fila se aleja
+                // del eje lo que haga falta para pasar por fuera de la pollera que lleva debajo.
+                if (extraPorFila != null && extraPorFila[f] > 0.01f) {
+                    float rr = (float) Math.hypot(x, z);
+                    if (rr > 0.5f) {
+                        float k = (rr + extraPorFila[f]) / rr;
+                        x *= k;
+                        z *= k;
+                    }
                 }
                 // Vaivén del paso: la tela se retuerce un poco alrededor del eje del cuerpo.
                 float xg = x * cosG - z * sinG, zg = x * sinG + z * cosG;

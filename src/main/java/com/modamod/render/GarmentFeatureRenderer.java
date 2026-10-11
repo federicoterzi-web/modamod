@@ -365,10 +365,22 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                 ? com.modamod.client.TwirlCliente.progreso(entidad, tickDelta) : -1f;
         float cola = com.modamod.render.relieve.BustoRender.actual == null ? 0f
                 : com.modamod.render.relieve.BustoRender.actual.cola();
+        // Por fuera de las polleras (2026-10-11, "el faldon tiene que colisionar con la pollera"): cada fila se aleja
+        // hasta pasar la pollera de esa altura, con un margen para que no se toquen cuando la pollera se mueve.
+        float[] extra = null;
+        if (!GarmentFeatureRenderer.polleras.isEmpty()) {
+            com.modamod.item.PolleraLargo largoFaldon = com.modamod.item.TopCorte.largoFaldon(stack);
+            extra = new float[PolleraMalla.FILAS + 1];
+            for (int f = 0; f <= PolleraMalla.FILAS; f++) {
+                float y = FALDON_CINTURA + largoFaldon.pixeles * f / (float) PolleraMalla.FILAS;
+                float hol = holguraPollera(y);
+                extra[f] = hol < 0F ? 0F : Math.max(0F, hol + 0.5F - (dilatacion + 0.1F));
+            }
+        }
         PolleraMalla.dibujarFaldon(matrices, buffer, luz, com.modamod.item.PolleraForma.TUBO,
                 com.modamod.item.TopCorte.largoFaldon(stack), dilatacion,
                 new PolleraMalla.Piernas(biped.body, biped.rightLeg, biped.leftLeg), mov, twirl, cola, delJugador.pitch,
-                FALDON_CINTURA, v0, v1, com.modamod.item.TopCorte.frente(stack).abre() ? 2 : 0);
+                FALDON_CINTURA, v0, v1, com.modamod.item.TopCorte.frente(stack).abre() ? 2 : 0, extra);
         matrices.pop();
     }
 
