@@ -19,7 +19,8 @@ public class MoldeSombreroItem extends Item {
 
     public enum Tipo {
         ALA_ANCHA(SombreroAla.ANCHA, null), ALA_CORTA(SombreroAla.CORTA, null),
-        PUNTA_RECTA(null, SombreroPunta.RECTA), PUNTA_DOBLADA(null, SombreroPunta.DOBLADA);
+        PUNTA_RECTA(null, SombreroPunta.RECTA), PUNTA_DOBLADA(null, SombreroPunta.DOBLADA),
+        ALA_VINCHA(SombreroAla.VINCHA, null), ALA_COFIA(SombreroAla.COFIA, null);
 
         public final SombreroAla ala;
         public final SombreroPunta punta;

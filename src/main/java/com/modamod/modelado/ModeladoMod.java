@@ -126,6 +126,10 @@ public final class ModeladoMod {
             MoldeSombreroItem.Tipo.ALA_ANCHA);
     public static final MoldeSombreroItem MOLDE_SOMBRERO_ALA_CORTA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
             MoldeSombreroItem.Tipo.ALA_CORTA);
+    public static final MoldeSombreroItem MOLDE_SOMBRERO_ALA_VINCHA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
+            MoldeSombreroItem.Tipo.ALA_VINCHA);
+    public static final MoldeSombreroItem MOLDE_SOMBRERO_ALA_COFIA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
+            MoldeSombreroItem.Tipo.ALA_COFIA);
     public static final MoldeSombreroItem MOLDE_SOMBRERO_PUNTA_RECTA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
             MoldeSombreroItem.Tipo.PUNTA_RECTA);
     public static final MoldeSombreroItem MOLDE_SOMBRERO_PUNTA_DOBLADA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
@@ -291,6 +295,8 @@ public final class ModeladoMod {
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_sin_cuello"), MOLDE_CAPA_SIN_CUELLO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_ancha"), MOLDE_SOMBRERO_ALA_ANCHA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_corta"), MOLDE_SOMBRERO_ALA_CORTA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_vincha"), MOLDE_SOMBRERO_ALA_VINCHA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_cofia"), MOLDE_SOMBRERO_ALA_COFIA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_punta_recta"), MOLDE_SOMBRERO_PUNTA_RECTA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_punta_doblada"), MOLDE_SOMBRERO_PUNTA_DOBLADA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_zona_cintura"), MOLDE_BANDA_ZONA_CINTURA);

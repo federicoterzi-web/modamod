@@ -219,6 +219,8 @@ public class Modamod implements ModInitializer {
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_SIN_CUELLO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_ALA_ANCHA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_ALA_CORTA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_ALA_VINCHA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_ALA_COFIA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_PUNTA_RECTA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_PUNTA_DOBLADA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_ZONA_CINTURA);

@@ -20,7 +20,9 @@ public enum Ruedo implements StringIdentifiable {
     CAMPANA("campana"),
     ONDULADO("ondulado"),
     FESTONEADO("festoneado"),
-    PICO("pico");
+    PICO("pico"),
+    /** Volado de malla en un puño, botamanga o borde de calentador/media (2026-10-11); ver {@code render.VoladoMalla}. */
+    VOLADO_RECTO("volado_recto"), VOLADO_CIRCULAR("volado_circular");
 
     public final String clave;
 
@@ -38,6 +40,16 @@ public enum Ruedo implements StringIdentifiable {
             case ONDULADO -> PolleraBorde.ONDULADO;
             case FESTONEADO -> PolleraBorde.FESTONEADO;
             case PICO -> PolleraBorde.PICO;
+            default -> null;
+        };
+    }
+
+    /** El volado de malla que corresponde, o null. */
+    @Nullable
+    public PolleraVolado volado() {
+        return switch (this) {
+            case VOLADO_RECTO -> PolleraVolado.RECTO;
+            case VOLADO_CIRCULAR -> PolleraVolado.CIRCULAR;
             default -> null;
         };
     }

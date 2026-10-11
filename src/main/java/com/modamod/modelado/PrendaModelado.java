@@ -299,9 +299,11 @@ public final class PrendaModelado {
             case TORSO, PUNO_IZQ, PUNO_DER -> prenda.getItem() instanceof com.modamod.sublimadora.RemeraItem && r.valeEnTela();
             case POLLERA -> prenda.getItem() instanceof com.modamod.item.PolleraItem;
             case DELANTAL -> prenda.getItem() instanceof com.modamod.item.DelantalItem;
-            case BOTA_IZQ, BOTA_DER -> prenda.getItem() instanceof PantalonItem && r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal();
+            case BOTA_IZQ, BOTA_DER -> prenda.getItem() instanceof PantalonItem
+                    && (r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal() || r.volado() != null);
             case SUP_IZQ, SUP_DER, INF_IZQ, INF_DER -> (prenda.getItem() == ModamodItems.SOCKS_SOLID
-                    || prenda.getItem() instanceof CalientabrazosItem) && r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal();
+                    || prenda.getItem() instanceof CalientabrazosItem)
+                    && (r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal() || r.volado() != null);
             default -> false;
         };
     }

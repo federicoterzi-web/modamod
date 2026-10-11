@@ -164,3 +164,6 @@ falda), `molde_delantal_corazon` (borde de arriba en dos lóbulos), `molde_delan
 destaque cobre como el resto de la Modeladora. **Ícono de slot:** `gui/slot/delantal.png` (16×16, hoy copia del de cinto).
 **Esquema:** `esquema_delantal.png` (960×544, paleta de 256; hoy copia del de la pollera) con un delantal grande de frente y
 marcos de slot: Forma, Hasta (con el cajón Desde), Calce, Trama, Volado (con el cajón Ruedo) y Esquinas.
+
+**Vincha y cofia (2, PROVISORIOS = copia del ala corta):** `molde_sombrero_ala_vincha` (vincha con moño, de lado, sobre papel) y
+`molde_sombrero_ala_cofia` (cofia de maid con volado y moñito). Destaque cobre (Modeladora).

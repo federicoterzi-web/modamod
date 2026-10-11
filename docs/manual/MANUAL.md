@@ -738,3 +738,11 @@ cadera a los pies) con el cajón **Desde** (dónde arranca: de la cintura baja a
 de la pollera) con el cajón **Ruedo**, y **Esquinas** (los moldes de ruedo recto y redondeado de la capa). Se tiñe en la
 Estación de Tintes (prenda entera, peto y falda) y se le ponen apliques (bolsillos, moños) y correas en la Estilista. También
 entra en el Guardarropas y el Maniquí.
+
+### Puños con volado, vincha y cofia (2026-10-11)
+
+Los moldes de volado de la pollera (recto y circular) también sirven en el casillero de ruedo de los puños de las mangas,
+las botamangas y los bordes de medias y calentadores de brazos: pegan un anillo ondulado de tela en ese corte (un calentador
+con volado en los dos cortes lleva uno arriba y otro abajo). En la categoría Sombrero, el pin Ala acepta también el molde
+**Vincha** (un arco con moño sobre la cabeza) y el molde **Cofia** (una tira de tela al frente con volado y moño): el ítem pasa
+a llamarse Vincha o Cofia y se tiñe por zonas (banda, moño, vivo) como el sombrero.

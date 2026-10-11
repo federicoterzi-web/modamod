@@ -84,6 +84,13 @@ public class SombreroBrujaItem extends TrinketItem implements ZonasTenibles {
     @Override public String claveZona(ItemStack stack, int i) { return "modamod.sombrero.zona." + (i + 1); }
     @Override public com.modamod.garment.Parte marco(ItemStack stack) { return com.modamod.garment.Parte.CABEZA; }
 
+    /** Vincha o cofia (2026-10-11): el mismo ítem con otra "ala" lleva su nombre. */
+    @Override
+    public Text getName(ItemStack stack) {
+        SombreroAla a = ala(stack);
+        return a.esDiadema() ? Text.translatable("item.modamod.sombrero_bruja." + a.clave) : super.getName(stack);
+    }
+
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);

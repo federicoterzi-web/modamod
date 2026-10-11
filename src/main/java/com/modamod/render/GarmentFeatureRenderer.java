@@ -860,6 +860,29 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         }
     }
 
+    /** El anillo de volado de {@link VoladoMalla} en el borde {@code y} (fila) de {@code parte}. */
+    private static void dibujarVolado(com.modamod.item.PolleraVolado volado, Parte parte, boolean slim, Identifier textura,
+                                      int y, float dil, int filaTextura, float hacia, ModelPart delModelo,
+                                      MatrixStack matrices, VertexConsumerProvider vertexConsumers, int luz) {
+        float[] c = ApliqueRenderer.caja(parte, slim);
+        int[] uv = switch (parte) {
+            case TORSO -> new int[]{16, 16};
+            case BRAZO_DER -> new int[]{40, 16};
+            case BRAZO_IZQ -> new int[]{32, 48};
+            case PIERNA_DER -> new int[]{0, 16};
+            case PIERNA_IZQ -> new int[]{16, 48};
+            default -> new int[]{0, 0};
+        };
+        int hondo = Math.round(c[5]);
+        float v = (uv[1] + hondo + Math.max(0, Math.min(11, filaTextura)) + 0.5F) / 64F;
+        matrices.push();
+        delModelo.rotate(matrices);
+        VertexConsumer vc = vertexConsumers.getBuffer(ClothingTextureCache.capaDeRender(textura));
+        VoladoMalla.dibujar(matrices.peek(), vc, luz, volado, hacia, c[0], c[2], c[3], c[5], c[1] + y, dil,
+                uv[0], v);
+        matrices.pop();
+    }
+
     /** La pollera del dibujo en curso (la tela de encima pasa por fuera), o null. */
     private static final List<ItemStack> polleras = new java.util.ArrayList<>();
 
@@ -1063,6 +1086,19 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                 float dBoca = colgado > 0 ? dilColgado : fila[hasta - 1];
                 dibujarBoca(parte, slim, pieza.textura(), dBoca, costadoInterno ? interno : -1F, hasta - 1,
                         hasta + colgado, delModelo, matrices, vertexConsumers, luz);
+            }
+
+            // Volado de malla en el borde de abajo o de arriba (2026-10-11, puños de maid): un anillo ondulado.
+            if (parte != Parte.CABEZA && hasta > desde) {
+                if (pieza.ruedo().volado() != null) {
+                    dibujarVolado(pieza.ruedo().volado(), parte, slim, pieza.textura(), hasta + colgado,
+                            (colgado > 0 ? dilColgado : fila[hasta - 1]) + 0.05F, Math.min(11, hasta - 1 + colgado), 1F,
+                            delModelo, matrices, vertexConsumers, luz);
+                }
+                if (pieza.ruedoSup().volado() != null) {
+                    dibujarVolado(pieza.ruedoSup().volado(), parte, slim, pieza.textura(), desde,
+                            fila[desde] + 0.05F, desde, -1F, delModelo, matrices, vertexConsumers, luz);
+                }
             }
 
             if (parte == Parte.TORSO && com.modamod.render.relieve.BustoRender.actual != null

@@ -55,6 +55,18 @@ public final class SombreroRenderer {
         List<Integer> colores = SombreroBrujaItem.colores(sombrero);
         List<SombreroPatron> patrones = SombreroBrujaItem.patrones(sombrero);
 
+        if (ala.esDiadema()) {
+            for (int z = 0; z < 3; z++) {
+                ModelPart parte = diadema(ala, z);
+                if (parte != null) {
+                    GarmentFeatureRenderer.dibujarModelPart(parte, CuerpoGeometria.Superficie.CUERPO,
+                            textura(colores.get(z), patrones.get(z)), biped.head, matrices, vertexConsumers, luz);
+                }
+            }
+            ApliqueRenderer.dibujar(sombrero, 0f, biped, matrices, vertexConsumers, luz);
+            return;
+        }
+
         GarmentFeatureRenderer.dibujarModelPart(ala(ala), CuerpoGeometria.Superficie.CUERPO, textura(colores.get(0), patrones.get(0)),
                 biped.head, matrices, vertexConsumers, luz);
         ModelPart cono = cono(punta);
@@ -89,6 +101,13 @@ public final class SombreroRenderer {
      */
     public static List<Caja> cajas(ItemStack sombrero) {
         SombreroAla ala = SombreroBrujaItem.ala(sombrero);
+        if (ala.esDiadema()) {
+            List<Caja> cajas = new java.util.ArrayList<>();
+            for (float[] b : cajasDiadema(ala)) {
+                cajas.add(new Caja((int) b[0], new float[] {b[1], b[2], b[3]}, new float[] {b[1] + b[4], b[2] + b[5], b[3] + b[6]}));
+            }
+            return cajas;
+        }
         float l = ala.lado;
         List<Caja> out = new java.util.ArrayList<>();
         out.add(new Caja(0, new float[] {-l / 2f, Y_ALA, -l / 2f}, new float[] {l / 2f, Y_ALA + GROSOR_ALA, l / 2f}));
@@ -136,6 +155,47 @@ public final class SombreroRenderer {
         if (c != null) return c;
         float l = ala.lado;
         c = new ModelPart(List.of(caja(-l / 2f, Y_ALA, -l / 2f, l, GROSOR_ALA, l)), Map.of());
+        CACHE.put(key, c);
+        return c;
+    }
+
+    /**
+     * Vincha y cofia (2026-10-11, "la cofia o vincha se puede adaptar de alguna manera al sombrero"): cada caja es
+     * {zona, x, y, z, ancho, alto, fondo} en px de la cabeza (y negativo = arriba, el frente es −Z). Zona 0 = la
+     * banda, zona 1 = el moño, zona 2 = el borde o volado.
+     */
+    private static float[][] cajasDiadema(SombreroAla ala) {
+        if (ala == SombreroAla.VINCHA) {
+            return new float[][]{
+                    {0, -4.7f, -8.9f, -0.7f, 9.4f, 0.9f, 1.4f},      // arco de arriba
+                    {0, -5.1f, -8.9f, -0.7f, 0.8f, 5.6f, 1.4f},      // bajada izquierda
+                    {0, 4.3f, -8.9f, -0.7f, 0.8f, 5.6f, 1.4f},       // bajada derecha
+                    {2, -4.7f, -9.1f, -0.7f, 9.4f, 0.2f, 1.4f},      // vivo
+                    {1, -3.5f, -10.2f, -0.6f, 1.0f, 1.0f, 1.0f},     // nudo del moño
+                    {1, -5.3f, -10.6f, -0.5f, 1.8f, 1.6f, 0.8f},     // lazo izquierdo
+                    {1, -2.5f, -10.6f, -0.5f, 1.8f, 1.6f, 0.8f},     // lazo derecho
+            };
+        }
+        return new float[][]{                                         // COFIA
+                {0, -4.8f, -8.9f, -4.6f, 9.6f, 0.8f, 3.6f},          // tira de tela sobre la frente
+                {2, -5.2f, -9.7f, -5.0f, 10.4f, 1.2f, 0.8f},         // volado de adelante
+                {2, -5.2f, -9.7f, -4.6f, 0.7f, 1.2f, 3.6f},          // volado izquierdo
+                {2, 4.5f, -9.7f, -4.6f, 0.7f, 1.2f, 3.6f},           // volado derecho
+                {1, -0.5f, -10.7f, -4.5f, 1.0f, 1.0f, 1.0f},         // nudo del moño
+                {1, -2.5f, -10.9f, -4.3f, 1.9f, 1.4f, 0.6f},         // lazo izquierdo
+                {1, 0.6f, -10.9f, -4.3f, 1.9f, 1.4f, 0.6f},          // lazo derecho
+        };
+    }
+
+    /** Las cajas de la zona {@code zona} de la vincha o la cofia, como un {@link ModelPart}; null si no tiene. */
+    private static ModelPart diadema(SombreroAla ala, int zona) {
+        String key = "diadema|" + ala + "|" + zona;
+        if (CACHE.containsKey(key)) return CACHE.get(key);
+        List<ModelPart.Cuboid> cubos = new java.util.ArrayList<>();
+        for (float[] b : cajasDiadema(ala)) {
+            if ((int) b[0] == zona) cubos.add(caja(b[1], b[2], b[3], b[4], b[5], b[6]));
+        }
+        ModelPart c = cubos.isEmpty() ? null : new ModelPart(cubos, Map.of());
         CACHE.put(key, c);
         return c;
     }

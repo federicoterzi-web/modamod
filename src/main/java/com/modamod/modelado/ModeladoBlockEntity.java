@@ -958,7 +958,12 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             if (par != null && !esRolRuedoDeCajon(rol) && rol != Rol.CUELLO) rol = par;
         } else if (item instanceof MoldeVoladoItem) {
             if (rol == Rol.RUEDO_POLLERA) rol = Rol.VOLADO_INFERIOR;
-            if (rol == Rol.RUEDO_DELANTAL) rol = Rol.VOLADO_DELANTAL;
+            else if (rol == Rol.RUEDO_DELANTAL) rol = Rol.VOLADO_DELANTAL;
+            else {
+                // Un volado de malla en los puños, botamangas y bordes de medias y calentadores (2026-10-11).
+                Rol par = parDeCajon(rol);
+                if (par != null && !esRolRuedoDeCajon(rol) && esRolDeExtremidad(par)) rol = par;
+            }
         } else if (item instanceof MoldeCuelloItem) {
             if (rol == Rol.SOLAPA_CHAQUETA) rol = Rol.CUELLO;
         } else if (item instanceof MoldeChaquetaItem m && m.tipo.esSolapa()) {
@@ -994,16 +999,18 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             }
             case RUEDO_PUNO_IZQ, RUEDO_PUNO_DER -> {
                 // El lado sale de ladoDePin (cruzado y con la simetría ya aplicada): AMBAS = los dos puños.
-                if (item instanceof MoldeRuedoItem m && m.valor.valeEnTela()) {
+                com.modamod.item.Ruedo r = ruedoDeMolde(item);
+                if (r != null) {
                     c = ComboCorte.ruedo(lado == Lado.DERECHA ? com.modamod.item.ZonaRuedo.PUNO_DER : com.modamod.item.ZonaRuedo.PUNO_IZQ,
-                            m.valor, lado == Lado.AMBAS);
+                            r, lado == Lado.AMBAS);
                 }
             }
             case RUEDO_BOTA_IZQ, RUEDO_BOTA_DER, RUEDO_SUP_IZQ, RUEDO_SUP_DER, RUEDO_INF_IZQ, RUEDO_INF_DER -> {
                 // Como el puño: el lado sale de ladoDePin; AMBAS = los dos lados.
-                if (item instanceof MoldeRuedoItem m && m.valor.valeEnTela()) {
+                com.modamod.item.Ruedo r = ruedoDeMolde(item);
+                if (r != null) {
                     com.modamod.item.ZonaRuedo z = zonaDeRol(rol, lado == Lado.DERECHA);
-                    c = ComboCorte.ruedo(z, m.valor, lado == Lado.AMBAS);
+                    c = ComboCorte.ruedo(z, r, lado == Lado.AMBAS);
                 }
             }
             case RUEDO_POLLERA -> {
@@ -1116,6 +1123,26 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             default -> { }
         }
         return c == null ? null : c.conIcono(net.minecraft.registry.Registries.ITEM.getId(item));
+    }
+
+    /** ¿Es el casillero de ruedo de un puño, una botamanga o un borde de media/calentador? (acepta los volados de malla) */
+    private static boolean esRolDeExtremidad(Rol r) {
+        return switch (r) {
+            case RUEDO_PUNO_IZQ, RUEDO_PUNO_DER, RUEDO_BOTA_IZQ, RUEDO_BOTA_DER, RUEDO_SUP_IZQ, RUEDO_SUP_DER,
+                 RUEDO_INF_IZQ, RUEDO_INF_DER -> true;
+            default -> false;
+        };
+    }
+
+    /** El ruedo que pone este molde en una extremidad: el de un molde de ruedo de tela, o el volado de malla. */
+    @Nullable
+    private static com.modamod.item.Ruedo ruedoDeMolde(Item item) {
+        if (item instanceof MoldeRuedoItem m && m.valor.valeEnTela()) return m.valor;
+        if (item instanceof MoldeVoladoItem v) {
+            return v.valor == com.modamod.item.PolleraVolado.CIRCULAR
+                    ? com.modamod.item.Ruedo.VOLADO_CIRCULAR : com.modamod.item.Ruedo.VOLADO_RECTO;
+        }
+        return null;
     }
 
     /** El corte de un {@link MoldeChaquetaItem} (frente, capucha o solapa), o null. */
