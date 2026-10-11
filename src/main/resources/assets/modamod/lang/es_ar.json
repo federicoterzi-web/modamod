@@ -1140,5 +1140,19 @@
   "modamod.rango.nivel.3": "Medio",
   "modamod.rango.nivel.4": "Bajo",
   "modamod.rango.nivel.5": "Muy bajo",
-  "modamod.rango.nivel.6": "Más bajo"
+  "modamod.rango.nivel.6": "Más bajo",
+  "modamod.modelado.rol.forma_delantal": "Forma",
+  "modamod.modelado.rol.largo_delantal": "Hasta",
+  "modamod.modelado.rol.inicio_delantal": "Desde",
+  "modamod.modelado.rol.esquinas_delantal": "Esquinas",
+  "modamod.modelado.rol.volado_delantal": "Volado",
+  "modamod.modelado.rol.ruedo_delantal": "Ruedo",
+  "modamod.modelado.categoria.delantal": "Delantal",
+  "modamod.prenda.delantal": "Delantal",
+  "modamod.tipo.delantal": "Molde de delantal",
+  "item.modamod.molde_delantal_recto": "Molde de Delantal: Recto",
+  "item.modamod.molde_delantal_trapecio": "Molde de Delantal: Trapecio",
+  "item.modamod.molde_delantal_peto": "Molde de Delantal: Peto",
+  "item.modamod.molde_delantal_corazon": "Molde de Delantal: Corazón",
+  "item.modamod.molde_delantal_feston": "Molde de Delantal: Festón"
 }

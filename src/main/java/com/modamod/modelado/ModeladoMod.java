@@ -144,6 +144,17 @@ public final class ModeladoMod {
     public static final MoldePolleraItem MOLDE_POLLERA_CIRCULAR = new MoldePolleraItem(new Item.Settings().maxCount(1),
             com.modamod.item.PolleraForma.CIRCULAR);
 
+    public static final MoldeFormaDelantalItem MOLDE_DELANTAL_RECTO = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
+            com.modamod.item.DelantalForma.RECTO);
+    public static final MoldeFormaDelantalItem MOLDE_DELANTAL_TRAPECIO = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
+            com.modamod.item.DelantalForma.TRAPECIO);
+    public static final MoldeFormaDelantalItem MOLDE_DELANTAL_PETO = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
+            com.modamod.item.DelantalForma.PETO);
+    public static final MoldeFormaDelantalItem MOLDE_DELANTAL_CORAZON = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
+            com.modamod.item.DelantalForma.CORAZON);
+    public static final MoldeFormaDelantalItem MOLDE_DELANTAL_FESTON = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
+            com.modamod.item.DelantalForma.FESTON);
+
     public static final MoldeRuedoItem MOLDE_RUEDO_RECTO = new MoldeRuedoItem(new Item.Settings().maxCount(1),
             com.modamod.item.Ruedo.RECTO);
     public static final MoldeRuedoItem MOLDE_RUEDO_AJUSTADO = new MoldeRuedoItem(new Item.Settings().maxCount(1),
@@ -264,6 +275,11 @@ public final class ModeladoMod {
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_pollera_tubo"), MOLDE_POLLERA_TUBO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_pollera_globo"), MOLDE_POLLERA_GLOBO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_pollera_circular"), MOLDE_POLLERA_CIRCULAR);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_recto"), MOLDE_DELANTAL_RECTO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_trapecio"), MOLDE_DELANTAL_TRAPECIO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_peto"), MOLDE_DELANTAL_PETO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_corazon"), MOLDE_DELANTAL_CORAZON);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_feston"), MOLDE_DELANTAL_FESTON);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_volado_recto"), MOLDE_VOLADO_RECTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_volado_circular"), MOLDE_VOLADO_CIRCULAR);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_ruedo_recto"), MOLDE_CAPA_RUEDO_RECTO);

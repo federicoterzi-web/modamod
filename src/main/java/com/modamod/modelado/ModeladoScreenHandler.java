@@ -52,6 +52,9 @@ public class ModeladoScreenHandler extends ScreenHandler {
             // Calzado (2026-10-11): Caña, Suela y Botamanga de cada pie (izq. y der. del dibujo) — provisorio, sobre
             // esquema_borcegos.png (copia del de la banda: sin marcos propios todavía).
             {{40, 50}, {160, 50}, {40, 90}, {160, 90}, {40, 130}, {160, 130}},
+            // Delantal (2026-10-11): Forma, Largo, Calce, Trama, Inicio (cajón del Largo), —, Volado, Esquinas, Ruedo
+            // (cajón del Volado) — sobre esquema_delantal.png (provisoriamente el de la pollera, mismas posiciones).
+            {{51, 49}, {50, 126}, {51, 87}, {172, 64}, {22, 126}, {0, 0}, {116, 145}, {175, 128}, {90, 145}},
     });
 
     /**
@@ -70,6 +73,7 @@ public class ModeladoScreenHandler extends ScreenHandler {
             {{52, 108}, {189, 51}},
             {{48, 100}, {154, 50}, {154, 106}},
             {{57, 49}, {177, 49}, {57, 89}, {177, 89}, {57, 129}, {177, 129}},
+            {{68, 48}, {67, 125}, {68, 86}, {189, 63}, {39, 125}, {0, 0}, {133, 144}, {192, 127}, {107, 144}},
     });
 
     /** Completa cada fila hasta {@code PINES_POR_CATEGORIA} con pines fuera de pantalla (0, 0). */

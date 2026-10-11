@@ -143,9 +143,19 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     public static final int CALZADO_ACTIVO = BANDA_PORPRENDA_INICIO + PORPRENDA_TOTAL;
     public static final int CALZADO_PINES_INICIO = CALZADO_ACTIVO + 1;
     public static final int CALZADO_PORPRENDA_INICIO = CALZADO_PINES_INICIO + PINES_POR_CATEGORIA;
-    public static final int TAMANO = CALZADO_PORPRENDA_INICIO + PORPRENDA_TOTAL;
+    /**
+     * Categoría Delantal (2026-10-11): mismo bloque, a continuación del Calzado. Con ella la lista {@code pollera_items}
+     * (las 5 categorías de antes, 255 slots) quedó llena: el Delantal va en una SEGUNDA lista NBT, {@code delantal_items}
+     * (ver {@link #INICIO_LISTA_2}).
+     */
+    public static final int DELANTAL_ACTIVO = CALZADO_PORPRENDA_INICIO + PORPRENDA_TOTAL;
+    public static final int DELANTAL_PINES_INICIO = DELANTAL_ACTIVO + 1;
+    public static final int DELANTAL_PORPRENDA_INICIO = DELANTAL_PINES_INICIO + PINES_POR_CATEGORIA;
+    public static final int TAMANO = DELANTAL_PORPRENDA_INICIO + PORPRENDA_TOTAL;
+    /** Primer slot que ya no entra en {@code pollera_items} (el índice de {@code Inventories} es un byte). */
+    public static final int INICIO_LISTA_2 = TAMANO_VIEJO + 255;
     /** Pines "lógicos": 12 por categoría, p = categoría*12 + i (ver {@link #pinSlot}). */
-    public static final int PINES_LOGICOS = PINES_POR_CATEGORIA * 9;
+    public static final int PINES_LOGICOS = PINES_POR_CATEGORIA * 10;
 
     /** Primer slot de pin de una categoría de las del final (Pollera, Capa); -1 para las 4 de siempre. */
     private static int pinesInicioExtra(Categoria cat) {
@@ -155,6 +165,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case SOMBRERO -> SOMBRERO_PINES_INICIO;
             case BANDA -> BANDA_PINES_INICIO;
             case CALZADO -> CALZADO_PINES_INICIO;
+            case DELANTAL -> DELANTAL_PINES_INICIO;
             default -> -1;
         };
     }
@@ -168,7 +179,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     /** Pin lógico de un slot real, o -1 si no es un pin. */
     public static int pinDeSlot(int slot) {
         if (slot >= PINES_INICIO && slot < PINES_FIN) return slot - PINES_INICIO;
-        for (Categoria cat : new Categoria[]{Categoria.POLLERA, Categoria.CAPA, Categoria.SOMBRERO, Categoria.BANDA, Categoria.CALZADO}) {
+        for (Categoria cat : new Categoria[]{Categoria.POLLERA, Categoria.CAPA, Categoria.SOMBRERO, Categoria.BANDA, Categoria.CALZADO, Categoria.DELANTAL}) {
             int inicio = pinesInicioExtra(cat);
             if (slot >= inicio && slot < inicio + PINES_POR_CATEGORIA) {
                 return cat.ordinal() * PINES_POR_CATEGORIA + (slot - inicio);
@@ -185,13 +196,14 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case SOMBRERO -> SOMBRERO_ACTIVO;
             case BANDA -> BANDA_ACTIVO;
             case CALZADO -> CALZADO_ACTIVO;
+            case DELANTAL -> DELANTAL_ACTIVO;
             default -> ACTIVO_INICIO + cat.ordinal();
         };
     }
 
     /** Qué prenda está configurando ahora el jugador — cicla con {@link #BTN_CATEGORIA}. */
     /** POLLERA al final (2026-09-29): sus slots van al final del inventario, ver {@link #POLLERA_ACTIVO}. */
-    public enum Categoria { REMERA, PANTALON, MEDIAS, CALIENTABRAZOS, POLLERA, CAPA, SOMBRERO, BANDA, CALZADO }
+    public enum Categoria { REMERA, PANTALON, MEDIAS, CALIENTABRAZOS, POLLERA, CAPA, SOMBRERO, BANDA, CALZADO, DELANTAL }
 
     /** Qué hace cada pin del esquema (2026-09-26, pines para las 4 prendas). NINGUNO = pin sin usar en esa categoría. */
     public enum Rol { CUELLO, MAT1, MAT2, MAT3, MANGA_IZQ, MANGA_DER, CALCE, TORSO, TIRO, BOTA_IZQ, BOTA_DER,
@@ -219,7 +231,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         CANA_BORCEGO_IZQ, CANA_BORCEGO_DER, SUELA_BORCEGO_IZQ, SUELA_BORCEGO_DER,
         BOTAMANGA_BORCEGO_IZQ, BOTAMANGA_BORCEGO_DER,
         /** Faldón de malla del Top (2026-10-11, "las chaquetas de malla"): largo por molde de rango. */
-        FALDON_TOP }
+        FALDON_TOP,
+        /** Delantal (2026-10-11): forma, largo, inicio (cajón del largo), esquinas, volado y ruedo (cajón del volado). */
+        FORMA_DELANTAL, LARGO_DELANTAL, INICIO_DELANTAL, ESQUINAS_DELANTAL, VOLADO_DELANTAL, RUEDO_DELANTAL }
 
     /** Rol de cada uno de los 8 pines por categoría — MISMO orden que {@code ModeladoScreenHandler#PIN_POS}. */
     public static final Rol[][] ROLES = rellenarRoles(new Rol[][]{
@@ -249,7 +263,11 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             // Borcegos (2026-10-08): Caña, Suela y Botamanga.
             // (2026-10-11, "independizar derecho e izquierdo": un pin por pie; con la simetría activa mandan los dos.)
             {Rol.CANA_BORCEGO_IZQ, Rol.CANA_BORCEGO_DER, Rol.SUELA_BORCEGO_IZQ, Rol.SUELA_BORCEGO_DER,
-                    Rol.BOTAMANGA_BORCEGO_IZQ, Rol.BOTAMANGA_BORCEGO_DER}
+                    Rol.BOTAMANGA_BORCEGO_IZQ, Rol.BOTAMANGA_BORCEGO_DER},
+            // Delantal (2026-10-11): Forma, Largo (con el Inicio en su cajón), Calce, Trama, Volado (con el Ruedo en su
+            // cajón) y Esquinas — sobre esquema_delantal.png (provisoriamente el de la pollera).
+            {Rol.FORMA_DELANTAL, Rol.LARGO_DELANTAL, Rol.CALCE, Rol.MAT1, Rol.INICIO_DELANTAL, Rol.NINGUNO,
+                    Rol.VOLADO_DELANTAL, Rol.ESQUINAS_DELANTAL, Rol.RUEDO_DELANTAL}
     });
 
     private static Rol[][] rellenarRoles(Rol[][] filas) {
@@ -431,6 +449,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         if (cat == Categoria.SOMBRERO) return SOMBRERO_PORPRENDA_INICIO + i;
         if (cat == Categoria.BANDA) return BANDA_PORPRENDA_INICIO + i;
         if (cat == Categoria.CALZADO) return CALZADO_PORPRENDA_INICIO + i;
+        if (cat == Categoria.DELANTAL) return DELANTAL_PORPRENDA_INICIO + i;
         return i < PORPRENDA_POR_CATEGORIA ? porPrendaInicio(cat) + i
                 : PORPRENDA_EXTRA_INICIO + cat.ordinal() * PORPRENDA_EXTRA_POR_CATEGORIA + (i - PORPRENDA_POR_CATEGORIA);
     }
@@ -469,6 +488,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case SOMBRERO -> item instanceof MoldeSombreroItem;
             case BANDA -> item instanceof MoldeBandaItem;
             case CALZADO -> item instanceof MoldeBorcegoItem;
+            case DELANTAL -> item instanceof MoldeFormaDelantalItem || item instanceof MoldeVoladoItem
+                    || item instanceof MoldeRuedoItem
+                    || (item instanceof MoldeCapaItem c && (c.tipo == MoldeCapaItem.Tipo.RUEDO_RECTO || c.tipo == MoldeCapaItem.Tipo.RUEDO_REDONDEADO));
         };
     }
 
@@ -493,15 +515,20 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
 
     /** True si este molde sirve para 2 o más categorías — va al almacén general, no al banco por-prenda. */
     public static boolean esMoldeCompartido(ItemStack stack) {
-        return categoriasDe(stack).size() >= 2 && !(stack.getItem() instanceof MoldeRuedoItem);
+        return categoriasDe(stack).size() >= 2 && !seGuardaEnBanco(stack.getItem());
     }
 
     /**
      * Los moldes de ruedo sirven en varias categorías pero NO van al almacén general (que ya está casi lleno): cada
      * banco "Moldes de <prenda>" guarda su copia (2026-10-07).
      */
+    /** Los moldes que sirven en varias categorías pero no van al almacén general (que está lleno): ruedo, volado y los ruedos de la capa. */
+    private static boolean seGuardaEnBanco(Item item) {
+        return item instanceof MoldeRuedoItem || item instanceof MoldeVoladoItem || item instanceof MoldeCapaItem;
+    }
+
     public static boolean sirveEnBanco(ItemStack stack, Categoria cat) {
-        return esMoldeExclusivoDe(stack, cat) || (stack.getItem() instanceof MoldeRuedoItem && esMoldeDeCategoria(stack, cat));
+        return esMoldeExclusivoDe(stack, cat) || (seGuardaEnBanco(stack.getItem()) && esMoldeDeCategoria(stack, cat));
     }
 
     /**
@@ -750,7 +777,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                     int ps = categoria.ordinal() * PINES_POR_CATEGORIA + sec;
                     // No se cierra con algo adentro: el molde quedaría invisible.
                     if (cajonAbierto(pc) && (pinFijado[ps] || !getStack(pinSlot(ps)).isEmpty())) return false;
-                    cajones ^= 1L << pc;
+                    cajones.flip(pc);
                     cambio = true;
                 } else if (id >= BTN_PIN_BASE && id < BTN_PIN_BASE + PINES_LOGICOS) {
                     cambio = chinchetaPin(id - BTN_PIN_BASE);
@@ -877,6 +904,12 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 ComboCorte c = comboDeMoldeBorcego(activo.getItem(), Lado.AMBAS);
                 yield c == null ? ComboCorte.VACIO : c;
             }
+            case DELANTAL -> {
+                if (activo.getItem() instanceof MoldeFormaDelantalItem m) yield ComboCorte.delantalForma(m.valor);
+                if (activo.getItem() instanceof MoldeVoladoItem m) yield ComboCorte.delantalVolado(m.valor);
+                if (activo.getItem() instanceof MoldeRuedoItem m) yield ComboCorte.ruedo(com.modamod.item.ZonaRuedo.DELANTAL, m.valor, false);
+                yield ComboCorte.VACIO;
+            }
         };
         return agregarFijada(combo.conIcono(icono));
     }
@@ -918,12 +951,14 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         // los dos tipos de molde; el tipo del molde decide qué se aplica.
         if (item instanceof MoldeRangoItem) {
             Rol par = parDeCajon(rol);
-            if (par != null && esRolRuedoDeCajon(rol) && rol != Rol.SOLAPA_CHAQUETA && rol != Rol.CINTURA_POLLERA) rol = par;
+            if (par != null && esRolRuedoDeCajon(rol) && rol != Rol.SOLAPA_CHAQUETA && rol != Rol.CINTURA_POLLERA
+                    && rol != Rol.INICIO_DELANTAL) rol = par;
         } else if (item instanceof MoldeRuedoItem) {
             Rol par = parDeCajon(rol);
             if (par != null && !esRolRuedoDeCajon(rol) && rol != Rol.CUELLO) rol = par;
         } else if (item instanceof MoldeVoladoItem) {
             if (rol == Rol.RUEDO_POLLERA) rol = Rol.VOLADO_INFERIOR;
+            if (rol == Rol.RUEDO_DELANTAL) rol = Rol.VOLADO_DELANTAL;
         } else if (item instanceof MoldeCuelloItem) {
             if (rol == Rol.SOLAPA_CHAQUETA) rol = Rol.CUELLO;
         } else if (item instanceof MoldeChaquetaItem m && m.tipo.esSolapa()) {
@@ -1033,6 +1068,26 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case BOTAMANGA_BORCEGO_IZQ, BOTAMANGA_BORCEGO_DER -> {
                 if (item instanceof MoldeBorcegoItem m && m.tipo.esBotamanga()) c = comboDeMoldeBorcego(item, lado);
             }
+            case FORMA_DELANTAL -> {
+                if (item instanceof MoldeFormaDelantalItem m) c = ComboCorte.delantalForma(m.valor);
+            }
+            case LARGO_DELANTAL -> {
+                if (item instanceof MoldeRangoItem m) c = ComboCorte.delantalLargo(m.rango.nivel());
+            }
+            case INICIO_DELANTAL -> {
+                if (item instanceof MoldeRangoItem m) c = ComboCorte.delantalInicio(m.rango.nivel());
+            }
+            case ESQUINAS_DELANTAL -> {
+                // Los moldes de ruedo de la capa (recto / redondeado) son las esquinas de abajo del delantal.
+                if (item instanceof MoldeCapaItem m && m.tipo == MoldeCapaItem.Tipo.RUEDO_RECTO) c = ComboCorte.delantalEsquinas(com.modamod.item.CapaRuedo.RECTO);
+                else if (item instanceof MoldeCapaItem m && m.tipo == MoldeCapaItem.Tipo.RUEDO_REDONDEADO) c = ComboCorte.delantalEsquinas(com.modamod.item.CapaRuedo.REDONDEADO);
+            }
+            case VOLADO_DELANTAL -> {
+                if (item instanceof MoldeVoladoItem m) c = ComboCorte.delantalVolado(m.valor);
+            }
+            case RUEDO_DELANTAL -> {
+                if (item instanceof MoldeRuedoItem m) c = ComboCorte.ruedo(com.modamod.item.ZonaRuedo.DELANTAL, m.valor, false);
+            }
             case ALA_SOMBRERO -> {
                 if (item instanceof MoldeSombreroItem m && m.tipo.esAla()) c = comboDeMoldeSombrero(item);
             }
@@ -1130,6 +1185,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case TORSO -> Rol.RUEDO_TORSO; case RUEDO_TORSO -> Rol.TORSO;
             case VOLADO_INFERIOR -> Rol.RUEDO_POLLERA; case RUEDO_POLLERA -> Rol.VOLADO_INFERIOR;
             case LARGO_POLLERA -> Rol.CINTURA_POLLERA; case CINTURA_POLLERA -> Rol.LARGO_POLLERA;
+            case LARGO_DELANTAL -> Rol.INICIO_DELANTAL; case INICIO_DELANTAL -> Rol.LARGO_DELANTAL;
+            case VOLADO_DELANTAL -> Rol.RUEDO_DELANTAL; case RUEDO_DELANTAL -> Rol.VOLADO_DELANTAL;
             default -> null;
         };
     }
@@ -1138,7 +1195,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     static boolean esRolRuedoDeCajon(Rol r) {
         return switch (r) {
             case RUEDO_PUNO_IZQ, RUEDO_PUNO_DER, RUEDO_BOTA_IZQ, RUEDO_BOTA_DER, RUEDO_SUP_IZQ, RUEDO_SUP_DER,
-                 RUEDO_INF_IZQ, RUEDO_INF_DER, SOLAPA_CHAQUETA, RUEDO_TORSO, RUEDO_POLLERA, CINTURA_POLLERA -> true;
+                 RUEDO_INF_IZQ, RUEDO_INF_DER, SOLAPA_CHAQUETA, RUEDO_TORSO, RUEDO_POLLERA, CINTURA_POLLERA,
+                 INICIO_DELANTAL, RUEDO_DELANTAL -> true;
             default -> false;
         };
     }
@@ -1174,9 +1232,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     }
 
     /** Cajones abiertos a mano (un bit por pin lógico), con el botón ▾ del pin principal. */
-    private long cajones;
+    private final java.util.BitSet cajones = new java.util.BitSet(PINES_LOGICOS);
 
-    public boolean cajonAbierto(int p) { return (cajones & (1L << p)) != 0; }
+    public boolean cajonAbierto(int p) { return cajones.get(p); }
 
     /** ¿Se ve y se puede usar el pin {@code i}? Un cajón se abre a mano o solo cuando él o su principal tienen molde o corte. */
     public boolean pinVisible(Categoria cat, int i) {
@@ -1471,6 +1529,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         if (stack.getItem() instanceof com.modamod.item.SombreroBrujaItem) return Categoria.SOMBRERO;
         if (stack.getItem() instanceof com.modamod.item.BandaItem) return Categoria.BANDA;
         if (stack.getItem() instanceof com.modamod.item.BorcegosItem) return Categoria.CALZADO;
+        if (stack.getItem() instanceof com.modamod.item.DelantalItem) return Categoria.DELANTAL;
         return null;
     }
 
@@ -1788,7 +1847,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                     ROLES[cat.ordinal()][p % PINES_POR_CATEGORIA]);
             return ok;
         }
-        if (slot == POLLERA_ACTIVO || slot == CAPA_ACTIVO || slot == SOMBRERO_ACTIVO || slot == BANDA_ACTIVO || slot == CALZADO_ACTIVO) return false; // sin uso, igual que los otros (ver abajo)
+        if (slot == POLLERA_ACTIVO || slot == CAPA_ACTIVO || slot == SOMBRERO_ACTIVO || slot == BANDA_ACTIVO || slot == CALZADO_ACTIVO || slot == DELANTAL_ACTIVO) return false; // sin uso, igual que los otros (ver abajo)
         if (slot >= ACTIVO_INICIO && slot < ACTIVO_FIN) {
             Categoria cat = Categoria.values()[slot - ACTIVO_INICIO];
             // El Activo de REMERA quedó sin uso (2026-09-24, esquema de
@@ -1805,6 +1864,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         }
         if (slot >= BANDA_PORPRENDA_INICIO && slot < BANDA_PORPRENDA_INICIO + PORPRENDA_TOTAL) {
             return sirveEnBanco(stack, Categoria.BANDA) || categoriaDe(stack) == Categoria.BANDA;
+        }
+        if (slot >= DELANTAL_PORPRENDA_INICIO && slot < DELANTAL_PORPRENDA_INICIO + PORPRENDA_TOTAL) {
+            return sirveEnBanco(stack, Categoria.DELANTAL) || categoriaDe(stack) == Categoria.DELANTAL;
         }
         if (slot >= CALZADO_PORPRENDA_INICIO && slot < CALZADO_PORPRENDA_INICIO + PORPRENDA_TOTAL) {
             return sirveEnBanco(stack, Categoria.CALZADO) || categoriaDe(stack) == Categoria.CALZADO;
@@ -1938,9 +2000,13 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         DefaultedList<ItemStack> viejos = DefaultedList.ofSize(TAMANO_VIEJO, ItemStack.EMPTY);
         Inventories.readNbt(nbt, viejos, lookup);
         for (int i = 0; i < TAMANO_VIEJO; i++) items.set(i, viejos.get(i));
-        DefaultedList<ItemStack> nuevos = DefaultedList.ofSize(TAMANO - TAMANO_VIEJO, ItemStack.EMPTY);
+        DefaultedList<ItemStack> nuevos = DefaultedList.ofSize(INICIO_LISTA_2 - TAMANO_VIEJO, ItemStack.EMPTY);
         Inventories.readNbt(nbt.getCompound("pollera_items"), nuevos, lookup);
         for (int i = 0; i < nuevos.size(); i++) items.set(TAMANO_VIEJO + i, nuevos.get(i));
+        // Segunda lista (2026-10-11): lo que no entra en el byte de la primera.
+        DefaultedList<ItemStack> segunda = DefaultedList.ofSize(TAMANO - INICIO_LISTA_2, ItemStack.EMPTY);
+        Inventories.readNbt(nbt.getCompound("delantal_items"), segunda, lookup);
+        for (int i = 0; i < segunda.size(); i++) items.set(INICIO_LISTA_2 + i, segunda.get(i));
         tijera = nbt.contains("tijera") ? ItemStack.fromNbtOrEmpty(lookup, nbt.getCompound("tijera")) : ItemStack.EMPTY;
         encendida = nbt.getBoolean("encendida");
         estado = Estado.values()[nbt.getInt("estado")];
@@ -1954,7 +2020,10 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         categoria = Categoria.values()[nbt.getInt("categoria")];
         remeraSimetria = !nbt.contains("remera_simetria") || nbt.getBoolean("remera_simetria");
         linea = nbt.getBoolean("linea");
-        cajones = nbt.getLong("cajones");
+        cajones.clear();
+        if (nbt.contains("cajones_bits")) {
+            cajones.or(java.util.BitSet.valueOf(nbt.getLongArray("cajones_bits")));
+        }
 
         for (Categoria cat : Categoria.values()) {
             List<ComboCorte> destino = fijadasPorCategoria.get(cat);
@@ -2006,11 +2075,16 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         DefaultedList<ItemStack> viejos = DefaultedList.ofSize(TAMANO_VIEJO, ItemStack.EMPTY);
         for (int i = 0; i < TAMANO_VIEJO; i++) viejos.set(i, items.get(i));
         Inventories.writeNbt(nbt, viejos, lookup);
-        DefaultedList<ItemStack> nuevos = DefaultedList.ofSize(TAMANO - TAMANO_VIEJO, ItemStack.EMPTY);
+        DefaultedList<ItemStack> nuevos = DefaultedList.ofSize(INICIO_LISTA_2 - TAMANO_VIEJO, ItemStack.EMPTY);
         for (int i = 0; i < nuevos.size(); i++) nuevos.set(i, items.get(TAMANO_VIEJO + i));
         NbtCompound polleraNbt = new NbtCompound();
         Inventories.writeNbt(polleraNbt, nuevos, lookup);
         nbt.put("pollera_items", polleraNbt);
+        DefaultedList<ItemStack> segunda = DefaultedList.ofSize(TAMANO - INICIO_LISTA_2, ItemStack.EMPTY);
+        for (int i = 0; i < segunda.size(); i++) segunda.set(i, items.get(INICIO_LISTA_2 + i));
+        NbtCompound segundaNbt = new NbtCompound();
+        Inventories.writeNbt(segundaNbt, segunda, lookup);
+        nbt.put("delantal_items", segundaNbt);
         if (!tijera.isEmpty()) nbt.put("tijera", tijera.encode(lookup));
         nbt.putBoolean("encendida", encendida);
         nbt.putInt("estado", estado.ordinal());
@@ -2024,7 +2098,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         nbt.putInt("categoria", categoria.ordinal());
         nbt.putBoolean("remera_simetria", remeraSimetria);
         nbt.putBoolean("linea", linea);
-        nbt.putLong("cajones", cajones);
+        nbt.putLongArray("cajones_bits", cajones.toLongArray());
 
         for (Categoria cat : Categoria.values()) {
             NbtList lista = new NbtList();

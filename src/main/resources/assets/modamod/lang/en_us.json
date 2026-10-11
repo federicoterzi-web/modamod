@@ -1140,5 +1140,19 @@
   "modamod.rango.nivel.3": "Middle",
   "modamod.rango.nivel.4": "Low",
   "modamod.rango.nivel.5": "Lower",
-  "modamod.rango.nivel.6": "Lowest"
+  "modamod.rango.nivel.6": "Lowest",
+  "modamod.modelado.rol.forma_delantal": "Shape",
+  "modamod.modelado.rol.largo_delantal": "To",
+  "modamod.modelado.rol.inicio_delantal": "From",
+  "modamod.modelado.rol.esquinas_delantal": "Corners",
+  "modamod.modelado.rol.volado_delantal": "Ruffle",
+  "modamod.modelado.rol.ruedo_delantal": "Hem",
+  "modamod.modelado.categoria.delantal": "Apron",
+  "modamod.prenda.delantal": "Apron",
+  "modamod.tipo.delantal": "Apron mold",
+  "item.modamod.molde_delantal_recto": "Apron Mold: Straight",
+  "item.modamod.molde_delantal_trapecio": "Apron Mold: Trapezoid",
+  "item.modamod.molde_delantal_peto": "Apron Mold: Bib",
+  "item.modamod.molde_delantal_corazon": "Apron Mold: Heart",
+  "item.modamod.molde_delantal_feston": "Apron Mold: Scalloped"
 }
