@@ -115,6 +115,10 @@ public final class CorreaRenderer {
         List<Correa> lista = item.get(ModamodComponents.CORREAS);
         if (lista == null || lista.isEmpty()) return;
         for (Correa c : lista) if (c.superficie() == Correa.Superficie.CAJA) una(item, c, dil, biped, matrices, vertexConsumers, luz, marco);
+        // Los borcegos (2026-10-08, "porque solo el derecho?"): el izquierdo lleva las mismas correas, espejadas.
+        if (item.getItem() instanceof com.modamod.item.BorcegosItem) {
+            for (Correa c : lista) if (c.superficie() == Correa.Superficie.CAJA) una(item, c.espejoX(), dil, biped, matrices, vertexConsumers, luz, marco);
+        }
     }
 
     /** ¿Tiene {@code item} correas sobre esa malla? (la malla solo se graba si hay algo que ubicar en ella) */

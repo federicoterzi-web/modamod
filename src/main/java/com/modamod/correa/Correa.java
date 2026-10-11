@@ -41,7 +41,20 @@ public record Correa(Parte parte, Punto desde, Punto hasta, EstiloCorrea estilo,
     public static final List<Integer> DE_FABRICA = List.of(0x5A3A24, 0x8A6240, 0xC9A24A);
 
     /** Un punto de la superficie de la caja y la cara (normal) donde está. */
+    /** La correa en la parte de enfrente, espejada en x (2026-10-08): el borcego izquierdo copia al derecho. */
+    public Correa espejoX() {
+        Parte p = parte == Parte.PIERNA_DER ? Parte.PIERNA_IZQ : parte == Parte.PIERNA_IZQ ? Parte.PIERNA_DER
+                : parte == Parte.BRAZO_DER ? Parte.BRAZO_IZQ : parte == Parte.BRAZO_IZQ ? Parte.BRAZO_DER : parte;
+        return new Correa(p, desde.espejoX(), hasta.espejoX(), estilo, modo, ancho, colores, blandura, superficie, largo);
+    }
+
     public record Punto(float x, float y, float z, Direction cara) {
+        /** El mismo punto en la parte de enfrente (2026-10-08, borcego izquierdo): x al revés y las caras este/oeste cambiadas. */
+        public Punto espejoX() {
+            Direction c = cara == Direction.EAST ? Direction.WEST : cara == Direction.WEST ? Direction.EAST : cara;
+            return new Punto(-x, y, z, c);
+        }
+
         public static final Codec<Punto> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.FLOAT.fieldOf("x").forGetter(Punto::x),
                 Codec.FLOAT.fieldOf("y").forGetter(Punto::y),

@@ -99,7 +99,20 @@ public final class ApliqueRenderer {
         if (apliques != null) {
             for (int i = 0; i < apliques.size(); i++) {
                 Aplique a = apliques.get(i);
-                if (a.superficie() == Aplique.Superficie.CAJA) dibujarUno(a, i, apliques, dil, biped, matrices, vertexConsumers, luz, marco);
+                if (a.superficie() == Aplique.Superficie.CAJA) dibujarUno(a, i, apliques, dil, biped, matrices, vertexConsumers, luz, marco, false);
+            }
+            // Los borcegos (2026-10-08, "porque solo el derecho?"): el izquierdo lleva los mismos apliques, espejados
+            // (posición, cara y giro; los modelos no se espejan). No se anotan para el picking de la Mesa.
+            if (item.getItem() instanceof com.modamod.item.BorcegosItem) {
+                pasadaEspejo = true;
+                try {
+                    for (int i = 0; i < apliques.size(); i++) {
+                        Aplique a = apliques.get(i);
+                        if (a.superficie() == Aplique.Superficie.CAJA) dibujarUno(a, i, apliques, dil, biped, matrices, vertexConsumers, luz, marco, true);
+                    }
+                } finally {
+                    pasadaEspejo = false;
+                }
             }
         }
         // Correas libres (2026-10-05): comparten el marco y la tela blanda de los apliques.
@@ -161,12 +174,22 @@ public final class ApliqueRenderer {
         }
     }
 
+    /** Dibujando la copia espejada de un par (borcego izquierdo): no se anota para el picking. */
+    private static boolean pasadaEspejo = false;
+
     private static void dibujarUno(Aplique a, int idx, List<Aplique> todos, float dil, BipedEntityModel<?> biped,
-                                   MatrixStack matrices, VertexConsumerProvider vertexConsumers, int luz, Matrix3f marco) {
-        ModelPart parte = CuerpoGeometria.delJugador(biped, a.parte());
+                                   MatrixStack matrices, VertexConsumerProvider vertexConsumers, int luz, Matrix3f marco,
+                                   boolean espejo) {
+        ModelPart parte = CuerpoGeometria.delJugador(biped, espejo && a.parte() == Parte.PIERNA_DER ? Parte.PIERNA_IZQ : a.parte());
         if (!parte.visible) return;
 
         Vector3f n = new Vector3f(a.cara().getOffsetX(), a.cara().getOffsetY(), a.cara().getOffsetZ());
+        float px = a.x(), giro = a.giro();
+        if (espejo) {
+            n.x = -n.x;
+            px = -px;
+            giro = -giro;
+        }
         matrices.push();
         parte.rotate(matrices);
         // Sobre la superficie de la tela: el punto del click (en la caja sin
@@ -179,23 +202,23 @@ public final class ApliqueRenderer {
                 a.parte() == Parte.TORSO && a.cara() == net.minecraft.util.math.Direction.NORTH
                         && com.modamod.render.relieve.BustoRender.actual != null
                         ? com.modamod.render.relieve.BustoRender.sobreBusto(
-                                com.modamod.render.relieve.BustoRender.actual, a.x(), a.y(), afuera,
+                                com.modamod.render.relieve.BustoRender.actual, px, a.y(), afuera,
                                 com.modamod.render.relieve.BustoRender.carpaDe(com.modamod.item.Calce.de(dil)))
                         : null;
         // Sobre la cola (2026-10-02): los de la espalda del torso, igual.
         if (enBusto == null && a.parte() == Parte.TORSO && a.cara() == net.minecraft.util.math.Direction.SOUTH
                 && com.modamod.render.relieve.BustoRender.actual != null) {
             enBusto = com.modamod.render.relieve.BustoRender.sobreCola(
-                    com.modamod.render.relieve.BustoRender.actual, a.x(), a.y(), afuera,
+                    com.modamod.render.relieve.BustoRender.actual, px, a.y(), afuera,
                     com.modamod.render.relieve.BustoRender.carpaDe(com.modamod.item.Calce.de(dil)));
         }
         if (enBusto != null) {
             matrices.translate(enBusto.pos().x / 16f, enBusto.pos().y / 16f, enBusto.pos().z / 16f);
             n = enBusto.normal();
         } else {
-            matrices.translate((a.x() + n.x * afuera) / 16f, (a.y() + n.y * afuera) / 16f, (a.z() + n.z * afuera) / 16f);
+            matrices.translate((px + n.x * afuera) / 16f, (a.y() + n.y * afuera) / 16f, (a.z() + n.z * afuera) / 16f);
         }
-        Matrix4f orient = orientacion(n, a.giro());
+        Matrix4f orient = orientacion(n, giro);
         matrices.multiplyPositionMatrix(orient);
         // También a las normales (es una rotación): la luz del ítem y la tela blanda leen este marco.
         matrices.peek().getNormalMatrix().mul(orient.get3x3(new Matrix3f()));
@@ -237,7 +260,7 @@ public final class ApliqueRenderer {
     /** Anota dónde quedó el aplique {@code idx}: su espacio de objeto (con {@code pm}) a la pantalla, y su caja. */
     private static void capturar(int idx, MatrixStack matrices, Matrix4f pm, float[] min, float[] max) {
         Map<Integer, Captura> c = capturaApliques;
-        if (c == null) return;
+        if (c == null || pasadaEspejo) return;
         c.put(idx, new Captura(new Matrix4f(matrices.peek().getPositionMatrix()).mul(pm), min.clone(), max.clone()));
     }
 
