@@ -228,6 +228,12 @@ public class EstiladoBlockEntity extends BlockEntity
                 y = MathHelper.clamp(y, 0, 64);
                 z = 0;
             }
+            case DELANTAL -> {
+                if (!(prenda.getItem() instanceof com.modamod.item.DelantalItem)) return false;
+                x = MathHelper.clamp(x, 0, 64);
+                y = MathHelper.clamp(y, 0, 64);
+                z = 0;
+            }
             case APLIQUE -> {
                 if (padre < 0 || padre >= actuales.size()) return false;
                 parte = actuales.get(padre).parte();      // la parte del cuerpo del aplique que lo lleva
@@ -533,10 +539,12 @@ public class EstiladoBlockEntity extends BlockEntity
         // La superficie tiene que ser la de la prenda: la malla de la pollera o de la capa, o las cajas (cuerpo, sombrero, banda).
         boolean pollera = prenda.getItem() instanceof com.modamod.item.PolleraItem;
         boolean capa = prenda.getItem() instanceof com.modamod.item.CapaItem;
+        boolean delantal = prenda.getItem() instanceof com.modamod.item.DelantalItem;
         switch (superficie) {
             case POLLERA -> { if (!pollera) return false; }
             case CAPA -> { if (!capa) return false; }
-            default -> { if (pollera || capa) return false; }
+            case DELANTAL -> { if (!delantal) return false; }
+            default -> { if (pollera || capa || delantal) return false; }
         }
         // Anclada: un solo punto (el 2.º es el mismo).
         if (modo == com.modamod.correa.ModoCorrea.ANCLADA) hasta = desde;
@@ -682,7 +690,8 @@ public class EstiladoBlockEntity extends BlockEntity
     /** Qué prendas llevan acabado: las de tela que se dibujan por piezas (remera, chaqueta, pantalón, medias, calentabrazos). */
     public static boolean admiteAcabado(ItemStack prenda) {
         return com.modamod.garment.Garments.esPrenda(prenda) && !(prenda.getItem() instanceof com.modamod.item.PolleraItem)
-                && !(prenda.getItem() instanceof com.modamod.item.CapaItem);
+                && !(prenda.getItem() instanceof com.modamod.item.CapaItem)
+                && !(prenda.getItem() instanceof com.modamod.item.DelantalItem);
     }
 
     private boolean alternarTextura() {

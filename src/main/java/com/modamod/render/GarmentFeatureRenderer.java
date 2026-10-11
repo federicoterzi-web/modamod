@@ -541,11 +541,19 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         float twirl = previewOverride == null && entidad != null
                 ? com.modamod.client.TwirlCliente.progreso(entidad, tickDelta) : -1f;
         float cola = busto == null ? 0f : busto.cola();
-        PolleraMalla.dibujarDelantal(matrices, buffer, luz, dilatacion,
+        List<com.modamod.aplique.Aplique> apliques = ApliqueRenderer.apliquesEn(stack, com.modamod.aplique.Aplique.Superficie.DELANTAL);
+        float finalDilatacion = dilatacion;
+        MallaCapturada malla = grabar("delantal", !apliques.isEmpty()
+                || CorreaRenderer.hayEn(stack, com.modamod.correa.Correa.Superficie.DELANTAL), () ->
+                PolleraMalla.dibujarDelantal(matrices, buffer, luz, finalDilatacion,
                 new PolleraMalla.Piernas(biped.body, biped.rightLeg, biped.leftLeg), mov, twirl, cola, delJugador.pitch,
                 inicio, largo, com.modamod.item.DelantalItem.volado(stack),
-                com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.DELANTAL), extra);
+                com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.DELANTAL), extra));
         matrices.pop();
+        if (malla != null) {
+            ApliqueRenderer.dibujarEnMalla(stack, com.modamod.aplique.Aplique.Superficie.DELANTAL, malla, vertexConsumers, luz, matrices.peek().getNormalMatrix());
+            CorreaRenderer.dibujarEnMalla(stack, com.modamod.correa.Correa.Superficie.DELANTAL, malla, vertexConsumers, luz, matrices.peek().getNormalMatrix());
+        }
     }
 
     /** La tela del delantal ya teñida y recortada a su silueta (también la usa el ícono). */

@@ -49,7 +49,9 @@ public record Aplique(ModeloAplique modelo, Parte parte, float x, float y, float
          * el punto en el espacio del objeto del padre (px, centrado en su cubo) y {@code cara} la cara de su caja
          * donde se apoya.
          */
-        APLIQUE;
+        APLIQUE,
+        /** Sobre la malla del delantal (2026-10-11): x, y = u, v de su tela en px de 64, como la pollera. */
+        DELANTAL;
 
         @Override
         public String asString() {

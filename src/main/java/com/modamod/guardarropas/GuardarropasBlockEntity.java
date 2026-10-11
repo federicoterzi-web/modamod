@@ -95,7 +95,17 @@ public class GuardarropasBlockEntity extends BlockEntity
     /** Calzado (2026-10-08, "agreguemos un slot de calzado"): otro slot al FINAL, va en el slot de Trinkets {@code socks/calzado}. */
     public static final int SLOT_CALZADO = SLOT_SOMBRERO + 1;
 
-    public static final int TAMANO = SLOT_CALZADO + 1;
+    /** Delantal (2026-10-11): otro slot al FINAL, va en el slot de Trinkets {@code torso/delantal}. */
+    public static final int SLOT_DELANTAL = SLOT_CALZADO + 1;
+
+    public static final int TAMANO = SLOT_DELANTAL + 1;
+
+    /** El inventario de Trinkets del delantal del jugador, o null si no existe. */
+    @Nullable
+    public static dev.emi.trinkets.api.TrinketInventory inventarioDelantal(dev.emi.trinkets.api.TrinketComponent componente) {
+        var grupo = componente.getInventory().get("torso");
+        return grupo == null ? null : grupo.get("delantal");
+    }
 
     /** El inventario de Trinkets del calzado del jugador, o null si no existe. */
     @Nullable
@@ -119,6 +129,7 @@ public class GuardarropasBlockEntity extends BlockEntity
     public static boolean esValidoEn(int slot, ItemStack stack) {
         if (slot == SLOT_SOMBRERO) return stack.getItem() instanceof com.modamod.item.SombreroBrujaItem;
         if (slot == SLOT_CALZADO) return stack.getItem() instanceof com.modamod.item.BorcegosItem;
+        if (slot == SLOT_DELANTAL) return stack.getItem() instanceof com.modamod.item.DelantalItem;
         if (slot >= ARMADURA_INICIO) {
             int i = slot - ARMADURA_INICIO;
             if (i >= SLOTS_ARMADURA.length) return false;
@@ -135,6 +146,7 @@ public class GuardarropasBlockEntity extends BlockEntity
     public static int slotArmaduraDe(ItemStack stack) {
         if (stack.getItem() instanceof com.modamod.item.SombreroBrujaItem) return SLOT_SOMBRERO;
         if (stack.getItem() instanceof com.modamod.item.BorcegosItem) return SLOT_CALZADO;
+        if (stack.getItem() instanceof com.modamod.item.DelantalItem) return SLOT_DELANTAL;
         for (int i = 0; i < SLOTS_ARMADURA.length; i++) {
             if (esValidoEn(ARMADURA_INICIO + i, stack)) return ARMADURA_INICIO + i;
         }
@@ -400,6 +412,18 @@ public class GuardarropasBlockEntity extends BlockEntity
                 if (!anterior.isEmpty()) player.getInventory().offerOrDrop(anterior.copy());
                 inv.setStack(0, calzado.copy());
                 items.set(SLOT_CALZADO, ItemStack.EMPTY);
+            });
+        }
+        // Delantal: igual, en el slot torso/delantal de Trinkets.
+        ItemStack delantal = items.get(SLOT_DELANTAL);
+        if (!delantal.isEmpty()) {
+            dev.emi.trinkets.api.TrinketsApi.getTrinketComponent(player).ifPresent(componente -> {
+                var inv = inventarioDelantal(componente);
+                if (inv == null || inv.size() < 1) return;
+                ItemStack anterior = inv.getStack(0);
+                if (!anterior.isEmpty()) player.getInventory().offerOrDrop(anterior.copy());
+                inv.setStack(0, delantal.copy());
+                items.set(SLOT_DELANTAL, ItemStack.EMPTY);
             });
         }
         // Armadura: mismo criterio (un slot vacío no desequipa; lo reemplazado

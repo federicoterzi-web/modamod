@@ -690,6 +690,7 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
         float zPantalla() {
             // La malla de pollera/capa ya guarda el z de pantalla; las cajas guardan el parámetro t del rayo (de -10000 a 10000).
             return superficie == Aplique.Superficie.POLLERA || superficie == Aplique.Superficie.CAPA
+                    || superficie == Aplique.Superficie.DELANTAL
                     ? profundidad : -10000f + 20000f * profundidad;
         }
     }
@@ -900,9 +901,11 @@ public class EstiladoScreen extends HandledScreen<EstiladoScreenHandler> {
         boolean slim = MinecraftClient.getInstance().player.getSkinTextures().model() == SkinTextures.Model.SLIM;
         // Pollera y capa (2026-10-02, "no registran click on garment"): contra su malla, por UV.
         Aplique.Superficie malla = prenda.getItem() instanceof com.modamod.item.PolleraItem ? Aplique.Superficie.POLLERA
-                : prenda.getItem() instanceof com.modamod.item.CapaItem ? Aplique.Superficie.CAPA : null;
+                : prenda.getItem() instanceof com.modamod.item.CapaItem ? Aplique.Superficie.CAPA
+                : prenda.getItem() instanceof com.modamod.item.DelantalItem ? Aplique.Superficie.DELANTAL : null;
         if (malla != null) {
-            com.modamod.render.MallaCapturada m = mallas.get(malla == Aplique.Superficie.POLLERA ? "pollera" : "capa");
+            com.modamod.render.MallaCapturada m = mallas.get(malla == Aplique.Superficie.POLLERA ? "pollera"
+                    : malla == Aplique.Superficie.DELANTAL ? "delantal" : "capa");
             float[] h = m == null ? null : m.tocar((float) mx, (float) my);
             if (h == null) return null;
             return new Toque(Parte.TORSO, h[0] * 64f, h[1] * 64f, 0f, Direction.SOUTH, h[2], malla);

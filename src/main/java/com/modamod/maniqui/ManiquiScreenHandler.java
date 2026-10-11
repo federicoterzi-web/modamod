@@ -66,6 +66,7 @@ public class ManiquiScreenHandler extends ScreenHandler {
         }
         addSlot(GuardarropasScreenHandler.slotSombrero(be, this::puedeTocar));
         addSlot(GuardarropasScreenHandler.slotCalzado(be, this::puedeTocar));
+        addSlot(GuardarropasScreenHandler.slotDelantal(be, this::puedeTocar));
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {

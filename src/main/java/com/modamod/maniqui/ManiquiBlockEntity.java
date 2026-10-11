@@ -201,6 +201,9 @@ public class ManiquiBlockEntity extends BlockEntity
                     && s.getItem() instanceof com.modamod.sublimadora.RemeraItem) s = com.modamod.item.TopCorte.comoExterior(s);
             out.add(s);
         }
+        // El delantal (2026-10-11) va por encima de todo lo demás.
+        ItemStack delantal = items.get(GuardarropasBlockEntity.SLOT_DELANTAL);
+        if (!delantal.isEmpty()) out.add(delantal);
         return out;
     }
 
@@ -278,6 +281,14 @@ public class ManiquiBlockEntity extends BlockEntity
             ItemStack delJugador = inv.getStack(0).copy();
             inv.setStack(0, items.get(GuardarropasBlockEntity.SLOT_CALZADO).copy());
             items.set(GuardarropasBlockEntity.SLOT_CALZADO, delJugador);
+        });
+        // Delantal (2026-10-11): también intercambia con el slot torso/delantal de Trinkets.
+        dev.emi.trinkets.api.TrinketsApi.getTrinketComponent(player).ifPresent(componente -> {
+            var inv = GuardarropasBlockEntity.inventarioDelantal(componente);
+            if (inv == null || inv.size() < 1) return;
+            ItemStack delJugador = inv.getStack(0).copy();
+            inv.setStack(0, items.get(GuardarropasBlockEntity.SLOT_DELANTAL).copy());
+            items.set(GuardarropasBlockEntity.SLOT_DELANTAL, delJugador);
         });
         // Armadura: slot por slot, vacíos incluidos (2026-09-30).
         for (int i = 0; i < GuardarropasBlockEntity.SLOTS_ARMADURA.length; i++) {

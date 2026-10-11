@@ -726,3 +726,15 @@ Al componer, cada pixel parte del color base de la tela y cada capa se **funde**
 **Faldón por fuera de la pollera y collar redondeado** (2026-10-11; sin probar en el juego): el faldón de malla de un Top ahora pasa por fuera de las polleras que lleves puestas, sin que se atraviesen. El collar ya no se ve cuadrado: la banda y su borde son anillos de esquinas redondeadas; el herraje y los colgantes siguen igual.
 
 **Collar (2026-10-11):** el collar de `BandaZona.CUELLO` copia la forma y el anclaje de Player Collars (anillo rectangular chico a la base del cuello, anclado a la cabeza).
+
+
+### Delantal (2026-10-11)
+
+Un delantal de malla que cuelga al frente del cuerpo, del pecho hacia abajo, para complementar un maid outfit. Va en su
+propio slot de Trinkets (`torso/delantal`, también en la pantalla de Ropa, la tecla K), por encima de la remera, la
+chaqueta y la pollera. En la Mesa de Modelado tiene su categoría **Delantal**: **Forma** (recto, trapecio, peto, corazón o
+festón: se recorta sobre la tela, así lleva patrones y teñido), **Hasta** (hasta dónde llega: los 7 moldes de rango, de la
+cadera a los pies) con el cajón **Desde** (dónde arranca: de la cintura baja al pecho), **Calce**, **Trama**, **Volado** (los
+de la pollera) con el cajón **Ruedo**, y **Esquinas** (los moldes de ruedo recto y redondeado de la capa). Se tiñe en la
+Estación de Tintes (prenda entera, peto y falda) y se le ponen apliques (bolsillos, moños) y correas en la Estilista. También
+entra en el Guardarropas y el Maniquí.

@@ -173,6 +173,12 @@ public class GuardarropasScreen extends HandledScreen<GuardarropasScreenHandler>
         var armadura = jugador.getInventory().armor;
         ItemStack[] antes = new ItemStack[armadura.size()];
         for (int i = 0; i < antes.length; i++) antes[i] = armadura.get(i);
+        // El delantal (2026-10-11) se dibuja con el resto de la ropa.
+        ItemStack delantal = inv.getStack(GuardarropasBlockEntity.SLOT_DELANTAL);
+        if (!delantal.isEmpty()) {
+            prendas = new java.util.ArrayList<>(prendas);
+            prendas.add(delantal);
+        }
         GarmentFeatureRenderer.previewOverride = prendas;
         ItemStack sombrero = inv.getStack(GuardarropasBlockEntity.SLOT_SOMBRERO);
         GarmentFeatureRenderer.sombreroOverride = sombrero.isEmpty() ? null : sombrero;
@@ -205,6 +211,15 @@ public class GuardarropasScreen extends HandledScreen<GuardarropasScreenHandler>
                 this.backgroundWidth, this.backgroundHeight, this.backgroundWidth, this.backgroundHeight);
         marcoSombrero(context, this.x, this.y);
         marcoCalzado(context, this.x, this.y);
+        marcoDelantal(context, this.x, this.y);
+    }
+
+    /** Marco del slot del delantal (2026-10-11), debajo del del calzado. */
+    static void marcoDelantal(DrawContext c, int ox, int oy) {
+        int x0 = ox + GuardarropasScreenHandler.X_ARMADURA, y0 = oy + GuardarropasScreenHandler.Y_DELANTAL;
+        c.fill(x0 - 1, y0 - 1, x0 + 17, y0 + 17, 0xFF2A180C);
+        c.fill(x0, y0, x0 + 16, y0 + 16, 0xFF5A4028);
+        c.drawTexture(Identifier.of("modamod", "textures/gui/slot/delantal.png"), x0, y0, 0, 0, 16, 16, 16, 16);
     }
 
     /** Marco del slot del calzado (2026-10-08), debajo del del sombrero. */

@@ -155,3 +155,12 @@ por código: **hay que rehacerlo**), `oversized_hoodie`, `maid_outfit`, `estroge
 cobre como el resto de la Modeladora. **Esquema:** `esquema_borcegos.png` (960×544, paleta de 256) con una bota grande de
 lado y tres marcos de slot: Caña, Suela y Botamanga (hoy es una copia del de la banda). **Ítem:** `borcegos.png` (ya hay
 uno dibujado por código, 64×64; se puede rehacer).
+
+## G. Delantal (2026-10-11, provisorios)
+
+**Molde de forma de Delantal (5, PROVISORIOS = copia del molde de pollera tubo):** `molde_delantal_recto` (delantal de cocina
+rectangular), `molde_delantal_trapecio` (más angosto arriba), `molde_delantal_peto` (babero angosto arriba que se abre en la
+falda), `molde_delantal_corazon` (borde de arriba en dos lóbulos), `molde_delantal_feston` (ruedo en festones). Papel de fondo y
+destaque cobre como el resto de la Modeladora. **Ícono de slot:** `gui/slot/delantal.png` (16×16, hoy copia del de cinto).
+**Esquema:** `esquema_delantal.png` (960×544, paleta de 256; hoy copia del de la pollera) con un delantal grande de frente y
+marcos de slot: Forma, Hasta (con el cajón Desde), Calce, Trama, Volado (con el cajón Ruedo) y Esquinas.

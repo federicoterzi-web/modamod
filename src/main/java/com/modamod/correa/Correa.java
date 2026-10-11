@@ -28,7 +28,7 @@ public record Correa(Parte parte, Punto desde, Punto hasta, EstiloCorrea estilo,
      * tela en px de 64, como un aplique).
      */
     public enum Superficie implements StringIdentifiable {
-        CAJA, POLLERA, CAPA;
+        CAJA, POLLERA, CAPA, DELANTAL;
 
         @Override
         public String asString() { return name().toLowerCase(java.util.Locale.ROOT); }
