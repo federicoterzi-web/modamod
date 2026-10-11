@@ -65,6 +65,10 @@ public final class PatronGenerador {
     private static final Caja CAPA = new Caja(0, 8, 176, 128, 8);
     private static final Caja CAPA_DETALLES = new Caja(192, 16, 416, 64, 16);
 
+    // El delantal (2026-10-11): la misma tira del torso (u 16..40) pero de 24 px de alto (v 20..44), para que el
+    // paño de pecho a pies quede a 1 px de modelo = 1 px de textura (ver PolleraMalla#dibujarDelantal).
+    private static final Caja DELANTAL = new Caja(128, 160, 320, 192, 32);
+
     /** El valor (pixel de máscara) de un punto de la tira de 4 caras, en coordenadas de la tira. */
     @FunctionalInterface
     private interface ValorTira {
@@ -129,7 +133,8 @@ public final class PatronGenerador {
             // usa el layout de la caja del TORSO, envuelto en la campana (ver
             // render.PolleraMalla), así que los patrones van en esa caja.
             "pollera", List.of(TORSO),
-            "capa", List.of(CAPA, CAPA_DETALLES));
+            "capa", List.of(CAPA, CAPA_DETALLES),
+            "delantal", List.of(DELANTAL));
 
     /**
      * Dónde cae la rayita a lo largo del eje que le toca según

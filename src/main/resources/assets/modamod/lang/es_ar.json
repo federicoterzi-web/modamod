@@ -1124,5 +1124,21 @@
   "modamod.estilado.tooltip.espejo": "Con borcegos: lo que pongas en un pie (aplique, correa, color o dibujo) se repite, espejado, en el otro. Apagado, cada pie lleva lo suyo.",
   "modamod.estilado.pie.der": "Pie: derecho",
   "modamod.estilado.pie.izq": "Pie: izquierdo",
-  "modamod.estilado.tooltip.pie": "El pie al que van los colores y dibujos de abajo (también se cambia clickeando un borcego en la vista)."
+  "modamod.estilado.tooltip.pie": "El pie al que van los colores y dibujos de abajo (también se cambia clickeando un borcego en la vista).",
+  "item.modamod.delantal": "Delantal",
+  "trinkets.slot.torso.delantal": "Delantal",
+  "modamod.slot.torso.delantal": "Delantales. Van por encima de la remera, la chaqueta y la pollera, del pecho hacia abajo.",
+  "modamod.delantal.tooltip": "%s · desde: %s · hasta: %s",
+  "modamod.delantal.forma.recto": "Recto",
+  "modamod.delantal.forma.trapecio": "Trapecio",
+  "modamod.delantal.forma.peto": "Peto",
+  "modamod.delantal.forma.corazon": "Corazón",
+  "modamod.delantal.forma.feston": "Festón",
+  "modamod.rango.nivel.0": "Más alto",
+  "modamod.rango.nivel.1": "Muy alto",
+  "modamod.rango.nivel.2": "Alto",
+  "modamod.rango.nivel.3": "Medio",
+  "modamod.rango.nivel.4": "Bajo",
+  "modamod.rango.nivel.5": "Muy bajo",
+  "modamod.rango.nivel.6": "Más bajo"
 }

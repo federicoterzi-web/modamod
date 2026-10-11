@@ -156,7 +156,7 @@ public class ModamodClient implements ClientModInitializer {
         // el largo de verdad. La remera se registra en SublimadoraModClient.
         IconoPrendaItemRenderer icono = new IconoPrendaItemRenderer(null);
         for (var item : new net.minecraft.item.Item[]{ModamodItems.PANTALON, ModamodItems.POLLERA,
-                ModamodItems.SOCKS_SOLID, ModamodItems.CALIENTABRAZOS, ModamodItems.CAPA}) {
+                ModamodItems.SOCKS_SOLID, ModamodItems.CALIENTABRAZOS, ModamodItems.CAPA, ModamodItems.DELANTAL}) {
             net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry.INSTANCE.register(item, icono);
         }
 

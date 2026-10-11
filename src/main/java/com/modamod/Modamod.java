@@ -108,6 +108,7 @@ public class Modamod implements ModInitializer {
             entries.add(ModamodItems.FISHNET_SOCKS);
             entries.add(ModamodItems.PANTALON);
             entries.add(ModamodItems.POLLERA);
+            entries.add(ModamodItems.DELANTAL);
             entries.add(ModamodItems.TINTE_MEZCLA);
             // Los moldes por-eje ESPECÍFICOS de pantalón-largo y medias se
             // sacaron (a pedido, "sintetizar todos en esos dos moldes

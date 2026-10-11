@@ -496,6 +496,41 @@ public final class ModamodComponents {
                     .packetCodec(PacketCodecs.indexed(i -> PolleraVolado.values()[i], Enum::ordinal))
                     .build());
 
+    /** Delantal (2026-10-11): nivel de rango 0..6 de dónde arranca (1 + 1,5·n px) y hasta dónde llega (9 + 2,5·n px). */
+    public static final ComponentType<Integer> DELANTAL_INICIO = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_inicio"),
+            ComponentType.<Integer>builder()
+                    .codec(com.mojang.serialization.Codec.intRange(0, 6))
+                    .packetCodec(PacketCodecs.VAR_INT)
+                    .build());
+    public static final ComponentType<Integer> DELANTAL_LARGO = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_largo"),
+            ComponentType.<Integer>builder()
+                    .codec(com.mojang.serialization.Codec.intRange(0, 6))
+                    .packetCodec(PacketCodecs.VAR_INT)
+                    .build());
+    /** Silueta del delantal; ausente = RECTO. */
+    public static final ComponentType<DelantalForma> DELANTAL_FORMA = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_forma"),
+            ComponentType.<DelantalForma>builder()
+                    .codec(StringIdentifiable.createCodec(DelantalForma::values))
+                    .packetCodec(PacketCodecs.indexed(i -> DelantalForma.values()[i], Enum::ordinal))
+                    .build());
+    /** Esquinas de abajo del delantal (solo se guarda REDONDEADO). */
+    public static final ComponentType<CapaRuedo> DELANTAL_ESQUINAS = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_esquinas"),
+            ComponentType.<CapaRuedo>builder()
+                    .codec(StringIdentifiable.createCodec(CapaRuedo::values))
+                    .packetCodec(PacketCodecs.indexed(i -> CapaRuedo.values()[i], Enum::ordinal))
+                    .build());
+    /** Volado del ruedo del delantal (los de la pollera); ausente = sin volado. */
+    public static final ComponentType<PolleraVolado> DELANTAL_VOLADO = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_volado"),
+            ComponentType.<PolleraVolado>builder()
+                    .codec(StringIdentifiable.createCodec(PolleraVolado::values))
+                    .packetCodec(PacketCodecs.indexed(i -> PolleraVolado.values()[i], Enum::ordinal))
+                    .build());
+
     /** Forma de la pollera (§{@link PolleraForma}); ausente = CAMPANA. */
     public static final ComponentType<PolleraForma> POLLERA_FORMA = Registry.register(
             Registries.DATA_COMPONENT_TYPE,

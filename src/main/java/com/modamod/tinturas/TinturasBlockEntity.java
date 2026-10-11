@@ -133,6 +133,8 @@ public class TinturasBlockEntity extends BlockEntity
     public static final int CASILLAS_CAPA = 3;
     /** Las zonas del retazo de aplique (2026-10-04). */
     public static final int CASILLAS_APLIQUE = 3;
+    /** Delantal (2026-10-11): prenda entera, peto y falda. */
+    public static final int CASILLAS_DELANTAL = 3;
     public static final int CASILLAS_INICIO = ALMACEN_FIN;
     public static final int TAMANO = CASILLAS_INICIO + CASILLAS * Categoria.values().length;
     /** Opacidad en pasos de 10% (10..100). */
@@ -398,7 +400,7 @@ public class TinturasBlockEntity extends BlockEntity
      * {@code APLIQUE} (2026-10-04, fase 4: "Tintes con categoría Aplique"): el retazo de aplique con 3 cuadraditos,
      * uno por zona (1, 2, 3), de color liso por ahora; los patrones por zona vienen en la segunda tanda.
      */
-    public enum Categoria { REMERA, PANTALON, MEDIAS, CALIENTABRAZOS, POLLERA, CAPA, APLIQUE }
+    public enum Categoria { REMERA, PANTALON, MEDIAS, CALIENTABRAZOS, POLLERA, CAPA, APLIQUE, DELANTAL }
 
     private Categoria categoria = Categoria.REMERA;
     private final Casilla[][] casillas = new Casilla[Categoria.values().length][CASILLAS];
@@ -436,6 +438,14 @@ public class TinturasBlockEntity extends BlockEntity
         if (i < 0 || i >= CASILLAS) return null;
         if (cat == Categoria.POLLERA) return i < CASILLAS_POLLERA ? com.modamod.region.RegionPintura.TODO : null;
         if (cat == Categoria.APLIQUE) return i < CASILLAS_APLIQUE ? com.modamod.region.RegionPintura.TODO : null;
+        if (cat == Categoria.DELANTAL) {
+            return switch (i) {
+                case 0 -> com.modamod.region.RegionPintura.TODO;
+                case 1 -> com.modamod.region.RegionPintura.DELANTAL_PETO;
+                case 2 -> com.modamod.region.RegionPintura.DELANTAL_FALDA;
+                default -> null;
+            };
+        }
         if (cat == Categoria.CAPA) {
             return switch (i) {
                 case 0 -> com.modamod.region.RegionPintura.CAPA_EXTERIOR;
@@ -520,6 +530,7 @@ public class TinturasBlockEntity extends BlockEntity
         if (stack.getItem() instanceof com.modamod.item.CalientabrazosItem) return Categoria.CALIENTABRAZOS;
         if (stack.getItem() instanceof com.modamod.item.PolleraItem) return Categoria.POLLERA;
         if (stack.getItem() instanceof com.modamod.item.CapaItem) return Categoria.CAPA;
+        if (stack.getItem() instanceof com.modamod.item.DelantalItem) return Categoria.DELANTAL;
         if (stack.getItem() instanceof com.modamod.aplique.RetazoApliqueItem) return Categoria.APLIQUE;
         return null;
     }
@@ -1600,6 +1611,7 @@ public class TinturasBlockEntity extends BlockEntity
             case POLLERA -> com.modamod.item.ModamodItems.POLLERA;
             case CAPA -> com.modamod.item.ModamodItems.CAPA;
             case APLIQUE -> com.modamod.item.ModamodItems.RETAZO_APLIQUE;
+            case DELANTAL -> com.modamod.item.ModamodItems.DELANTAL;
         };
     }
 

@@ -1124,5 +1124,21 @@
   "modamod.estilado.tooltip.espejo": "With combat boots: whatever you put on one foot (applique, strap, color or pattern) is repeated, mirrored, on the other. Off, each foot keeps its own.",
   "modamod.estilado.pie.der": "Foot: right",
   "modamod.estilado.pie.izq": "Foot: left",
-  "modamod.estilado.tooltip.pie": "The foot the colors and patterns below go to (also changed by clicking a boot in the view)."
+  "modamod.estilado.tooltip.pie": "The foot the colors and patterns below go to (also changed by clicking a boot in the view).",
+  "item.modamod.delantal": "Apron",
+  "trinkets.slot.torso.delantal": "Apron",
+  "modamod.slot.torso.delantal": "Aprons. Worn over the shirt, jacket and skirt, from the chest down.",
+  "modamod.delantal.tooltip": "%s · from: %s · to: %s",
+  "modamod.delantal.forma.recto": "Straight",
+  "modamod.delantal.forma.trapecio": "Trapezoid",
+  "modamod.delantal.forma.peto": "Bib",
+  "modamod.delantal.forma.corazon": "Heart",
+  "modamod.delantal.forma.feston": "Scalloped",
+  "modamod.rango.nivel.0": "Highest",
+  "modamod.rango.nivel.1": "Higher",
+  "modamod.rango.nivel.2": "High",
+  "modamod.rango.nivel.3": "Middle",
+  "modamod.rango.nivel.4": "Low",
+  "modamod.rango.nivel.5": "Lower",
+  "modamod.rango.nivel.6": "Lowest"
 }

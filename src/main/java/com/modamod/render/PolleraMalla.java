@@ -125,7 +125,7 @@ public final class PolleraMalla {
                                com.modamod.item.Ruedo hem, float dil, @Nullable Piernas piernas,
                                CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura) {
         dibujar(matrices, vc, luz, forma, largo, voladoRuedo, voladoTodo, hem, dil, piernas, mov, twirl, cola, inclinacion,
-                cintura, Float.NaN, Float.NaN, 0, null);
+                cintura, Float.NaN, Float.NaN, 0, null, Float.NaN, -1, -1);
     }
 
     /**
@@ -139,17 +139,18 @@ public final class PolleraMalla {
                                      float twirl, float cola, float inclinacion, float cintura,
                                      float vDesde, float vHasta, int hueco, @Nullable float[] extraPorFila) {
         dibujar(matrices, vc, luz, forma, largo, null, null, com.modamod.item.Ruedo.RECTO, dil, piernas, mov, twirl, cola,
-                inclinacion, cintura, vDesde, vHasta, hueco, extraPorFila);
+                inclinacion, cintura, vDesde, vHasta, hueco, extraPorFila, Float.NaN, -1, -1);
     }
 
     private static void dibujar(MatrixStack matrices, VertexConsumer vc, int luz, PolleraForma forma,
                                 PolleraLargo largo, @Nullable PolleraVolado voladoRuedo, @Nullable PolleraVolado voladoTodo,
                                 com.modamod.item.Ruedo hem, float dil, @Nullable Piernas piernas,
                                 CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura,
-                                float vDesde, float vHasta, int hueco, @Nullable float[] extraPorFila) {
+                                float vDesde, float vHasta, int hueco, @Nullable float[] extraPorFila,
+                                float lPx, int colDesde, int colHasta) {
         float[][][] p = new float[FILAS + 1][COLUMNAS + 1][];
         PolleraBorde borde = hem.borde();
-        float l = largo.pixeles;
+        float l = Float.isNaN(lPx) ? largo.pixeles : lPx;
         // Nunca más pegada que Normal: la cintura (sección casi recta) tiene
         // que pasar por fuera de las esquinas del torso.
         float holgura = Math.max(dil, 0.25f);
@@ -238,12 +239,32 @@ public final class PolleraMalla {
             for (int c = 0; c < COLUMNAS; c++) {
                 // Frente abierto (faldón de un Top): sin los cuadrados de cada lado del centro del frente.
                 if (hueco > 0 && Math.abs(c + 0.5f - COL_FRENTE) < hueco) continue;
+                // Delantal: solo el arco del frente.
+                if (colDesde >= 0 && (c < colDesde || c >= colHasta)) continue;
                 emitir(vc, e, p, f, c, luz, ov);
                 emitir(vc, e, p, f, c + 1, luz, ov);
                 emitir(vc, e, p, f + 1, c + 1, luz, ov);
                 emitir(vc, e, p, f + 1, c, luz, ov);
             }
         }
+    }
+
+    /** Columnas de cada lado del centro del frente que cubre el delantal (0,5 px por columna → 6 px a cada lado). */
+    public static final int DELANTAL_COLUMNAS = 12;
+
+    /**
+     * El delantal (2026-10-11, "un delantal que sea de malla"): la misma malla que la pollera, en forma de tubo casi
+     * recto, pero solo el arco del frente ({@link #DELANTAL_COLUMNAS} columnas a cada lado del centro), que arranca a
+     * {@code inicio} px bajo el hombro y mide {@code largoPx}. Las UV son lineales: {@code v} baja de 20 a 20 + largo
+     * (1 px de modelo = 1 px de textura) y {@code u} sale del largo de arco con el centro del frente en 24.
+     */
+    public static void dibujarDelantal(MatrixStack matrices, VertexConsumer vc, int luz, float dil, @Nullable Piernas piernas,
+                                       CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion,
+                                       float inicio, float largoPx, @Nullable PolleraVolado volado,
+                                       com.modamod.item.Ruedo hem, @Nullable float[] extraPorFila) {
+        dibujar(matrices, vc, luz, PolleraForma.TUBO, PolleraLargo.MAXIMO, volado, null, hem, dil, piernas, mov, twirl, cola,
+                inclinacion, inicio, 20f, 20f + largoPx, 0, extraPorFila, largoPx,
+                COL_FRENTE - DELANTAL_COLUMNAS, COL_FRENTE + DELANTAL_COLUMNAS);
     }
 
     /**

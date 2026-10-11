@@ -100,12 +100,13 @@ public final class IconoPrenda {
     }
 
     public static boolean tieneIcono(ItemStack stack) {
-        return plantillaDe(stack) != null;
+        return stack.getItem() instanceof com.modamod.item.DelantalItem || plantillaDe(stack) != null;
     }
 
     /** La textura del ícono de este stack, o null si no se pudo armar (sin plantilla). */
     @Nullable
     public static Identifier de(ItemStack stack) {
+        if (stack.getItem() instanceof com.modamod.item.DelantalItem) return deDelantal(stack);
         String nombre = plantillaDe(stack);
         if (nombre == null) return null;
         long ahora = System.currentTimeMillis();
@@ -151,6 +152,71 @@ public final class IconoPrenda {
         icono.ultimoIntento = ahora;
         icono.textura.upload();
         return icono.id;
+    }
+
+    /**
+     * El ícono del delantal (2026-10-11): sin plantilla de sombra y mapa, directo de su tela ya recortada a la silueta
+     * (u 18..30, v 20 hacia abajo), ajustada al cuadro con un contorno oscuro.
+     */
+    @Nullable
+    private static Identifier deDelantal(ItemStack stack) {
+        long ahora = System.currentTimeMillis();
+        int hash = ItemStack.hashCode(stack);
+        PorStack cacheado = POR_STACK.get(hash);
+        String clave;
+        if (cacheado != null && ahora - cacheado.cuando() < REVISAR_MS) {
+            clave = cacheado.clave();
+        } else {
+            clave = "delantal|" + GarmentFeatureRenderer.texturaDelantal(stack) + "|" + com.modamod.item.DelantalItem.largo(stack);
+            if (POR_STACK.size() > 4 * MAXIMO_ICONOS) POR_STACK.clear();
+            POR_STACK.put(hash, new PorStack(clave, ahora));
+        }
+        Icono icono = ICONOS.get(clave);
+        if (icono != null && (icono.completo || ahora - icono.ultimoIntento < REVISAR_MS)) return icono.id;
+        if (icono == null) {
+            NativeImage img = new NativeImage(LADO, LADO, true);
+            NativeImageBackedTexture textura = new NativeImageBackedTexture(img);
+            Identifier id = Identifier.of(Modamod.MOD_ID, "icono/" + Integer.toHexString(clave.hashCode()));
+            MinecraftClient.getInstance().getTextureManager().registerTexture(id, textura);
+            icono = new Icono(id, textura);
+            ICONOS.put(clave, icono);
+            recortarCache();
+        }
+        icono.completo = componerDelantal(icono.textura.getImage(), stack);
+        icono.ultimoIntento = ahora;
+        icono.textura.upload();
+        return icono.id;
+    }
+
+    private static boolean componerDelantal(NativeImage destino, ItemStack stack) {
+        for (int y = 0; y < LADO; y++) for (int x = 0; x < LADO; x++) destino.setColor(x, y, 0);
+        NativeImage tela = imagen(GarmentFeatureRenderer.texturaDelantal(stack));
+        if (tela == null) return false;
+        float largo = com.modamod.item.DelantalItem.largo(stack);
+        float ancho = 12f;
+        float k = Math.min(56f / ancho, 56f / largo);
+        float ox = (LADO - ancho * k) / 2f, oy = (LADO - largo * k) / 2f;
+        float esc = tela.getWidth() / 64f;
+        boolean[] lleno = new boolean[LADO * LADO];
+        for (int y = 0; y < LADO; y++) {
+            for (int x = 0; x < LADO; x++) {
+                float u = 18f + (x + 0.5f - ox) / k, v = 20f + (y + 0.5f - oy) / k;
+                if (u < 18f || u >= 30f || v < 20f || v >= 20f + largo) continue;
+                int texel = muestra(tela, u * esc, v * esc);
+                if ((texel >>> 24) < 128) continue;
+                destino.setColor(x, y, 0xFF000000 | (texel & 0xFFFFFF));
+                lleno[y * LADO + x] = true;
+            }
+        }
+        for (int y = 0; y < LADO; y++) {
+            for (int x = 0; x < LADO; x++) {
+                if (lleno[y * LADO + x]) continue;
+                boolean toca = (x > 0 && lleno[y * LADO + x - 1]) || (x < LADO - 1 && lleno[y * LADO + x + 1])
+                        || (y > 0 && lleno[(y - 1) * LADO + x]) || (y < LADO - 1 && lleno[(y + 1) * LADO + x]);
+                if (toca) destino.setColor(x, y, 0xFF202028);
+            }
+        }
+        return true;
     }
 
     /** La tela de las prendas que no van por piezas (pollera, capa), o null. */

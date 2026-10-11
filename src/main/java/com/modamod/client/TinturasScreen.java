@@ -66,6 +66,8 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
             Identifier.of("modamod", "textures/gui/container/esquema_tintes_capa.png"),
             // Retazo de aplique (2026-10-04, fase 4): provisoriamente el esquema de la capa (3 cuadraditos).
             Identifier.of("modamod", "textures/gui/container/esquema_tintes_capa.png"),
+            // Delantal (2026-10-11): provisoriamente el esquema de la pollera (3 cuadraditos).
+            Identifier.of("modamod", "textures/gui/container/esquema_tintes_pollera.png"),
     };
     private static final int ESQUEMA_Y = TinturasScreenHandler.ESQUEMA_Y;
     private static final int ESQUEMA_ANCHO = 240, ESQUEMA_ALTO = 136;

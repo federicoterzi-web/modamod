@@ -334,6 +334,12 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                 dibujarFaldon(s, nivel, entidad, biped, matrices, vertexConsumers, luz, tickDelta);
             }
         }
+        // Delantal (2026-10-11): por fuera de todo lo demás.
+        for (ItemStack s : prendas) {
+            if (s.getItem() instanceof com.modamod.item.DelantalItem) {
+                dibujarDelantal(s, prendas, nivel, entidad, biped, matrices, vertexConsumers, luz, tickDelta);
+            }
+        }
     }
 
     /**
@@ -489,6 +495,107 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         };
         return ClothingTextureCache.composeGarmentCapas(POLLERA_BASE, colorBase, capasMascaraPollera,
                 ClothingTextureCache.Shading.NONE, encima, true);
+    }
+
+    private static final Identifier DELANTAL_BASE = Identifier.of("modamod", "textures/models/armor/delantal_tela.png");
+
+    /**
+     * El delantal (2026-10-11, "un delantal que sea de malla"): el arco del frente de la malla de la pollera, del pecho
+     * hacia abajo. Pasa por fuera de lo que lleve puesto: el top más holgado, las polleras (fila por fila) y el busto.
+     */
+    private static void dibujarDelantal(ItemStack stack, List<ItemStack> prendas, int nivel, LivingEntity entidad,
+                                        BipedEntityModel<?> biped, MatrixStack matrices,
+                                        VertexConsumerProvider vertexConsumers, int luz, float tickDelta) {
+        ModelPart delJugador = CuerpoGeometria.delJugador(biped, Parte.TORSO);
+        if (!delJugador.visible) return;
+        float inicio = com.modamod.item.DelantalItem.inicio(stack), largo = com.modamod.item.DelantalItem.largo(stack);
+        float otras = 0F;
+        for (ItemStack p : prendas) {
+            if (!(p.getItem() instanceof com.modamod.item.DelantalItem)) {
+                otras = Math.max(otras, com.modamod.item.Calce.dilatacionEfectiva(p));
+            }
+        }
+        float propia = Math.max(0F, com.modamod.item.Calce.dilatacionEfectiva(stack));
+        float dilatacion = Math.max(propia, otras) + 0.2F + (nivel + 1) * SEPARACION_POLLERAS;
+        Identifier textura = texturaDelantal(stack);
+        float[] extra = new float[PolleraMalla.FILAS + 1];
+        com.modamod.render.relieve.BustoRender.Busto busto = com.modamod.render.relieve.BustoRender.actual;
+        float talle = busto == null ? 0F : busto.talle();
+        for (int f = 0; f <= PolleraMalla.FILAS; f++) {
+            float y = inicio + largo * f / (float) PolleraMalla.FILAS;
+            float e = 0F;
+            if (!polleras.isEmpty()) {
+                float hol = holguraPollera(y);
+                if (hol >= 0F) e = Math.max(0F, hol + 0.5F - (dilatacion + 0.1F));
+            }
+            // El busto: las cúpulas sobresalen entre y 2 y 7 (más en el medio).
+            float peso = Math.max(0F, 1F - Math.abs(y - 4.5F) / 3.4F);
+            e = Math.max(e, Math.min(2.4F, 0.4F * talle) * peso);
+            extra[f] = e;
+        }
+        matrices.push();
+        delJugador.rotate(matrices);
+        VertexConsumer buffer = vertexConsumers.getBuffer(ClothingTextureCache.capaDeRender(textura));
+        CapaMalla.Movimiento mov = entidad instanceof AbstractClientPlayerEntity jugador && previewOverride == null
+                ? CapaMalla.movimiento(jugador, tickDelta) : CapaMalla.Movimiento.QUIETO;
+        float twirl = previewOverride == null && entidad != null
+                ? com.modamod.client.TwirlCliente.progreso(entidad, tickDelta) : -1f;
+        float cola = busto == null ? 0f : busto.cola();
+        PolleraMalla.dibujarDelantal(matrices, buffer, luz, dilatacion,
+                new PolleraMalla.Piernas(biped.body, biped.rightLeg, biped.leftLeg), mov, twirl, cola, delJugador.pitch,
+                inicio, largo, com.modamod.item.DelantalItem.volado(stack),
+                com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.DELANTAL), extra);
+        matrices.pop();
+    }
+
+    /** La tela del delantal ya teñida y recortada a su silueta (también la usa el ícono). */
+    public static Identifier texturaDelantal(ItemStack stack) {
+        int colorBase = com.modamod.region.RegionResolver.colorBase(stack, com.modamod.region.Lado.IZQUIERDA);
+        java.util.List<com.modamod.region.RegionResolver.CapaPatron> capas =
+                com.modamod.region.RegionResolver.capasTinte(stack, com.modamod.region.Lado.IZQUIERDA);
+        java.util.List<ClothingTextureCache.CapaMascara> capasMascara = new java.util.ArrayList<>(capas.size());
+        for (com.modamod.region.RegionResolver.CapaPatron capa : capas) {
+            net.minecraft.client.texture.NativeImage mascara = com.modamod.render.PatronGenerador.mascaraDeCapa("delantal", capa);
+            if (!capa.lisa() && mascara == null) continue;
+            java.util.List<CajaSkin.Rect> region = capa.region() == com.modamod.region.RegionPintura.TODO ? null
+                    : capa.region().rects(com.modamod.tinturas.TinturasBlockEntity.Categoria.DELANTAL, CuerpoGeometria.ESCALA_TELA);
+            capasMascara.add(ClothingTextureCache.CapaMascara.de(capa, mascara, region));
+        }
+        com.modamod.item.DelantalForma forma = com.modamod.item.DelantalItem.forma(stack);
+        float largo = com.modamod.item.DelantalItem.largo(stack);
+        boolean redondas = com.modamod.item.DelantalItem.esquinasRedondas(stack);
+        com.modamod.item.PatronRed red = com.modamod.item.PatronRed.leer(stack);
+        ClothingTextureCache.Encima encima = new ClothingTextureCache.Encima() {
+            @Override
+            public String clave() {
+                return "delantal_" + forma + "_" + Math.round(largo * 2) + (redondas ? "r" : "") + "_" + red;
+            }
+
+            @Override
+            public boolean aplicar(net.minecraft.client.texture.NativeImage destino) {
+                if (red != null) ClothingTextureCache.perforarRed(destino, red, Parte.TORSO, 0, 12);
+                recortarDelantal(destino, forma, largo, redondas);
+                return true;
+            }
+        };
+        return ClothingTextureCache.composeGarmentCapas(DELANTAL_BASE, colorBase, capasMascara,
+                ClothingTextureCache.Shading.NONE, encima, true);
+    }
+
+    /**
+     * Borra los texeles que quedan fuera de la silueta (la tira del torso: u 16..40, v 20 hacia abajo; el centro del
+     * frente está en u 24 y el borde de arriba del paño en v 20). Funciona a cualquier escala de la textura.
+     */
+    private static void recortarDelantal(net.minecraft.client.texture.NativeImage img, com.modamod.item.DelantalForma forma,
+                                         float largo, boolean redondas) {
+        float escala = img.getWidth() / 64f;
+        for (int y = 0; y < img.getHeight(); y++) {
+            float yy = (y + 0.5f) / escala - 20f;
+            for (int x = 0; x < img.getWidth(); x++) {
+                float s = (x + 0.5f) / escala - 24f;
+                if (!forma.contiene(s, yy, largo, redondas)) img.setColor(x, y, 0);
+            }
+        }
     }
 
     private static final Identifier CAPA_BASE = Identifier.of("modamod",

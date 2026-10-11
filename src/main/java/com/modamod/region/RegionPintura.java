@@ -41,7 +41,9 @@ public enum RegionPintura implements StringIdentifiable {
     SOLAPA_CHAL_ABIERTA("solapa_chal_abierta"),
     // Las puntas y el aro del cuello de camisa (2026-10-11, "que se les pueda cambiar el color pero que vayan tambien con el
     // de la prenda" → "juntos"): se pintan con la zona Solapas de Tintes. Nuevo al final.
-    SOLAPA_CAMISA("solapa_camisa");
+    SOLAPA_CAMISA("solapa_camisa"),
+    // El delantal (2026-10-11): peto (las 8 primeras filas del paño) y falda (el resto), sobre la tira del torso de su tela.
+    DELANTAL_PETO("delantal_peto"), DELANTAL_FALDA("delantal_falda");
 
     public final String clave;
 
@@ -120,7 +122,7 @@ public enum RegionPintura implements StringIdentifiable {
      */
     public Parte parte(Categoria cat) {
         return switch (this) {
-            case TODO, CAPA_EXTERIOR, CAPA_FORRO, CAPA_DETALLES -> null;
+            case TODO, CAPA_EXTERIOR, CAPA_FORRO, CAPA_DETALLES, DELANTAL_PETO, DELANTAL_FALDA -> null;
             case CUELLO, BORDE_INFERIOR, PECHO, CINTURA, SOLAPAS, SOLAPA_PICO, SOLAPA_REDONDA, SOLAPA_CHAL,
                  SOLAPA_PICO_ABIERTA, SOLAPA_REDONDA_ABIERTA, SOLAPA_CHAL_ABIERTA, SOLAPA_CAMISA -> Parte.TORSO;
             case MANGA_IZQ -> Parte.BRAZO_IZQ;
@@ -133,7 +135,7 @@ public enum RegionPintura implements StringIdentifiable {
     /** Filas [desde,hasta) de las 12 de esa {@link Parte} que ocupa esta región. */
     private int[] filas() {
         return switch (this) {
-            case TODO, MANGA_IZQ, MANGA_DER, CAPA_EXTERIOR, CAPA_FORRO, CAPA_DETALLES -> new int[]{0, 12};
+            case TODO, MANGA_IZQ, MANGA_DER, CAPA_EXTERIOR, CAPA_FORRO, CAPA_DETALLES, DELANTAL_PETO, DELANTAL_FALDA -> new int[]{0, 12};
             case CUELLO -> new int[]{0, FILAS_CUELLO};
             case BORDE_INFERIOR -> new int[]{12 - FILAS_BORDE, 12};
             case SUP_IZQ, SUP_DER -> new int[]{0, 6};
@@ -170,6 +172,13 @@ public enum RegionPintura implements StringIdentifiable {
             }
             case CAPA_DETALLES -> {
                 return List.of(new CajaSkin.Rect(24 * escala, 0, 52 * escala, 10 * escala));
+            }
+            // Delantal: la tira del torso (u 16..40) de v 20 a 28 (peto) y de 28 a 44 (falda).
+            case DELANTAL_PETO -> {
+                return List.of(new CajaSkin.Rect(16 * escala, 16 * escala, 40 * escala, 28 * escala));
+            }
+            case DELANTAL_FALDA -> {
+                return List.of(new CajaSkin.Rect(16 * escala, 28 * escala, 40 * escala, 44 * escala));
             }
             default -> { }
         }

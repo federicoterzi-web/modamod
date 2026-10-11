@@ -16,7 +16,9 @@ public enum ZonaRuedo implements StringIdentifiable {
     /** Borde de arriba y de abajo de cada media y de cada calientabrazos. */
     SUP_IZQ("sup_izq"), SUP_DER("sup_der"), INF_IZQ("inf_izq"), INF_DER("inf_der"),
     /** Ruedo de la pollera. */
-    POLLERA("pollera");
+    POLLERA("pollera"),
+    /** Ruedo del delantal. */
+    DELANTAL("delantal");
 
     public final String clave;
 

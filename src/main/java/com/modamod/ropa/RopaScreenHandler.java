@@ -27,7 +27,7 @@ public class RopaScreenHandler extends ScreenHandler {
     /** Los slots de Trinkets que son del mod (grupo, slot): los mismos se esconden del inventario de siempre. */
     public static final String[][] SLOTS_DEL_MOD = {
             {"head", "sombrero"}, {"head", "choker"}, {"espalda", "capa"},
-            {"torso", "chaqueta"}, {"torso", "prenda"}, {"torso", "cinto"},
+            {"torso", "chaqueta"}, {"torso", "prenda"}, {"torso", "cinto"}, {"torso", "delantal"},
             {"arms", "armwarmer"}, {"piernas", "exterior"}, {"socks", "pair"}, {"socks", "calzado"},
     };
 
@@ -43,6 +43,8 @@ public class RopaScreenHandler extends ScreenHandler {
     public static final int X_CINTO = 30, Y_CINTO = 130;
     /** Los borcegos (2026-10-08, slot de calzado) también van solos, al lado del cinto. */
     public static final int X_CALZADO = 52, Y_CALZADO = 130;
+    /** El delantal (2026-10-11) también va solo, a la izquierda del cinto. */
+    public static final int X_DELANTAL = 8, Y_DELANTAL = 130;
     public static final int X_REAL = 150, X_COSM = 172, Y_ARMADURA = 26, PASO_ARMADURA = 22;
     public static final int X_INV = 61, Y_INV = 152;
 
@@ -74,15 +76,17 @@ public class RopaScreenHandler extends ScreenHandler {
                 boolean superior = s[1].equals("sombrero") || s[1].equals("choker") || s[1].equals("capa");
                 boolean cinto = s[1].equals("cinto");
                 boolean calzado = s[1].equals("calzado");
+                boolean delantal = s[1].equals("delantal");
                 for (int i = 0; i < ti.size(); i++) {
                     int x, y;
                     if (cinto) { x = X_CINTO; y = Y_CINTO; }
                     else if (calzado) { x = X_CALZADO; y = Y_CALZADO; }
+                    else if (delantal) { x = X_DELANTAL; y = Y_DELANTAL; }
                     else if (superior) { x = X_MOD + (celda++ % 3) * 22; y = Y_MOD; }
                     else { x = X_MOD + (i % 3) * 22; y = Y_MOD + (filaGrupo + i / 3) * PASO_FILA; }
                     addSlot(new SurvivalTrinketSlot(ti, i, x, y, grupo, ti.getSlotType(), i, true));
                 }
-                if (!superior && !cinto && !calzado) filaGrupo += (ti.size() + 2) / 3;
+                if (!superior && !cinto && !calzado && !delantal) filaGrupo += (ti.size() + 2) / 3;
             }
         }
 

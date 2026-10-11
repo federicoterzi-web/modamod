@@ -46,6 +46,9 @@ public final class ModamodItems {
      */
     public static final PolleraItem POLLERA = register("pollera", new PolleraItem(new Item.Settings().maxCount(16)));
 
+    /** Delantal de malla (2026-10-11, "un apron para complementar un maid outfit"). Ver {@link DelantalItem}. */
+    public static final DelantalItem DELANTAL = register("delantal", new DelantalItem(new Item.Settings().maxCount(16)));
+
     // El croptop de ModaMod se retiro: era un chestplate del pipeline
     // viejo, nunca se le dibujo el arte -salia en damero- y desde que la
     // remera tiene el eje de largo, el corte crop hace lo mismo pero teñible,

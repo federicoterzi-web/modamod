@@ -28,6 +28,7 @@ public final class PrendasDelMod {
         Garments.registrar(ModamodItems.CALIENTABRAZOS, CALIENTABRAZOS);
         Garments.registrar(ModamodItems.POLLERA, POLLERA);
         Garments.registrar(ModamodItems.CAPA, CAPA);
+        Garments.registrar(ModamodItems.DELANTAL, DELANTAL);
     }
 
     /**
@@ -144,6 +145,25 @@ public final class PrendasDelMod {
                 // Largo/forma y estampa desde 2026-09-29 (pollera rehecha).
                 case CORTE -> ENTERA;
                 case ESTAMPAR -> CARAS;
+            };
+        }
+
+        @Override
+        public Set<Parte> partes(ItemStack stack) {
+            return Set.of();
+        }
+    };
+
+    /**
+     * Delantal (2026-10-11): se dibuja aparte, como la pollera (malla al frente del cuerpo), sin gobernar ninguna parte.
+     * Frente de la tela = el delantal; no tiene espalda para estampar.
+     */
+    private static final Garment DELANTAL = new Garment() {
+        @Override
+        public Set<Region> regionesDe(Operacion op) {
+            return switch (op) {
+                case TENIR, PATRON, CORTE -> ENTERA;
+                case ESTAMPAR -> Set.of();
             };
         }
 
