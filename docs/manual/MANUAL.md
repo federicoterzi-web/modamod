@@ -755,3 +755,5 @@ costados** y **Volado de arriba** (los mismos moldes de volado recto y circular)
 ### Delantal: tirantes y sublimación
 
 El delantal se puede sublimar en la Sublimadora (solo el frente, sin espalda) y lleva tirantes (sin / rectos / cruzados) con tres moldes nuevos en el pin "Tirantes" de la categoría Delantal de la Modeladora.
+
+El delantal lleva siempre una cinta alrededor de la cintura, del mismo color, que es donde se unen los tirantes por detrás.
