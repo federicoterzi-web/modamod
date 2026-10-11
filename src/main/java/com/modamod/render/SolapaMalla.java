@@ -96,7 +96,7 @@ final class SolapaMalla {
      * redondeado (superelipse) de 0,8 px de alto sobre el borde de arriba del torso, con pared de afuera y tapas
      * arriba y abajo, de color liso. En el marco del torso, centrado como la huella de la cabeza (x, z −4..4).
      */
-    static void aro(Identifier lisa, int color, float dil, BipedEntityModel<?> biped, MatrixStack matrices,
+    static void aro(Identifier lisa, float u, float v, int color, float dil, BipedEntityModel<?> biped, MatrixStack matrices,
                     VertexConsumerProvider vcp, int luz) {
         VertexConsumer vc = vcp.getBuffer(ClothingTextureCache.capaDeRender(lisa));
         matrices.push();
@@ -117,23 +117,23 @@ final class SolapaMalla {
         for (int i = 0; i < seg; i++) {
             Vector3f a = fuera[i], b = fuera[i + 1], ia = dentro[i], ib = dentro[i + 1];
             Vector3f n = new Vector3f(a.x + b.x, 0, a.z + b.z).normalize();
-            quadLiso(m, nm, vc, luz, color, n, new Vector3f(a.x, y0, a.z), new Vector3f(b.x, y0, b.z),
+            quadLiso(m, nm, vc, luz, u, v, color, n, new Vector3f(a.x, y0, a.z), new Vector3f(b.x, y0, b.z),
                     new Vector3f(b.x, y1, b.z), new Vector3f(a.x, y1, a.z));
-            quadLiso(m, nm, vc, luz, color, new Vector3f(0, -1, 0), new Vector3f(a.x, y0, a.z),
+            quadLiso(m, nm, vc, luz, u, v, color, new Vector3f(0, -1, 0), new Vector3f(a.x, y0, a.z),
                     new Vector3f(b.x, y0, b.z), new Vector3f(ib.x, y0, ib.z), new Vector3f(ia.x, y0, ia.z));
-            quadLiso(m, nm, vc, luz, color, new Vector3f(0, -1, 0), new Vector3f(ia.x, y1, ia.z),
+            quadLiso(m, nm, vc, luz, u, v, color, new Vector3f(0, -1, 0), new Vector3f(ia.x, y1, ia.z),
                     new Vector3f(ib.x, y1, ib.z), new Vector3f(b.x, y1, b.z), new Vector3f(a.x, y1, a.z));
         }
         matrices.pop();
     }
 
     /** Un cuadrilátero de color liso (u, v fijos en el centro de la textura lisa). */
-    private static void quadLiso(Matrix4f m, Matrix3f nm, VertexConsumer vc, int luz, int color, Vector3f normal,
+    private static void quadLiso(Matrix4f m, Matrix3f nm, VertexConsumer vc, int luz, float u, float v, int color, Vector3f normal,
                                  Vector3f... p) {
         Vector3f nn = nm.transform(new Vector3f(normal)).normalize();
         for (Vector3f q : p) {
             Vector3f w = m.transformPosition(q.x / 16F, q.y / 16F, q.z / 16F, new Vector3f());
-            vc.vertex(w.x, w.y, w.z, 0xFF000000 | color, 0.5F, 0.5F, OverlayTexture.DEFAULT_UV, luz, nn.x, nn.y, nn.z);
+            vc.vertex(w.x, w.y, w.z, 0xFFFFFFFF, u, v, OverlayTexture.DEFAULT_UV, luz, nn.x, nn.y, nn.z);
         }
     }
 

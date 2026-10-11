@@ -521,7 +521,7 @@ public final class RegionResolver {
      */
     /**
      * La zona Solapas que se elige en Tintes (2026-10-08) se vuelve la variante del tipo de solapa y del frente de ESTA
-     * prenda; si no tiene solapas, la capa no pinta nada (se descarta).
+     * prenda (más el cuello de camisa, si lo tiene); si no tiene ni uno ni otro, la capa no pinta nada (se descarta).
      */
     private static java.util.List<CapaPatron> especializarSolapas(ItemStack stack, java.util.List<CapaPatron> capas) {
         boolean hay = false;
@@ -529,16 +529,23 @@ public final class RegionResolver {
         if (!hay) return capas;
         com.modamod.item.ChaquetaSolapa tipo = com.modamod.item.TopCorte.solapa(stack);
         boolean abierta = com.modamod.item.TopCorte.frente(stack).abre();
+        boolean camisa = stack.getItem() instanceof com.modamod.sublimadora.RemeraItem
+                && com.modamod.sublimadora.RemeraItem.variante(stack).cuello() == com.modamod.sublimadora.Variante.Cuello.CAMISA;
         java.util.List<CapaPatron> out = new java.util.ArrayList<>(capas.size());
         for (CapaPatron c : capas) {
             if (c.region() != RegionPintura.SOLAPAS) { out.add(c); continue; }
             RegionPintura r = c.region().paraSolapa(tipo, abierta);
-            if (r == null) continue;
-            out.add(new CapaPatron(c.patronId(), c.color(), c.tamano(), c.angulo(), c.posicion(), c.forma(), c.invertido(),
-                    r, c.modo(), c.opacidad(), c.repeticion(), c.semilla(), c.extras(), c.contorno(), c.variacion(),
-                    c.fueraDeRegion(), c.distribucion()));
+            if (r != null) out.add(conRegion(c, r));
+            // El cuello de camisa (aro y puntas) va con la misma zona.
+            if (camisa) out.add(conRegion(c, RegionPintura.SOLAPA_CAMISA));
         }
         return out;
+    }
+
+    private static CapaPatron conRegion(CapaPatron c, RegionPintura r) {
+        return new CapaPatron(c.patronId(), c.color(), c.tamano(), c.angulo(), c.posicion(), c.forma(), c.invertido(),
+                    r, c.modo(), c.opacidad(), c.repeticion(), c.semilla(), c.extras(), c.contorno(), c.variacion(),
+                    c.fueraDeRegion(), c.distribucion());
     }
 
     public static java.util.List<CapaPatron> capasTinte(ItemStack stack, Lado visible) {

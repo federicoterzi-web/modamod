@@ -38,7 +38,10 @@ public enum RegionPintura implements StringIdentifiable {
     SOLAPAS("solapas"),
     SOLAPA_PICO("solapa_pico"), SOLAPA_REDONDA("solapa_redonda"), SOLAPA_CHAL("solapa_chal"),
     SOLAPA_PICO_ABIERTA("solapa_pico_abierta"), SOLAPA_REDONDA_ABIERTA("solapa_redonda_abierta"),
-    SOLAPA_CHAL_ABIERTA("solapa_chal_abierta");
+    SOLAPA_CHAL_ABIERTA("solapa_chal_abierta"),
+    // Las puntas y el aro del cuello de camisa (2026-10-11, "que se les pueda cambiar el color pero que vayan tambien con el
+    // de la prenda" → "juntos"): se pintan con la zona Solapas de Tintes. Nuevo al final.
+    SOLAPA_CAMISA("solapa_camisa");
 
     public final String clave;
 
@@ -73,7 +76,8 @@ public enum RegionPintura implements StringIdentifiable {
     /** ¿Es una de las variantes de solapa con tipo (las que recortan con {@code mascaraSolapa})? */
     public boolean esSolapaConTipo() {
         return switch (this) {
-            case SOLAPA_PICO, SOLAPA_REDONDA, SOLAPA_CHAL, SOLAPA_PICO_ABIERTA, SOLAPA_REDONDA_ABIERTA, SOLAPA_CHAL_ABIERTA -> true;
+            case SOLAPA_PICO, SOLAPA_REDONDA, SOLAPA_CHAL, SOLAPA_PICO_ABIERTA, SOLAPA_REDONDA_ABIERTA, SOLAPA_CHAL_ABIERTA,
+                 SOLAPA_CAMISA -> true;
             default -> false;
         };
     }
@@ -118,7 +122,7 @@ public enum RegionPintura implements StringIdentifiable {
         return switch (this) {
             case TODO, CAPA_EXTERIOR, CAPA_FORRO, CAPA_DETALLES -> null;
             case CUELLO, BORDE_INFERIOR, PECHO, CINTURA, SOLAPAS, SOLAPA_PICO, SOLAPA_REDONDA, SOLAPA_CHAL,
-                 SOLAPA_PICO_ABIERTA, SOLAPA_REDONDA_ABIERTA, SOLAPA_CHAL_ABIERTA -> Parte.TORSO;
+                 SOLAPA_PICO_ABIERTA, SOLAPA_REDONDA_ABIERTA, SOLAPA_CHAL_ABIERTA, SOLAPA_CAMISA -> Parte.TORSO;
             case MANGA_IZQ -> Parte.BRAZO_IZQ;
             case MANGA_DER -> Parte.BRAZO_DER;
             case SUP_IZQ, INF_IZQ -> cat == Categoria.CALIENTABRAZOS ? Parte.BRAZO_IZQ : Parte.PIERNA_IZQ;
@@ -138,7 +142,7 @@ public enum RegionPintura implements StringIdentifiable {
             // borde del escote (se pinta encima, ver requiereBordeCuello).
             case PECHO -> new int[]{0, 12 - FILAS_BORDE};
             case SOLAPAS, SOLAPA_PICO, SOLAPA_REDONDA, SOLAPA_CHAL, SOLAPA_PICO_ABIERTA, SOLAPA_REDONDA_ABIERTA,
-                 SOLAPA_CHAL_ABIERTA -> new int[]{0, FILAS_SOLAPA};
+                 SOLAPA_CHAL_ABIERTA, SOLAPA_CAMISA -> new int[]{0, FILAS_SOLAPA};
             case CINTURA -> new int[]{12 - FILAS_CINTURA, 12};
         };
     }

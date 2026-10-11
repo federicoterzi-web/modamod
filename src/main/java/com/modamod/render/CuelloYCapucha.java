@@ -147,6 +147,13 @@ public final class CuelloYCapucha {
         return a;
     }
 
+    /** Los anchos (px) por fila de las puntas del cuello de camisa: los comparte la malla y la zona de Tintes. */
+    static float[] anchosCamisa() {
+        float[] a = new float[CUELLO_CAMISA.length];
+        for (int i = 0; i < a.length; i++) a[i] = CUELLO_CAMISA[i].w;
+        return a;
+    }
+
     private static Fila[] filasDe(com.modamod.item.ChaquetaSolapa tipo) {
         return switch (tipo) {
             case PICO -> SOLAPA_PICO;
@@ -209,15 +216,22 @@ public final class CuelloYCapucha {
                 int color = RemeraItem.color(s);
                 Identifier lisa = texturaLisa(color, false);
                 // El aro del cuello como malla (por encima del torso, como el cuello partido de la polera).
-                SolapaMalla.aro(lisa, color, dc * 0.5F, biped, matrices, vertexConsumers, luz);
-                // Las puntas, de tela continua pegada al borde del escote: con la textura de la prenda si ya está
-                // compuesta (lleva sus patrones y estampas) y, si no, de color liso.
                 float[] bordeC = bordeDelEscote(s);
                 Identifier telaC = telaDelTorso(s);
+                // El aro toma un texel de la prenda justo en el arranque de la punta del cuello (así sigue su color y
+                // se tiñe con la misma zona); sin tela compuesta, color liso.
+                float ux = 0.5F, vy = 0.5F;
+                Identifier telaAro = lisa;
+                if (bordeC != null && telaC != null) {
+                    telaAro = telaC;
+                    ux = (24F + bordeC[SUB / 2] + 0.2F) / 64F;
+                    vy = 20.3F / 64F;
+                }
+                SolapaMalla.aro(telaAro, ux, vy, color, dc * 0.5F, biped, matrices, vertexConsumers, luz);
+                // Las puntas, de tela continua pegada al borde del escote: con la textura de la prenda si ya está
+                // compuesta (lleva sus patrones y estampas) y, si no, de color liso.
                 if (bordeC != null) {
-                    float[] anchos = new float[CUELLO_CAMISA.length];
-                    for (int i = 0; i < anchos.length; i++) anchos[i] = CUELLO_CAMISA[i].w;
-                    SolapaMalla.dibujar(telaC != null ? telaC : lisa, bordeC, SUB, anchos, dc,
+                    SolapaMalla.dibujar(telaC != null ? telaC : lisa, bordeC, SUB, anchosCamisa(), dc,
                             com.modamod.render.relieve.BustoRender.carpaDe(Calce.leer(s)), 0.2F, 0.6F,
                             biped, matrices, vertexConsumers, luz);
                 } else {

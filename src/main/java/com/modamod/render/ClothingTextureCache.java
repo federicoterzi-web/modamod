@@ -681,7 +681,7 @@ public final class ClothingTextureCache {
         NativeImage m = new NativeImage(base.getWidth(), base.getHeight(), true);
         for (int y = 0; y < m.getHeight(); y++) for (int x = 0; x < m.getWidth(); x++) m.setColor(x, y, 0);
         float k = escala;
-        float[] anchos = CuelloYCapucha.anchosDe(region.solapa());
+        float[] anchos = region.solapa() == null ? CuelloYCapucha.anchosCamisa() : CuelloYCapucha.anchosDe(region.solapa());
         int centro = frente.x0() + frente.x1() >> 1;
         for (int y = frente.y0(); y < Math.min(base.getHeight(), frente.y0() + Math.round(anchos.length * k)); y++) {
             float py = (y - frente.y0() + 0.5F) / k;

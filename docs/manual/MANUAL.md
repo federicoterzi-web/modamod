@@ -710,3 +710,5 @@ Al componer, cada pixel parte del color base de la tela y cada capa se **funde**
 `/modamoddebug perf` (solo cliente) prende o apaga un panel arriba a la izquierda con los FPS, los milisegundos por cuadro, la memoria de Java, el costo por cuadro de cada parte del mod (ropa, pollera, capa, apliques, correas, texturas, acabados) y el tamaño de sus cachés. Sirve para ver dónde se va el lag al probar varias prendas o acabados a la vez.
 
 **Cuello de camisa de malla** (2026-10-11; sin probar en el juego): el cuello de camisa ya no se arma con cajitas. El aro alrededor del cuello es un anillo redondeado de tela del color liso de la prenda, y las dos puntas son una tira de tela continua pegada al borde real del escote, con la textura de la prenda (llevan sus patrones y estampas). Si la tela todavía no se compuso, usa el color liso.
+
+**Cuello de camisa teñible** (2026-10-11; sin probar en el juego): el cuello de camisa (el aro y las dos puntas) sale igual que la prenda y se tiñe aparte con la zona **Solapas** de la Estación de Tintes, junto con las solapas si la prenda las tiene. Una remera de cuello camisa sin solapas también usa esa zona.
