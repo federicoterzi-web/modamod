@@ -103,6 +103,7 @@ public class ModamodClient implements ClientModInitializer {
         ElegirCuerpoCliente.init();
         TwirlCliente.init();
         CapuchaCliente.init();
+        FrenteCliente.init();
         RopaCliente.init();
 
         // TODA la ropa del mod se dibuja desde un solo feature renderer.

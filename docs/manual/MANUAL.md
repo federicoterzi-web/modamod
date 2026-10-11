@@ -718,3 +718,5 @@ Al componer, cada pixel parte del color base de la tela y cada capa se **funde**
 **Collar más chico y pegado al pecho** (2026-10-11; sin probar en el juego): el collar (la Banda en la zona Collar) ahora es un anillo más fino y chico, de unos 8,5 × 6 píxeles, que apenas sobresale del pecho en vez de pasar por los hombros. Los herrajes (placa, aro, campana, hueso, corazón, medalla) y los colgantes siguen igual.
 
 **Collar anclado a la cabeza** (2026-10-11; sin probar en el juego): el collar ahora sigue los movimientos de la cabeza (gira y se inclina con ella), como el de Player Collars. Los apliques y correas que ya tenías puestos en un collar pueden quedar corridos y hay que volver a ponerlos.
+
+**Tecla para abrir y cerrar la chaqueta** (2026-10-11; sin probar en el juego): con la tecla **J** (se puede cambiar en Controles, categoría ModaMod) abrís o cerrás la chaqueta que llevás puesta, como la tecla H sube y baja la capucha. Sirve para cualquier Top de chaqueta (hoodie, saco, campera, chaleco): se abre dejando ver lo de abajo, y se cierra otra vez. Si llevás varias, se abren todas o se cierran todas. El nombre de la prenda no cambia.

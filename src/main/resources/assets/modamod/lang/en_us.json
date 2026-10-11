@@ -574,6 +574,7 @@
   "item.modamod.chaqueta.hoodie": "Hoodie",
   "modamod.chaqueta.tooltip.capucha": "Hood: %s to put it up or down",
   "key.modamod.capucha": "Hood up/down",
+  "key.modamod.frente": "Open/close jacket",
   "trinkets.slot.torso.chaqueta": "Jacket",
   "modamod.maniqui.pose": "Pose: %s",
   "modamod.maniqui.pose.parado": "Standing",

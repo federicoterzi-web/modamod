@@ -22,15 +22,35 @@ public final class TopCorte {
         else stack.remove(ModamodComponents.CAPUCHA_ARRIBA);
     }
 
-    /** Frente cerrado (de siempre) o abierto: se ve lo de abajo. */
-    public static ChaquetaFrente frente(ItemStack stack) {
+    /** El frente del corte (el molde de la Modeladora), sin contar la tecla: cerrado (de siempre), abierto, etc. */
+    public static ChaquetaFrente frenteDeCorte(ItemStack stack) {
         ChaquetaFrente f = stack.get(ModamodComponents.CHAQUETA_FRENTE);
         return f == null ? ChaquetaFrente.CERRADA : f;
     }
 
+    /**
+     * El frente que se ve ahora (2026-10-11, "un keybind para abrir y cerrar la chaqueta"): el del corte, salvo que la
+     * tecla lo haya abierto (un corte cerrado se ve {@code ABIERTA}) o cerrado ({@code CERRADA}).
+     */
+    public static ChaquetaFrente frente(ItemStack stack) {
+        Boolean ahora = stack.get(ModamodComponents.FRENTE_AHORA);
+        ChaquetaFrente corte = frenteDeCorte(stack);
+        if (ahora == null) return corte;
+        if (!ahora) return ChaquetaFrente.CERRADA;
+        return corte.abre() ? corte : ChaquetaFrente.ABIERTA;
+    }
+
+    /** Pone el frente del corte (lo usa la Modeladora) y suelta lo que había hecho la tecla. */
     public static void setFrente(ItemStack stack, ChaquetaFrente f) {
+        stack.remove(ModamodComponents.FRENTE_AHORA);
         if (f == ChaquetaFrente.CERRADA) stack.remove(ModamodComponents.CHAQUETA_FRENTE);
         else stack.set(ModamodComponents.CHAQUETA_FRENTE, f);
+    }
+
+    /** Abre o cierra el frente ahora (la tecla); si queda como dice el corte, no guarda nada. */
+    public static void setFrenteAbierto(ItemStack stack, boolean abierto) {
+        if (frenteDeCorte(stack).abre() == abierto) stack.remove(ModamodComponents.FRENTE_AHORA);
+        else stack.set(ModamodComponents.FRENTE_AHORA, abierto);
     }
 
     /** Solapas: ninguna (de siempre), en pico, redondas o chal. */
@@ -77,7 +97,7 @@ public final class TopCorte {
 
     /** ¿Tiene algún rasgo de chaqueta (capucha, solapas o frente abierto)? Si no, es la remera de siempre. */
     public static boolean conRasgosDeChaqueta(ItemStack stack) {
-        return conCapucha(stack) || solapa(stack) != ChaquetaSolapa.NINGUNA || frente(stack) != ChaquetaFrente.CERRADA;
+        return conCapucha(stack) || solapa(stack) != ChaquetaSolapa.NINGUNA || frenteDeCorte(stack) != ChaquetaFrente.CERRADA;
     }
 
     /**

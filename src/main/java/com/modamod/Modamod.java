@@ -31,6 +31,7 @@ public class Modamod implements ModInitializer {
         com.modamod.body.RedCuerpo.init();
         com.modamod.util.RedTwirl.init();
         com.modamod.util.RedCapucha.init();
+        com.modamod.util.RedFrente.init();
         com.modamod.ropa.Cosmeticos.init();
         com.modamod.ropa.RedRopa.init();
         ModamodScreenHandlers.init();

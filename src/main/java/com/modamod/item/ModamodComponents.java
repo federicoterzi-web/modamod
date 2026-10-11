@@ -523,6 +523,15 @@ public final class ModamodComponents {
             Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "capucha_arriba"),
             ComponentType.<Boolean>builder().codec(com.mojang.serialization.Codec.BOOL).packetCodec(PacketCodecs.BOOL).build());
 
+    /**
+     * Frente abierto o cerrado AHORA (2026-10-11, "un keybind para abrir y cerrar la chaqueta"): true = abierto,
+     * false = cerrado, ausente = como dice el corte ({@link #CHAQUETA_FRENTE}). Lo cambia el servidor con la tecla
+     * (ver {@code util/RedFrente}) y Trinkets lo sincroniza, igual que {@link #CAPUCHA_ARRIBA}.
+     */
+    public static final ComponentType<Boolean> FRENTE_AHORA = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "frente_ahora"),
+            ComponentType.<Boolean>builder().codec(com.mojang.serialization.Codec.BOOL).packetCodec(PacketCodecs.BOOL).build());
+
     /** Frente de la chaqueta (2026-10-07); ausente = cerrada. */
     public static final ComponentType<ChaquetaFrente> CHAQUETA_FRENTE = Registry.register(
             Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "chaqueta_frente"),
