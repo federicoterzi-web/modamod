@@ -461,6 +461,18 @@ public final class ModamodComponents {
                     .packetCodec(PacketCodecs.indexed(i -> PolleraLargo.values()[i], Enum::ordinal))
                     .build());
 
+    /**
+     * Faldón de un Top (2026-10-11, "las chaquetas de malla"): una falda de malla colgando de la cintura, con el largo
+     * del nivel de rango 0..6 (0 = el más corto); ausente = sin faldón.
+     */
+    public static final ComponentType<Integer> FALDON_TOP = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of("modamod", "faldon_top"),
+            ComponentType.<Integer>builder()
+                    .codec(com.mojang.serialization.Codec.intRange(0, 6))
+                    .packetCodec(PacketCodecs.VAR_INT)
+                    .build());
+
     /** Cintura de la pollera (2026-10-08): nivel de rango 0..6 (altura de la cintura = 2 × nivel px bajo el hombro); ausente = cadera. */
     public static final ComponentType<Integer> POLLERA_CINTURA = Registry.register(
             Registries.DATA_COMPONENT_TYPE,

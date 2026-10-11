@@ -241,7 +241,7 @@ public final class CuelloYCapucha {
      * llega al centro (frente cerrado). {@code null} si la tela todavía no se compuso.
      */
     /** La textura de la tela del torso de la prenda, o null. */
-    private static Identifier telaDelTorso(ItemStack ropa) {
+    static Identifier telaDelTorso(ItemStack ropa) {
         for (com.modamod.render.Pieza p : PiezasDePrenda.de(ropa, null)) {
             if (p.parte() == com.modamod.garment.Parte.TORSO) return p.textura();
         }

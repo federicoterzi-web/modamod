@@ -328,7 +328,52 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
             if (!(s.getItem() instanceof com.modamod.item.PolleraItem)) continue;
             dibujarUnaPollera(s, nivel++, entidad, biped, matrices, vertexConsumers, luz, tickDelta);
         }
+        // Faldón de malla de los Tops (2026-10-11, "las chaquetas de malla"): por fuera de las polleras.
+        for (ItemStack s : prendas) {
+            if (s.getItem() instanceof com.modamod.sublimadora.RemeraItem && com.modamod.item.TopCorte.faldon(s) >= 0) {
+                dibujarFaldon(s, nivel, entidad, biped, matrices, vertexConsumers, luz, tickDelta);
+            }
+        }
     }
+
+    /**
+     * El faldón de un Top: una falda de malla que cuelga de la cintura (más arriba que la de la pollera), con el frente
+     * abierto o cerrado como la chaqueta ({@code TopCorte.frente}, la tecla J). Usa la tela del torso del Top —así lleva
+     * sus patrones, estampas y teñidos— tomando las filas de abajo de esa tela.
+     */
+    private static void dibujarFaldon(ItemStack stack, int polleras, LivingEntity entidad, BipedEntityModel<?> biped,
+                                      MatrixStack matrices, VertexConsumerProvider vertexConsumers, int luz, float tickDelta) {
+        Identifier tela = CuelloYCapucha.telaDelTorso(stack);
+        if (tela == null) return;
+        ModelPart delJugador = CuerpoGeometria.delJugador(biped, Parte.TORSO);
+        if (!delJugador.visible) return;
+        // Filas de la tela del torso que se estiran sobre el faldón: las de abajo del Top, sin el rib del ruedo.
+        int filas = com.modamod.sublimadora.RemeraItem.variante(stack).largo().filas;
+        if (com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.TORSO) == com.modamod.item.Ruedo.AJUSTADO) filas -= 2;
+        filas = Math.max(3, filas);
+        float v1 = 20F + filas - 0.25F;
+        float v0 = 20F + Math.max(0, Math.min(FALDON_CINTURA, filas - 3)) + 0.25F;
+        com.modamod.item.Calce calce = com.modamod.item.Calce.leer(stack);
+        float dilatacion = Math.max(0F, com.modamod.item.Calce.dilatacionEfectiva(stack)) + calce.caida
+                + 0.3F + polleras * SEPARACION_POLLERAS;
+        matrices.push();
+        delJugador.rotate(matrices);
+        VertexConsumer buffer = vertexConsumers.getBuffer(ClothingTextureCache.capaDeRender(tela));
+        CapaMalla.Movimiento mov = entidad instanceof AbstractClientPlayerEntity jugador && previewOverride == null
+                ? CapaMalla.movimiento(jugador, tickDelta) : CapaMalla.Movimiento.QUIETO;
+        float twirl = previewOverride == null && entidad != null
+                ? com.modamod.client.TwirlCliente.progreso(entidad, tickDelta) : -1f;
+        float cola = com.modamod.render.relieve.BustoRender.actual == null ? 0f
+                : com.modamod.render.relieve.BustoRender.actual.cola();
+        PolleraMalla.dibujarFaldon(matrices, buffer, luz, com.modamod.item.PolleraForma.TUBO,
+                com.modamod.item.TopCorte.largoFaldon(stack), dilatacion,
+                new PolleraMalla.Piernas(biped.body, biped.rightLeg, biped.leftLeg), mov, twirl, cola, delJugador.pitch,
+                FALDON_CINTURA, v0, v1, com.modamod.item.TopCorte.frente(stack).abre() ? 2 : 0);
+        matrices.pop();
+    }
+
+    /** Altura de la cintura del faldón (px bajo el hombro): más arriba que la cadera (9) de la pollera. */
+    private static final int FALDON_CINTURA = 6;
 
     /** Cuánto más se infla cada pollera respecto de la de abajo (px). */
     private static final float SEPARACION_POLLERAS = 0.3F;

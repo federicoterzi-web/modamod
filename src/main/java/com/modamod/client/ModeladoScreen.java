@@ -506,7 +506,8 @@ public class ModeladoScreen extends HandledScreen<ModeladoScreenHandler> {
         ModeladoBlockEntity be = this.handler.be;
         int cat = be.categoria().ordinal();
         for (int i = 0; i < ModeladoBlockEntity.PINES_POR_CATEGORIA; i++) {
-            if (ModeladoBlockEntity.principalDeCajon(be.categoria(), i) < 0 || !be.pinVisible(be.categoria(), i)) continue;
+            boolean faldon = ModeladoBlockEntity.ROLES[cat][i] == ModeladoBlockEntity.Rol.FALDON_TOP;
+            if ((ModeladoBlockEntity.principalDeCajon(be.categoria(), i) < 0 && !faldon) || !be.pinVisible(be.categoria(), i)) continue;
             int[] pos = ModeladoScreenHandler.PIN_POS[cat][i];
             int x = this.x + M_MEDIO + pos[0] - 3, y = this.y + pos[1] - 3;
             context.fill(x, y, x + 22, y + 22, 0xFFE8D2A4);

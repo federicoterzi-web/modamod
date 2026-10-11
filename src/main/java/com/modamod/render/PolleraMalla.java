@@ -124,6 +124,29 @@ public final class PolleraMalla {
                                PolleraLargo largo, @Nullable PolleraVolado voladoRuedo, @Nullable PolleraVolado voladoTodo,
                                com.modamod.item.Ruedo hem, float dil, @Nullable Piernas piernas,
                                CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura) {
+        dibujar(matrices, vc, luz, forma, largo, voladoRuedo, voladoTodo, hem, dil, piernas, mov, twirl, cola, inclinacion,
+                cintura, Float.NaN, Float.NaN, 0);
+    }
+
+    /**
+     * El faldón de un Top (2026-10-11, "las chaquetas de malla": una falda de malla que cuelga de la cintura, con el frente
+     * abierto): la misma malla pero con la tela del torso del Top, tomando de la textura las filas {@code vDesde..vHasta}
+     * (px de la textura de 64, v absoluta) de arriba a abajo, y sin los {@code hueco} cuadrados de cada lado del centro
+     * del frente (0 = cerrada). Las UV de arriba a abajo son lineales: no hay perfil de largo de tela.
+     */
+    public static void dibujarFaldon(MatrixStack matrices, VertexConsumer vc, int luz, PolleraForma forma,
+                                     PolleraLargo largo, float dil, @Nullable Piernas piernas, CapaMalla.Movimiento mov,
+                                     float twirl, float cola, float inclinacion, float cintura,
+                                     float vDesde, float vHasta, int hueco) {
+        dibujar(matrices, vc, luz, forma, largo, null, null, com.modamod.item.Ruedo.RECTO, dil, piernas, mov, twirl, cola,
+                inclinacion, cintura, vDesde, vHasta, hueco);
+    }
+
+    private static void dibujar(MatrixStack matrices, VertexConsumer vc, int luz, PolleraForma forma,
+                                PolleraLargo largo, @Nullable PolleraVolado voladoRuedo, @Nullable PolleraVolado voladoTodo,
+                                com.modamod.item.Ruedo hem, float dil, @Nullable Piernas piernas,
+                                CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura,
+                                float vDesde, float vHasta, int hueco) {
         float[][][] p = new float[FILAS + 1][COLUMNAS + 1][];
         PolleraBorde borde = hem.borde();
         float l = largo.pixeles;
@@ -190,7 +213,8 @@ public final class PolleraMalla {
                 z += dz;
                 x += dx;
                 yy -= (dz * 0.35f + Math.abs(dx) * 0.2f + abrir * l * 0.2f * peso);
-                p[f][c] = new float[]{x, yy, z, perfil.u[f][c] / 64f, perfil.v[f] / 64f};
+                p[f][c] = new float[]{x, yy, z, perfil.u[f][c] / 64f,
+                        (Float.isNaN(vDesde) ? perfil.v[f] : vDesde + (vHasta - vDesde) * t) / 64f};
             }
         }
 
@@ -202,6 +226,8 @@ public final class PolleraMalla {
         int ov = OverlayTexture.DEFAULT_UV;
         for (int f = 0; f < FILAS; f++) {
             for (int c = 0; c < COLUMNAS; c++) {
+                // Frente abierto (faldón de un Top): sin los cuadrados de cada lado del centro del frente.
+                if (hueco > 0 && Math.abs(c + 0.5f - COL_FRENTE) < hueco) continue;
                 emitir(vc, e, p, f, c, luz, ov);
                 emitir(vc, e, p, f, c + 1, luz, ov);
                 emitir(vc, e, p, f + 1, c + 1, luz, ov);

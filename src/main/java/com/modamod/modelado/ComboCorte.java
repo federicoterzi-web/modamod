@@ -263,10 +263,16 @@ public record ComboCorte(
      * este sub-registro tenía lugar.
      */
     public record ChaquetaCorte(Optional<com.modamod.item.ChaquetaFrente> frente, Optional<Boolean> capucha,
-                                Optional<com.modamod.item.ChaquetaSolapa> solapa, Optional<BorcegoCorte> borcego) {
+                                Optional<com.modamod.item.ChaquetaSolapa> solapa, Optional<BorcegoCorte> borcego,
+                                Optional<Integer> faldon) {
+        public ChaquetaCorte(Optional<com.modamod.item.ChaquetaFrente> frente, Optional<Boolean> capucha,
+                             Optional<com.modamod.item.ChaquetaSolapa> solapa, Optional<BorcegoCorte> borcego) {
+            this(frente, capucha, solapa, borcego, Optional.empty());
+        }
+
         public ChaquetaCorte(Optional<com.modamod.item.ChaquetaFrente> frente, Optional<Boolean> capucha,
                              Optional<com.modamod.item.ChaquetaSolapa> solapa) {
-            this(frente, capucha, solapa, Optional.empty());
+            this(frente, capucha, solapa, Optional.empty(), Optional.empty());
         }
 
         static final Codec<ChaquetaCorte> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -275,7 +281,8 @@ public record ComboCorte(
                 Codec.BOOL.optionalFieldOf("capucha").forGetter(ChaquetaCorte::capucha),
                 StringIdentifiable.createCodec(com.modamod.item.ChaquetaSolapa::values).optionalFieldOf("solapa")
                         .forGetter(ChaquetaCorte::solapa),
-                BorcegoCorte.CODEC.optionalFieldOf("borcego").forGetter(ChaquetaCorte::borcego)
+                BorcegoCorte.CODEC.optionalFieldOf("borcego").forGetter(ChaquetaCorte::borcego),
+                Codec.intRange(0, 6).optionalFieldOf("faldon").forGetter(ChaquetaCorte::faldon)
         ).apply(i, ChaquetaCorte::new));
     }
 
@@ -327,6 +334,12 @@ public record ComboCorte(
     public static ComboCorte borcegoBotamanga(com.modamod.item.BorcegoBotamanga v, Lado lado) {
         return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.empty(),
                 Optional.of(new BorcegoCorte(Optional.empty(), Optional.empty(), Optional.of(v))))).conLado(lado);
+    }
+
+    /** El faldón de malla de un Top (2026-10-11): nivel de rango 0..6. */
+    public static ComboCorte faldon(int nivel) {
+        return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.of(nivel)));
     }
 
     public ComboCorte conLado(Lado nuevo) {
@@ -704,6 +717,7 @@ public record ComboCorte(
                             writeOptEnum(buf, bo.suela());
                             writeOptEnum(buf, bo.botamanga());
                         });
+                        buf.writeByte(c.faldon().isPresent() ? c.faldon().get() : -1);
                     });
                     buf.writeByte(p.cintura().isPresent() ? p.cintura().get() : -1);
                 });
@@ -751,7 +765,8 @@ public record ComboCorte(
                                             readOptEnum(buf, com.modamod.item.BorcegoCana.values()),
                                             readOptEnum(buf, com.modamod.item.BorcegoSuela.values()),
                                             readOptEnum(buf, com.modamod.item.BorcegoBotamanga.values())))
-                                            : Optional.empty())) : Optional.empty(),
+                                            : Optional.empty(),
+                                    readCintura(buf))) : Optional.empty(),
                             readCintura(buf)))
                             : Optional.empty()));
 

@@ -53,6 +53,23 @@ public final class TopCorte {
         else stack.set(ModamodComponents.FRENTE_AHORA, abierto);
     }
 
+    /** Nivel de rango (0..6) del faldón de malla, o −1 si no tiene (2026-10-11, "las chaquetas de malla"). */
+    public static int faldon(ItemStack stack) {
+        Integer n = stack.get(ModamodComponents.FALDON_TOP);
+        return n == null ? -1 : n;
+    }
+
+    public static void setFaldon(ItemStack stack, int nivel) {
+        if (nivel < 0) stack.remove(ModamodComponents.FALDON_TOP);
+        else stack.set(ModamodComponents.FALDON_TOP, Math.min(6, nivel));
+    }
+
+    /** El largo del faldón: el nivel 0 es el {@code CERO} (3 px); del 1 al 6, de {@code MINIMO} a {@code MAXIMO}. */
+    public static PolleraLargo largoFaldon(ItemStack stack) {
+        int n = faldon(stack);
+        return n <= 0 ? PolleraLargo.CERO : PolleraLargo.values()[n - 1];
+    }
+
     /** Solapas: ninguna (de siempre), en pico, redondas o chal. */
     public static ChaquetaSolapa solapa(ItemStack stack) {
         ChaquetaSolapa v = stack.get(ModamodComponents.CHAQUETA_SOLAPA);
@@ -97,7 +114,8 @@ public final class TopCorte {
 
     /** ¿Tiene algún rasgo de chaqueta (capucha, solapas o frente abierto)? Si no, es la remera de siempre. */
     public static boolean conRasgosDeChaqueta(ItemStack stack) {
-        return conCapucha(stack) || solapa(stack) != ChaquetaSolapa.NINGUNA || frenteDeCorte(stack) != ChaquetaFrente.CERRADA;
+        return conCapucha(stack) || solapa(stack) != ChaquetaSolapa.NINGUNA || frenteDeCorte(stack) != ChaquetaFrente.CERRADA
+                || faldon(stack) >= 0;
     }
 
     /**

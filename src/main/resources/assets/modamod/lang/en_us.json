@@ -1038,6 +1038,7 @@
   "modamod.modelado.rol.frente_chaqueta": "Front",
   "modamod.modelado.rol.capucha_chaqueta": "Hood",
   "modamod.modelado.rol.solapa_chaqueta": "Lapel",
+  "modamod.modelado.rol.faldon_top": "Skirt panel",
   "modamod.chaqueta.solapa.ninguna": "No lapels",
   "modamod.chaqueta.solapa.pico": "Peak lapels",
   "modamod.chaqueta.solapa.redonda": "Rounded lapels",

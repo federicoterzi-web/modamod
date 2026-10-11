@@ -268,6 +268,10 @@ public final class PrendaModelado {
                 com.modamod.item.TopCorte.setSolapa(out, c.solapa().get());
                 cambio = true;
             }
+            if (c.faldon().isPresent()) {
+                com.modamod.item.TopCorte.setFaldon(out, c.faldon().get());
+                cambio = true;
+            }
         }
 
         return cambio ? out : prenda;

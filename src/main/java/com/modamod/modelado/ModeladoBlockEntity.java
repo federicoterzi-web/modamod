@@ -217,11 +217,13 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         RUEDO_BOTA_IZQ, RUEDO_BOTA_DER, RUEDO_SUP_IZQ, RUEDO_SUP_DER, RUEDO_INF_IZQ, RUEDO_INF_DER,
         /** Borcegos (2026-10-08): altura de la caña, suela y botamanga (MoldeBorcegoItem). */
         CANA_BORCEGO_IZQ, CANA_BORCEGO_DER, SUELA_BORCEGO_IZQ, SUELA_BORCEGO_DER,
-        BOTAMANGA_BORCEGO_IZQ, BOTAMANGA_BORCEGO_DER }
+        BOTAMANGA_BORCEGO_IZQ, BOTAMANGA_BORCEGO_DER,
+        /** Faldón de malla del Top (2026-10-11, "las chaquetas de malla"): largo por molde de rango. */
+        FALDON_TOP }
 
     /** Rol de cada uno de los 8 pines por categoría — MISMO orden que {@code ModeladoScreenHandler#PIN_POS}. */
     public static final Rol[][] ROLES = rellenarRoles(new Rol[][]{
-            {Rol.CUELLO, Rol.MAT1, Rol.NINGUNO, Rol.MANGA_IZQ, Rol.NINGUNO, Rol.MANGA_DER, Rol.CALCE, Rol.TORSO,
+            {Rol.CUELLO, Rol.MAT1, Rol.NINGUNO, Rol.MANGA_IZQ, Rol.FALDON_TOP, Rol.MANGA_DER, Rol.CALCE, Rol.TORSO,
                     Rol.RUEDO_TORSO, Rol.RUEDO_PUNO_IZQ, Rol.RUEDO_PUNO_DER,
                     // El Top (2026-10-07, "un solo top"): frente, capucha y solapa también en la remera.
                     Rol.FRENTE_CHAQUETA, Rol.CAPUCHA_CHAQUETA, Rol.SOLAPA_CHAQUETA},
@@ -983,6 +985,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             }
             case CINTURA_POLLERA -> {
                 if (item instanceof MoldeRangoItem m) c = ComboCorte.polleraCintura(m.rango.nivel());
+            }
+            case FALDON_TOP -> {
+                if (item instanceof MoldeRangoItem m) c = ComboCorte.faldon(m.rango.nivel());
             }
             case LARGO_POLLERA -> {
                 // Los 6 rangos del pantalón, 1 a 1 (2026-09-29, "Los 6 rangos del pantalón").
