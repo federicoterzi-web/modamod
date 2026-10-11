@@ -750,3 +750,8 @@ a llamarse Vincha o Cofia y se tiñe por zonas (banda, moño, vivo) como el somb
 Los bordes decorativos de la pollera (ondulado, festoneado, pico) también se pueden poner en el casillero de ruedo de los
 puños, botamangas y calentadores: dejan una faldilla corta con ese recorte. El delantal suma dos pines de volado más: **Volado de
 costados** y **Volado de arriba** (los mismos moldes de volado recto y circular), que salen del borde de la forma elegida.
+
+
+### Delantal: tirantes y sublimación
+
+El delantal se puede sublimar en la Sublimadora (solo el frente, sin espalda) y lleva tirantes (sin / rectos / cruzados) con tres moldes nuevos en el pin "Tirantes" de la categoría Delantal de la Modeladora.

@@ -82,6 +82,17 @@ public class DelantalItem extends ClothingTrinketItem {
         else stack.remove(ModamodComponents.DELANTAL_ESQUINAS);
     }
 
+    /** Tirantes (2026-10-11); SIN si no lleva. */
+    public static DelantalTirantes tirantes(ItemStack stack) {
+        DelantalTirantes t = stack.get(ModamodComponents.DELANTAL_TIRANTES);
+        return t == null ? DelantalTirantes.SIN : t;
+    }
+
+    public static void setTirantes(ItemStack stack, @Nullable DelantalTirantes t) {
+        if (t == null || t == DelantalTirantes.SIN) stack.remove(ModamodComponents.DELANTAL_TIRANTES);
+        else stack.set(ModamodComponents.DELANTAL_TIRANTES, t);
+    }
+
     /** Volado del ruedo (los de la pollera), o null. */
     @Nullable
     public static PolleraVolado volado(ItemStack stack) {

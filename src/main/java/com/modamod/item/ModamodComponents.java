@@ -529,6 +529,13 @@ public final class ModamodComponents {
                     .codec(StringIdentifiable.createCodec(DelantalForma::values))
                     .packetCodec(PacketCodecs.indexed(i -> DelantalForma.values()[i], Enum::ordinal))
                     .build());
+    /** Tirantes del delantal; ausente = sin. */
+    public static final ComponentType<DelantalTirantes> DELANTAL_TIRANTES = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_tirantes"),
+            ComponentType.<DelantalTirantes>builder()
+                    .codec(StringIdentifiable.createCodec(DelantalTirantes::values))
+                    .packetCodec(PacketCodecs.indexed(i -> DelantalTirantes.values()[i], Enum::ordinal))
+                    .build());
     /** Esquinas de abajo del delantal (solo se guarda REDONDEADO). */
     public static final ComponentType<CapaRuedo> DELANTAL_ESQUINAS = Registry.register(
             Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_esquinas"),

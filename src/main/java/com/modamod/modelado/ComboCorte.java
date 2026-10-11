@@ -303,12 +303,22 @@ public record ComboCorte(
                                 Optional<com.modamod.item.CapaRuedo> esquinas,
                                 Optional<com.modamod.item.PolleraVolado> volado,
                                 Optional<com.modamod.item.PolleraVolado> lateral,
-                                Optional<com.modamod.item.PolleraVolado> superior) {
+                                Optional<com.modamod.item.PolleraVolado> superior,
+                                Optional<com.modamod.item.DelantalTirantes> tirantes) {
         public DelantalCorte(Optional<Integer> inicio, Optional<Integer> largo,
                              Optional<com.modamod.item.DelantalForma> forma,
                              Optional<com.modamod.item.CapaRuedo> esquinas,
                              Optional<com.modamod.item.PolleraVolado> volado) {
-            this(inicio, largo, forma, esquinas, volado, Optional.empty(), Optional.empty());
+            this(inicio, largo, forma, esquinas, volado, Optional.empty(), Optional.empty(), Optional.empty());
+        }
+
+        public DelantalCorte(Optional<Integer> inicio, Optional<Integer> largo,
+                             Optional<com.modamod.item.DelantalForma> forma,
+                             Optional<com.modamod.item.CapaRuedo> esquinas,
+                             Optional<com.modamod.item.PolleraVolado> volado,
+                             Optional<com.modamod.item.PolleraVolado> lateral,
+                             Optional<com.modamod.item.PolleraVolado> superior) {
+            this(inicio, largo, forma, esquinas, volado, lateral, superior, Optional.empty());
         }
 
         static final Codec<DelantalCorte> CODEC = RecordCodecBuilder.create(i -> i.group(
@@ -323,7 +333,9 @@ public record ComboCorte(
                 StringIdentifiable.createCodec(com.modamod.item.PolleraVolado::values).optionalFieldOf("lateral")
                         .forGetter(DelantalCorte::lateral),
                 StringIdentifiable.createCodec(com.modamod.item.PolleraVolado::values).optionalFieldOf("superior")
-                        .forGetter(DelantalCorte::superior)
+                        .forGetter(DelantalCorte::superior),
+                StringIdentifiable.createCodec(com.modamod.item.DelantalTirantes::values).optionalFieldOf("tirantes")
+                        .forGetter(DelantalCorte::tirantes)
         ).apply(i, DelantalCorte::new));
     }
 
@@ -386,6 +398,11 @@ public record ComboCorte(
     private static ComboCorte conDelantal(DelantalCorte d) {
         return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
                 Optional.empty(), Optional.of(d)));
+    }
+
+    public static ComboCorte delantalTirantes(com.modamod.item.DelantalTirantes v) {
+        return conDelantal(new DelantalCorte(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(v)));
     }
 
     public static ComboCorte delantalInicio(int nivel) {
@@ -803,6 +820,7 @@ public record ComboCorte(
                             writeOptEnum(buf, d.volado());
                             writeOptEnum(buf, d.lateral());
                             writeOptEnum(buf, d.superior());
+                            writeOptEnum(buf, d.tirantes());
                         });
                     });
                     buf.writeByte(p.cintura().isPresent() ? p.cintura().get() : -1);
@@ -859,7 +877,8 @@ public record ComboCorte(
                                             readOptEnum(buf, com.modamod.item.CapaRuedo.values()),
                                             readOptEnum(buf, com.modamod.item.PolleraVolado.values()),
                                             readOptEnum(buf, com.modamod.item.PolleraVolado.values()),
-                                            readOptEnum(buf, com.modamod.item.PolleraVolado.values())))
+                                            readOptEnum(buf, com.modamod.item.PolleraVolado.values()),
+                                            readOptEnum(buf, com.modamod.item.DelantalTirantes.values())))
                                             : Optional.empty())) : Optional.empty(),
                             readCintura(buf)))
                             : Optional.empty()));

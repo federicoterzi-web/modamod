@@ -324,6 +324,15 @@ public final class EstampaTextures {
             });
 
     /**
+     * El delantal (2026-10-11, "dale con tirantes y sublimacion"): solo el frente, la tira del torso de u 18 a 30
+     * (el ancho de la malla) y 24 filas de alto, sobre un lienzo de 12x24.
+     */
+    private static final Prenda DELANTAL = new Prenda(com.modamod.render.CuerpoGeometria.ESCALA_TELA, 12, 24, 0, 24,
+            new Cara[] {
+                    new Cara(new int[] { 18, 20, 12, 24 }, new int[] { 0, 0, 12, 24 }, false).principal_(),
+            });
+
+    /**
      * La capa (2026-09-29, "forro aparte"): Frente = el exterior (la cara
      * del frente del cuboide 10x16 de la capa vanilla, u 1..11) y Espalda =
      * el forro (u 12..22), cada uno con su foto sobre un lienzo de 10x16.
@@ -345,6 +354,7 @@ public final class EstampaTextures {
         if (stack.getItem() == com.modamod.item.ModamodItems.CALIENTABRAZOS) return BRAZO;
         if (stack.getItem() instanceof com.modamod.item.PolleraItem) return POLLERA;
         if (stack.getItem() instanceof com.modamod.item.CapaItem) return CAPA;
+        if (stack.getItem() instanceof com.modamod.item.DelantalItem) return DELANTAL;
         return null;   // ModItems.esEstampable tiene que decir lo mismo
     }
 

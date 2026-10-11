@@ -249,6 +249,7 @@ public final class PrendaModelado {
             if (d.volado().isPresent()) { com.modamod.item.DelantalItem.setVolado(out, d.volado().get()); cambio = true; }
             if (d.lateral().isPresent()) { com.modamod.item.DelantalItem.setVoladoLateral(out, d.lateral().get()); cambio = true; }
             if (d.superior().isPresent()) { com.modamod.item.DelantalItem.setVoladoSuperior(out, d.superior().get()); cambio = true; }
+            if (d.tirantes().isPresent()) { com.modamod.item.DelantalItem.setTirantes(out, d.tirantes().get()); cambio = true; }
         }
 
         // Banda (2026-10-05): zona, ancho y herraje.

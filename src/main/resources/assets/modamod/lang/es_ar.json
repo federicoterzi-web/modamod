@@ -1155,6 +1155,9 @@
   "item.modamod.molde_delantal_peto": "Molde de Delantal: Peto",
   "item.modamod.molde_delantal_corazon": "Molde de Delantal: Corazón",
   "item.modamod.molde_delantal_feston": "Molde de Delantal: Festón",
+  "item.modamod.molde_delantal_tirantes_sin": "Molde de Delantal: Tirantes: Sin tirantes",
+  "item.modamod.molde_delantal_tirantes_rectos": "Molde de Delantal: Tirantes: Rectos",
+  "item.modamod.molde_delantal_tirantes_cruzados": "Molde de Delantal: Tirantes: Cruzados",
   "modamod.sombrero.ala.vincha": "vincha",
   "modamod.sombrero.ala.cofia": "cofia",
   "item.modamod.molde_sombrero_ala_vincha": "Molde de Sombrero: Vincha",
@@ -1164,5 +1167,6 @@
   "item.modamod.sombrero_bruja.vincha": "Vincha",
   "item.modamod.sombrero_bruja.cofia": "Cofia",
   "modamod.modelado.rol.volado_lateral_delantal": "Volado de costados",
-  "modamod.modelado.rol.volado_superior_delantal": "Volado de arriba"
+  "modamod.modelado.rol.volado_superior_delantal": "Volado de arriba",
+  "modamod.modelado.rol.tirantes_delantal": "Tirantes"
 }

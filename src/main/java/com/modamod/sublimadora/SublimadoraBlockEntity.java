@@ -605,7 +605,7 @@ public class SublimadoraBlockEntity extends BlockEntity
         // — a pedido, ver el javadoc de {@link #categoria}.
         // La chaqueta comparte los diseños de la remera (misma tela, 2026-09-30).
         // El banner (2026-10-06) comparte los ajustes de la remera: es una sola foto, la del Frente.
-        categoria = remera.getItem() instanceof RemeraItem || remera.getItem() instanceof net.minecraft.item.BannerItem
+        categoria = remera.getItem() instanceof RemeraItem || (remera.getItem() instanceof net.minecraft.item.BannerItem || remera.getItem() instanceof com.modamod.item.DelantalItem)
                 ? ModItems.REMERA : remera.getItem();
         sincronizar();
         return true;
@@ -627,7 +627,7 @@ public class SublimadoraBlockEntity extends BlockEntity
         if (id == null) return false;
         // Esa cara ya estampada: rechazar en vez de pisarla en silencio.
         if (!remera.isEmpty() && !hayMascara() && RemeraItem.estampaDe(remera, cara) != null) return false;
-        if (cara == Estampa.Cara.ESPALDA && remera.getItem() instanceof net.minecraft.item.BannerItem) return false;
+        if (cara == Estampa.Cara.ESPALDA && (remera.getItem() instanceof net.minecraft.item.BannerItem || remera.getItem() instanceof com.modamod.item.DelantalItem)) return false;
         fotos[i] = stack.copyWithCount(1);
         pendientes[i] = id;
         sincronizar();
@@ -946,7 +946,7 @@ public class SublimadoraBlockEntity extends BlockEntity
             if (!fotos[slot].isEmpty()) return false;
             Estampa.Cara cara = Estampa.Cara.values()[slot];
             if (!remera.isEmpty() && !hayMascara() && RemeraItem.estampaDe(remera, cara) != null) return false;
-            if (cara == Estampa.Cara.ESPALDA && remera.getItem() instanceof net.minecraft.item.BannerItem) return false;
+            if (cara == Estampa.Cara.ESPALDA && (remera.getItem() instanceof net.minecraft.item.BannerItem || remera.getItem() instanceof com.modamod.item.DelantalItem)) return false;
             return SublimadoraBlock.esFoto(stack) && SublimadoraBlock.uuidDeFoto(stack) != null;
         }
         if (slot == SLOT_REMERA) {
@@ -1525,7 +1525,7 @@ public class SublimadoraBlockEntity extends BlockEntity
 
     /** ¿Esta cara se estampa? Foto cargada y chincheta puesta. */
     private boolean caraActiva(int i) {
-        if (i == Estampa.Cara.ESPALDA.ordinal() && remera.getItem() instanceof net.minecraft.item.BannerItem) return false;
+        if (i == Estampa.Cara.ESPALDA.ordinal() && (remera.getItem() instanceof net.minecraft.item.BannerItem || remera.getItem() instanceof com.modamod.item.DelantalItem)) return false;
         return !fotos[i].isEmpty() && pendientes[i] != null && caraFijada[i];
     }
 

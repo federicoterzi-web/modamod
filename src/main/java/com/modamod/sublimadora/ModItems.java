@@ -143,6 +143,7 @@ public final class ModItems {
                 // su tela es una caja de torso, ver EstampaTextures#POLLERA.
                 || stack.getItem() instanceof com.modamod.item.PolleraItem
                 || stack.getItem() instanceof com.modamod.item.CapaItem
+                || stack.getItem() instanceof com.modamod.item.DelantalItem
                 // El banner (2026-10-06, "sublimadoras a banners y 16x"): una foto en el Frente, ver BannerHD.
                 || stack.getItem() instanceof net.minecraft.item.BannerItem;
     }

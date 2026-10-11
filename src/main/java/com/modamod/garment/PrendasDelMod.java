@@ -163,7 +163,7 @@ public final class PrendasDelMod {
         public Set<Region> regionesDe(Operacion op) {
             return switch (op) {
                 case TENIR, PATRON, CORTE -> ENTERA;
-                case ESTAMPAR -> Set.of();
+                case ESTAMPAR -> CARAS;
             };
         }
 

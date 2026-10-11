@@ -555,6 +555,9 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                 com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.DELANTAL), extra,
                 adorno));
         matrices.pop();
+        TirantesDelantal.dibujar(com.modamod.item.DelantalItem.tirantes(stack),
+                com.modamod.region.RegionResolver.colorBase(stack, com.modamod.region.Lado.IZQUIERDA), inicio, finalDilatacion,
+                Math.min(2.4F, 0.4F * talle), delJugador, matrices, vertexConsumers, luz);
         if (malla != null) {
             ApliqueRenderer.dibujarEnMalla(stack, com.modamod.aplique.Aplique.Superficie.DELANTAL, malla, vertexConsumers, luz, matrices.peek().getNormalMatrix());
             CorreaRenderer.dibujarEnMalla(stack, com.modamod.correa.Correa.Superficie.DELANTAL, malla, vertexConsumers, luz, matrices.peek().getNormalMatrix());
@@ -578,14 +581,16 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         float largo = com.modamod.item.DelantalItem.largo(stack);
         boolean redondas = com.modamod.item.DelantalItem.esquinasRedondas(stack);
         com.modamod.item.PatronRed red = com.modamod.item.PatronRed.leer(stack);
+        boolean estampado = com.modamod.sublimadora.EstampaTextures.tieneEstampa(stack);
         ClothingTextureCache.Encima encima = new ClothingTextureCache.Encima() {
             @Override
             public String clave() {
-                return "delantal_" + forma + "_" + Math.round(largo * 2) + (redondas ? "r" : "") + "_" + red;
+                return "delantal_" + (estampado ? com.modamod.sublimadora.EstampaTextures.claveEstampas(stack) + "_" : "") + forma + "_" + Math.round(largo * 2) + (redondas ? "r" : "") + "_" + red;
             }
 
             @Override
             public boolean aplicar(net.minecraft.client.texture.NativeImage destino) {
+                if (estampado) com.modamod.sublimadora.EstampaTextures.estampar(destino, stack);
                 if (red != null) ClothingTextureCache.perforarRed(destino, red, Parte.TORSO, 0, 12);
                 recortarDelantal(destino, forma, largo, redondas);
                 return true;

@@ -1155,6 +1155,9 @@
   "item.modamod.molde_delantal_peto": "Apron Mold: Bib",
   "item.modamod.molde_delantal_corazon": "Apron Mold: Heart",
   "item.modamod.molde_delantal_feston": "Apron Mold: Scalloped",
+  "item.modamod.molde_delantal_tirantes_sin": "Apron Mold: Straps None",
+  "item.modamod.molde_delantal_tirantes_rectos": "Apron Mold: Straps Straight",
+  "item.modamod.molde_delantal_tirantes_cruzados": "Apron Mold: Straps Crossed",
   "modamod.sombrero.ala.vincha": "headband",
   "modamod.sombrero.ala.cofia": "maid cap",
   "item.modamod.molde_sombrero_ala_vincha": "Hat Mold: Headband",
@@ -1164,5 +1167,6 @@
   "item.modamod.sombrero_bruja.vincha": "Headband",
   "item.modamod.sombrero_bruja.cofia": "Maid cap",
   "modamod.modelado.rol.volado_lateral_delantal": "Side ruffle",
-  "modamod.modelado.rol.volado_superior_delantal": "Top ruffle"
+  "modamod.modelado.rol.volado_superior_delantal": "Top ruffle",
+  "modamod.modelado.rol.tirantes_delantal": "Straps"
 }

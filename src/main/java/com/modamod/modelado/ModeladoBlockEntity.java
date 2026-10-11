@@ -235,7 +235,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         /** Delantal (2026-10-11): forma, largo, inicio (cajón del largo), esquinas, volado y ruedo (cajón del volado). */
         FORMA_DELANTAL, LARGO_DELANTAL, INICIO_DELANTAL, ESQUINAS_DELANTAL, VOLADO_DELANTAL, RUEDO_DELANTAL,
         /** Volados de los costados y del borde de arriba del delantal (2026-10-11). */
-        VOLADO_LATERAL_DELANTAL, VOLADO_SUPERIOR_DELANTAL }
+        VOLADO_LATERAL_DELANTAL, VOLADO_SUPERIOR_DELANTAL,
+        /** Tirantes del delantal (2026-10-11). */
+        TIRANTES_DELANTAL }
 
     /** Rol de cada uno de los 8 pines por categoría — MISMO orden que {@code ModeladoScreenHandler#PIN_POS}. */
     public static final Rol[][] ROLES = rellenarRoles(new Rol[][]{
@@ -268,7 +270,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                     Rol.BOTAMANGA_BORCEGO_IZQ, Rol.BOTAMANGA_BORCEGO_DER},
             // Delantal (2026-10-11): Forma, Largo (con el Inicio en su cajón), Calce, Trama, Volado (con el Ruedo en su
             // cajón) y Esquinas — sobre esquema_delantal.png (provisoriamente el de la pollera).
-            {Rol.FORMA_DELANTAL, Rol.LARGO_DELANTAL, Rol.CALCE, Rol.MAT1, Rol.INICIO_DELANTAL, Rol.NINGUNO,
+            {Rol.FORMA_DELANTAL, Rol.LARGO_DELANTAL, Rol.CALCE, Rol.MAT1, Rol.INICIO_DELANTAL, Rol.TIRANTES_DELANTAL,
                     Rol.VOLADO_DELANTAL, Rol.ESQUINAS_DELANTAL, Rol.RUEDO_DELANTAL,
                     Rol.VOLADO_LATERAL_DELANTAL, Rol.VOLADO_SUPERIOR_DELANTAL}
     });
@@ -1091,6 +1093,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 // Los moldes de ruedo de la capa (recto / redondeado) son las esquinas de abajo del delantal.
                 if (item instanceof MoldeCapaItem m && m.tipo == MoldeCapaItem.Tipo.RUEDO_RECTO) c = ComboCorte.delantalEsquinas(com.modamod.item.CapaRuedo.RECTO);
                 else if (item instanceof MoldeCapaItem m && m.tipo == MoldeCapaItem.Tipo.RUEDO_REDONDEADO) c = ComboCorte.delantalEsquinas(com.modamod.item.CapaRuedo.REDONDEADO);
+            }
+            case TIRANTES_DELANTAL -> {
+                if (item instanceof MoldeTirantesDelantalItem m) c = ComboCorte.delantalTirantes(m.valor);
             }
             case VOLADO_DELANTAL -> {
                 if (item instanceof MoldeVoladoItem m) c = ComboCorte.delantalVolado(m.valor);
