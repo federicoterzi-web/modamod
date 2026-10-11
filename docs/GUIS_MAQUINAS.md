@@ -1,249 +1,298 @@
-# ModaMod — GUIs de las 5 máquinas y pestaña creativa
+# ModaMod — GUIs de las 5 máquinas: botones, funciones y qué normalizar
 
-Inventario de lo que hay hoy en pantalla (2026-10-11), pensado para reordenar. Las coordenadas son locales a la ventana (x, y desde la esquina de arriba a la izquierda), en px de GUI. Salió de leer el código, no de verlo en el juego.
-
-Resumen rápido:
+Inventario del 2026-10-11, armado leyendo el código (no viendo el juego). Está pensado para comparar las máquinas entre sí y decidir qué unificar o simplificar. Las coordenadas son locales a la ventana (x, y desde la esquina de arriba a la izquierda), en px de GUI. "BTN n" es el id del botón en el código.
 
 | Máquina | Ventana | Tema | Qué hace |
 |---|---|---|---|
 | Modeladora | 560 × 334 | Cobre | Corta la prenda con moldes (pines) |
 | Estación de Tintes | 560 × 408 | Verdín | Color y patrones por zona |
 | Sublimadora | 560 × 408 | Oro | Fotos y máscaras sobre la prenda |
-| Estilista automática | 384 × 256 (+ paneles afuera, ~658 en total) | Lila | Apliques, correas y acabados |
+| Estilista automática | 384 × 256 + paneles afuera (~658) | Lila | Apliques, correas y acabados |
 | Telar automático | 176 × 226 | Granate | Teje prendas básicas con lana e hilo |
 
-Todas, menos el Telar, comparten la misma grilla de 3 columnas: izquierda (visor 3D y controles), medio (esquema, entrada y salida, controles) y derecha (almacén y paneles).
+---
+
+## 1. Matriz: la misma función en cada máquina
+
+Cada celda dice dónde está la función y cómo se llama. "—" es que la máquina no la tiene.
+
+### 1.1 Entrada, acción y salida
+| Función | Modeladora | Tintes | Sublimadora | Estilista | Telar |
+|---|---|---|---|---|---|
+| Slot de entrada | Prenda (167,184) | Entrada (167,184) | Entrada (167,184) | Entrada (403,43), en el panel afuera | Lana (22,34) e Hilo (22,62) |
+| Botón de acción | **Modelar** (215,184) | **Teñir** (215,184) | **Prensar** (215,184) | **Aplicar ▶** (428,42) | — (teje solo) |
+| Slot de salida | Salida (295,184) | Salida (295,184) | Salida (295,184) | Salida (491,43) | Salida (138,48) |
+| Arranca al cerrar la GUI | Sí | No: solo con Teñir | Sí, si hay algo fijado | No | Sí |
+| Máximo de unidades en la entrada | 1 | 1 | 1 | 1 | — |
+
+### 1.2 Controles de la columna izquierda (visor 3D)
+| Función | Modeladora | Tintes | Sublimadora | Estilista |
+|---|---|---|---|---|
+| Visor 3D | (8,18) 86×196 | (8,18) 86×196 | (8,18) 86×196 | (8,18) 196×232 |
+| Vista (gira 90°) | y 218 | y 218 | y 218 | ⟲ ⟳ (x 312..376, y 108), gira 45° |
+| Campo de nombre del diseño | y 238 | y 238 | y 238 | en el panel Diseños (532,196) |
+| Guardar diseño | y 256 | y 256 | y 256 | Guardar (532,214) |
+| Escanear estampa | — | — | y 276 | — |
+| Línea de producción | y 274 | y 276 | y 296 | panel Máquina (398,102) |
+| Simetría | y 292 | abajo, junto al inventario (x 285, y 364) | en la fila de controles (243,272) | — |
+| Almacén | derecha, 27 + banco de 36 | izquierda, 30 | derecha, 27 | panel Máquina, 18 |
+
+Telar: tiene Línea arriba a la derecha (112,6) y nada más de esta columna.
+
+### 1.3 Diseños guardados
+| Función | Modeladora | Tintes | Sublimadora | Estilista |
+|---|---|---|---|---|
+| Casilleros de diseño | 8 (y 214); BTN 400 + i carga, 420 + i borra | 8 (y 214); BTN 300 + i carga, 320 + i borra | 8 (y 214); BTN 30 + i carga, 40 + i borra | último automático + hasta 8 con nombre; BTN 640 + k carga, 660 + k borra |
+| Tope de guardados | 8 | 8 | 8 | 8 con nombre, más 1 "último" por tipo de prenda |
+| Se guarda | solo con pines fijados | solo con capas fijadas | solo con caras fijadas | el último, solo; el nombrado, con botón |
+
+### 1.4 Categoría y tipo de prenda
+| Función | Modeladora | Tintes | Sublimadora | Estilista | Telar |
+|---|---|---|---|---|---|
+| Selector de categoría | botón (119,20) que cicla 10 | botón (119,20) que cicla 8 | botón (119,20) | no tiene: sigue a la prenda de la entrada | 6 casillas de prenda (tilda varias) |
+| Id del botón | BTN 9 | BTN_CATEGORIA | BTN 10 | — | BTN 620 + i |
+| Sigue a la prenda que entra | Sí | Sí | Sí | Sí | — |
 
 ---
 
-## 1. Modeladora (560 × 334)
+## 2. Catálogo por máquina
 
-**Columnas:** izquierda x 0..100, medio x 119..359 (240 de ancho), derecha x 379..541.
+### 2.1 Modeladora (560 × 334)
 
-### Zonas
-- **Izquierda:**
-  - Visor 3D de 86 × 196 (y 18..214). Arrastrar gira, la rueda hace zoom.
-  - Debajo, apilados cada ~18 px: Vista (y 218), campo de nombre (y 238), Guardar diseño (y 256), Línea (y 274) y Simetría (y 292). Son 5 controles de 86 px.
-  - De y 308 a 334 no hay nada.
-- **Medio, arriba:**
-  - Botón Categoría (119, 20, 240 × 14), que cicla las 10 categorías.
-  - Esquema ilustrado (240 × 136, y 36..172) con los pines (slots de molde) y una chincheta por pin encima.
-- **Medio, fila entrada y salida (y 184):**
-  - Slot Prenda (167, 184).
-  - Botón Modelar (215, 184, 48 × 16), sobre la flecha.
-  - Slot Salida (295, 184).
-- **Medio, y 214:** 8 casilleros de diseño de 18 × 14 (clic izquierdo carga, derecho borra).
-- **Medio, abajo:** inventario del jugador, desde y 246.
-- **Derecha:**
-  - Almacén compartido de 27 slots (9 × 3, y 18..72). Guarda moldes que sirven en 2 o más categorías.
-  - Banco "Moldes de <categoría>" de 36 slots (9 × 4, y 90..162).
-  - Desde y 162 hasta el final: ~170 px vacíos.
+**Slots**
+- Prenda: 1, solo prendas modelables.
+- Salida: 1, solo extracción.
+- Pines: hasta 14 lógicos por categoría. Cada uno recibe 1 molde, y no se pueden sacar con la máquina encendida.
+- Almacén compartido: 27, para moldes que sirven en 2 o más categorías.
+- Banco "Moldes de <categoría>": 36 visibles, atados a la categoría actual.
+- Tijeras: 1 casillero invisible. Se cargan con shift-click o a mano al bloque.
+- Slot "Activo": oculto y sin uso.
 
-### Pines por categoría (hasta 14 lógicos por categoría)
-| Categoría | Pines usados |
-|---|---|
-| Remera / Top | Cuello (+ cajón Solapa), Trama, Manga izq. y der. (+ cajón Ruedo del puño), Faldón, Calce, Torso (+ cajón Ruedo del torso), Frente, Capucha |
-| Pantalón | Tiro, Trama, Calce, Botamanga izq. y der. (+ cajón Ruedo) |
-| Medias y Calientabrazos | Corte sup. e inf. por lado, Calce, Trama por lado, Ruedo sup. e inf. por lado |
-| Pollera | Forma, Largo (+ cajón Cintura), Calce, Trama, Volado inferior (+ cajón Ruedo), Volado total |
-| Capa | Largo, Ruedo, Capucha, Cuello, Trama |
-| Sombrero | Ala, Punta |
-| Banda | Zona, Ancho, Herraje |
-| Calzado | Caña, Suela y Botamanga, izquierdo y derecho |
-| Delantal | Forma, Largo (+ cajón Inicio), Calce, Trama, Tirantes, Volado (+ cajón Ruedo), Esquinas, Volado de costados, Volado de arriba |
+**Botones y campos**
+| Control | Posición | Qué hace | BTN | Cuándo está activo |
+|---|---|---|---|---|
+| Categoría: <nombre> | (119,20) 240×14 | Cicla las 10 categorías | 9 | siempre |
+| Modelar | (215,184) 48×16 | Aplica los moldes a la prenda | 11 | si `puedeModelar()` |
+| Simetría: Sí/No | (8,292) | Los pines de un lado mandan a los dos lados | 10 | siempre |
+| Línea | (8,274) | Enciende o apaga la línea de producción | 900 | siempre |
+| Vista | (8,218) | Gira el visor 90° | cliente | siempre |
+| Campo de nombre | (8,238) 86×14, 24 letras | Nombre del diseño | cliente | siempre |
+| Guardar diseño | (8,256) | Guarda lo fijado como diseño | payload | si hay fijadas y hay menos de 8 |
+| Casilleros 1..8 | y 214 | Izquierdo carga, derecho borra | 400 + i / 420 + i | siempre |
+| Chinchetas (14) | sobre cada pin | Fija o desfija ese pin | 200 + pin | si el pin tiene molde |
+| Cajones ▾ / ▴ (14) | junto al pin principal | Abre o cierra el pin secundario | 500 + i | donde hay cajón |
 
-Los **cajones** son slots secundarios que se abren con un botón ▾ de 9 × 9 al lado del pin principal. Se abren solos si ya tienen molde.
+**Ocultos (solo en el código):** Fijar (BTN 4), Anclaje (7), Lado (8), Encender (6), Desfijar (100 + i).
 
-### Otros controles
-- **Ocultos:** hay un slot "Activo" que ya no se usa. Tampoco se ven los botones Fijar, Anclaje, Lado ni Encender: quedan solo en el código.
-- **Tijeras:** van en un casillero invisible. Se cargan con shift-click o a mano al bloque, y la barra verde de durabilidad está en el modelo 3D, no en la GUI.
-- **Sin indicadores:** no hay barras, tanques ni contadores. El texto de estado (`hint()`) existe pero no se dibuja. La máquina se enciende sola al cerrar la GUI.
+**Indicadores:** solo el visor 3D, la chincheta animada y el ícono fantasma de un molde que volvió al almacén. No hay barras ni contadores. La barra de durabilidad de las tijeras está en el modelo 3D, no en la GUI.
 
-### Para ordenar
-- La columna izquierda tiene 5 controles pegados.
-- La derecha es solo almacenamiento y deja 170 px vacíos.
-- Entre la fila de entrada y salida y la fila de diseños queda un hueco (y 198..214), ex Anclaje y Lado.
-- En Remera los pines de Ruedo, Puño, Solapa y Capucha compiten por lugar en el esquema (de ahí los cajones).
+### 2.2 Estación de Tintes (560 × 408)
 
----
+**Slots**
+- Entrada (1) y Salida (1).
+- Cuadraditos de patrón: 12 por categoría, y solo se ven los que pintan algo (Remera 8, Pantalón 7, Medias 11, Calientabrazos 11, Pollera 3, Capa 3, Aplique 3, Delantal 3). Cada uno recibe 1 patrón.
+- Almacén de patrones: 30 (5 × 6).
+- Las tintas CMYK no tienen slot en la GUI. Se ven como barras en los sliders.
 
-## 2. Estación de Tintes (560 × 408)
+**Botones, sliders y campos**
+| Control | Posición | Qué hace | BTN |
+|---|---|---|---|
+| Categoría | (119,20) | Cicla las 8 categorías | BTN_CATEGORIA |
+| Teñir | (215,184) | Arranca el teñido | BTN_TENIR |
+| Vista, nombre, Guardar diseño, Línea | izquierda, y 218..276 | Igual que en las otras | — / — / payload / 900 |
+| Casilleros de diseño 1..8 | y 214 | Cargar / borrar | 300 + i / 320 + i |
+| Chincheta de cuadradito (12) | sobre cada slot | Fija o desfija | 60 + i |
+| Seleccionar cuadradito | clic en el slot | Elige qué capa se edita | 40 + i |
+| Sliders C, M, Y, K, Transp. | derecha, y 18..104 | Mezcla de color. También son el tanque de tinta ("n/64") | 400 + |
+| 3 muestras de color | y 108 | Elige cuál de los colores se edita | 90 + i |
+| Envasar | (385,204) | Gasta un frasco y da una muestra de color | BTN_ENVASAR |
+| Usar muestra | (461,204) | Carga el color de una muestra | BTN_USAR_MUESTRA |
+| Colores: N | (385,226) | Cantidad de colores de la capa | BTN_COLORES |
+| Contorno: Sí/No | (461,226) | Contorno del motivo | BTN_CONTORNO |
+| Variación | (385,246) | Variación del patrón | BTN_VARIACION |
+| Modo de mezcla | fila 1, y 232 | Cómo se funde la capa | BTN_MODO |
+| `<` % `>` Opacidad | fila 1 | Opacidad | BTN_OPACIDAD(_ATRAS) |
+| ▼ "Capa n/m" ▲ | fila 1 | Orden de la capa | BTN_BAJAR / BTN_SUBIR |
+| Tamaño | fila 2, y 252 | Tamaño del motivo | BTN_TAMANO |
+| `<` Ángulo `>` | fila 2 | Gira la grilla | BTN_ANGULO(_ATRAS) |
+| `<` Posición `>` | fila 2 | Desplaza | BTN_POSICION(_ATRAS) |
+| Forma / Repetición | fila 3, y 272 | Cambia la forma o la repetición | BTN_FORMA |
+| Azar | fila 3 | Nueva semilla | BTN_SEMILLA |
+| Invertir: Sí/No | fila 3 | Invierte la máscara | BTN_INVERTIR |
+| `<` Giro motivo `>` | fila 4, y 292 | Gira cada motivo en su lugar | BTN_GIRO_MOTIVO(_ATRAS) |
+| Sliders ↔ y ↕ | fila 4 | Distancia entre motivos, 50..300 % | 170 + nivel / 230 + nivel |
+| Espejo | (285,324) | Espeja cada motivo | BTN_ESPEJO |
+| Alternancia | (285,344) | Filas, columnas o damero espejados | BTN_ALTERNANCIA |
+| Simetría | (285,364) | Simetría del torso | BTN_SIMETRIA |
+| Panel de Capas | derecha, y 268..399 | Hasta 12 filas con ojo, ▲ y ▼ por fila | ojo 110 + i, ▲ 130 + i, ▼ 150 + i |
 
-### Zonas
-- **Izquierda:**
-  - Visor 3D (y 18..214).
-  - Vista, nombre, Guardar diseño y Línea.
-  - Almacén de patrones de 30 slots (5 × 6, y 280..388).
-- **Medio, arriba:** Categoría (8 categorías: Remera, Pantalón, Medias, Calientabrazos, Pollera, Capa, Aplique/retazo, Delantal). Debajo, el esquema con un slot de patrón y una chincheta por cuadradito. Cantidad de cuadraditos visibles:
+**Indicadores:** visor 3D (con el retazo y 3 franjas de color si la categoría es Aplique), texto "Editando…" en (119,296), 4 tanques (en los sliders), muestra grande de color, hint (y 190), marco dorado en la capa elegida.
 
-| Categoría | Cuadraditos |
-|---|---|
-| Remera | 8 |
-| Pantalón | 7 |
-| Medias | 11 |
-| Calientabrazos | 11 |
-| Pollera | 3 |
-| Capa | 3 |
-| Aplique (retazo) | 3 |
-| Delantal | 3 |
+### 2.3 Sublimadora (560 × 408)
 
-- **Medio, fila entrada y salida (y 184):** slot Entrada, botón Teñir (215, 184) y slot Salida. Cargar la entrada **no** arranca: solo arranca el botón Teñir.
-- **Medio, y 214:** 8 casilleros de diseño.
-- **Medio, controles de la capa seleccionada (y 232..308):** 4 filas, unos 24 botones y sliders en 237 px.
-  - Fila 1: Modo de mezcla, Opacidad (`<` `%` `>`), ▼ ▲ y "Capa n/m".
-  - Fila 2: Tamaño, Ángulo y Posición.
-  - Fila 3: Forma o Repetición, Azar e Invertir.
-  - Fila 4: Giro del motivo y sliders de distancia ↔ y ↕.
-  - Texto "Editando…" en (119, 296), que se pisa con la fila 4.
-- **Medio, abajo:** inventario, con Espejo, Alternancia y Simetría colgados a su derecha (x 285, y 324..380).
-- **Derecha:**
-  - 5 sliders C, M, Y, K y Transparencia (y 18..104), que **son también los tanques de tinta** ("n/64").
-  - 3 muestras de color de la capa (y 108).
-  - Muestra grande (y 132..180) y texto de estado (y 190).
-  - Envasar y Usar muestra (y 204).
-  - Colores y Contorno (y 226).
-  - Variación (y 246).
-  - Panel de Capas dibujado a mano (y 268..399): hasta 12 filas con ojo, muestra, región y patrón, ▲ y ▼.
+**Slots**
+- Foto Frente (1) y Foto Espalda (1): solo fotos de Camerapture. Tocar el slot elige la cara.
+- Entrada (1, prenda estampable) y Salida (1).
+- Almacén de fotos: 27.
+- Máscara: 1 (molde de máscara).
+- Papel y tintas: sin slot, se ven como barras.
 
-### Para ordenar
-- Las filas 1 y 2 de controles son muy densas, con botones de 14 px.
-- Espejo, Alternancia y Simetría están lejos de lo que modifican (los controles de distribución).
-- La columna derecha apila unos 14 elementos de arriba a abajo y el texto de estado queda apretado.
-- Los rótulos de los sliders (Cyan, Magenta, etc.) no pasan por traducción.
-- Los tanques de tinta no tienen slot en esta GUI: se ven solo como barras.
+**Botones**
+| Control | Posición | Qué hace | BTN |
+|---|---|---|---|
+| Categoría | (119,20) | Cicla la categoría de ajustes | 10 |
+| Prensar | (215,184) | Estampa | 25 |
+| Escala `<` `>` | (119,232) | Tamaño de la foto o máscara | 2 / 1 |
+| Posición X `<` `>` | (243,232) | Mueve en X | 4 / 3 |
+| Posición Y `<` `>` | (119,252) | Mueve en Y | 6 / 5 |
+| Ángulo `<` `>` | (243,252) | Gira | 8 / 7 |
+| Cara: Frente/Espalda | (119,272) | Alterna la cara que se edita | 0 |
+| Simetría | (243,272) | Espeja el lado, solo en prendas de a pares | 26 |
+| Chincheta (una por cara) | sobre cada slot de foto | Fija la cara (solo se estampan las fijadas) | 22 + cara |
+| Elegir cara | tocar el slot | Selecciona esa cara | 20 + cara |
+| Casilleros de diseño 1..8 | y 214 | Cargar / borrar | 30 + i / 40 + i |
+| Guardar diseño, nombre, Vista | izquierda | Igual que en las otras | payload |
+| Escanear estampa | (8,276) | Elige una imagen del disco y la convierte en foto | cliente; apagado sin Camerapture |
+| Línea | (8,296) | Línea de producción | 900 |
+| Capas (12 botones "1F", "2E"…) | derecha, y 274 / 290 | Elige la capa con máscara | 50 + i |
+| ▲ ▼ ✕ de capas | derecha, y 308 | Orden y borrado | ids en `SublimadoraBlockEntity` (~líneas 1280-1290) |
+| Editar: imagen / máscara | derecha, y 308 | Los controles de arriba mueven la foto o la máscara | 27 |
 
----
+**Indicadores:** visor 3D, 5 barras de tanques (C, M, Y, K y papel, "n/64"), texto guía (385,150), "Editando <cara> (fijada o borrador)" en (119,296), rótulo "Capas (n/12)".
 
-## 3. Sublimadora (560 × 408)
+### 2.4 Estilista automática (384 × 256 + paneles afuera)
 
-### Zonas
-- **Izquierda:** visor 3D, Vista, nombre, Guardar diseño, **Escanear estampa** y Línea. Son 6 controles apilados.
-- **Medio, arriba:** Categoría. Debajo, la prenda real dibujada a 4 veces, con los rótulos Frente y Espalda y un slot de foto sobre cada cara (con su chincheta).
-- **Medio, fila entrada y salida (y 184):** slot Entrada, botón Prensar y slot Salida.
-- **Medio, y 214:** 8 casilleros de diseño.
-- **Medio, controles de la foto o máscara (y 232..288):**
-  - Escala, Posición X, Posición Y y Ángulo (cada uno con `<` valor `>`).
-  - Cara Frente/Espalda y Simetría (esta solo aparece en prendas de a pares).
-  - Texto "Editando…" en y 296.
-- **Derecha:**
-  - Cinco barras de tanques: C, M, Y, K y papel.
-  - Texto guía (y 150).
-  - Almacén de fotos de 27 slots (9 × 3, y 200).
-  - Capas (hasta 12 botones, "1F", "2E"…), ▲ ▼ ✕ y Editar.
-  - Slot de Máscara (y 334).
+Hereda la pantalla de la Mesa de estilado (ya jubilada) como editor interno. El panel Máquina y el panel Diseños quedan **fuera de la ventana de 384**.
 
-### Para ordenar
-- Es la GUI más separada: la izquierda son solo botones y la derecha mezcla almacén, capas y máscara.
-- El texto guía de 4 líneas queda pegado al almacén.
-- El slot de Máscara está al fondo, lejos de las capas que usa.
-- La izquierda tiene 6 controles pegados.
+**Slots**
+- Entrada (1) y Salida (1) en el panel Máquina.
+- Almacén: 18 (6 × 3), para plantillas, retazos, muestras y objetos.
+- Del editor: Molde (240,30), Retazo (266,30), Material (318,30) y Objeto (292,30, solo creativa).
+- El slot Prenda del editor está oculto: la muestra es la prenda de la entrada.
+- Hilo y cuero no son slots: se cargan soltando el ítem sobre el contador (BTN 603 / 604), con shift-click o con la mano al bloque.
 
----
+**Panel Máquina (x 390..520)**
+| Control | Posición | Qué hace | BTN |
+|---|---|---|---|
+| Aplicar ▶ | (428,42) | Aplica el último diseño a la prenda de la entrada | 600 |
+| Borrar | (398,70) | Olvida el último diseño de ese tipo y limpia la muestra | 602 |
+| Línea | (398,102) | Línea de producción | 900 |
+| Contador de hilo | (398,126) | Apliques que se pueden pagar (se llena con hilo) | 603 |
+| Contador de cuero | (398,145) | Correas que se pueden pagar | 604 |
+| Texto de info | (398,92) | Diseño actual o "Falta N x ítem" | — |
 
-## 4. Estilista automática (384 × 256 + paneles afuera)
+**Panel Diseños (x 526..654)**
+| Control | Qué hace | BTN |
+|---|---|---|
+| Fila "★ Último" | El que usa Aplicar; se guarda solo | — |
+| Filas con nombre (hasta 8) | Clic carga ese diseño en el editor | 640 + k |
+| ✕ de cada fila | Borra ese diseño | 660 + k |
+| Campo de nombre + Guardar | Guarda el actual con nombre | payload |
 
-Hereda la pantalla de la Mesa de estilado (ya jubilada) como editor interno. Los dos paneles de la máquina están **fuera de la ventana de 384**, así que el conjunto mide ~658 de ancho (más 170 si es la creativa).
+**Editor (x 0..384)**
+| Control | Posición | Qué hace | BTN |
+|---|---|---|---|
+| Visor 3D | (8,18) | Gira, zoom con la rueda, clic para poner o apuntar | — |
+| ⟲ ⟳ | (312,108) / (345,108) | Gira la vista 45° | — |
+| Sacudir | (312,132) | Prueba la física del aplique | — |
+| Obj. Modo / Variante | franja superior (12,21) / (72,21) | Ítem o bloque, y estado, de un aplique de objeto (solo Mesa creativa) | 40..41 |
+| Espejo | (132,21) | Con borcegos, pone también en el otro pie | cliente |
+| Pestañas Aplique / Correa / Acabado | y 147 | Cambia de grupo de controles | cliente |
 
-### Editor heredado de la Mesa (x 0..384)
-- **Visor 3D (x 8..204, y 18..250):** muestra la prenda de la entrada como muestra. Tiene ⟲ ⟳ y Sacudir (x 312..376), una franja de arriba para objeto y espejo, y una línea de ayuda abajo.
-- **Fila de slots (y 30, cada 26 px):** Prenda (oculta en la Estilista), Molde, Retazo, Objeto (solo creativa) y Material.
-- **3 pestañas (y 147):**
-  - **Aplique:** 12 botones numerados, Giro, Tamaño, Quitar y el slider Blandura.
-  - **Correa:** lista de 8 correas, Modo, Ancho, Quitar/Cancelar, Recolorear y Largo.
-  - **Acabado:** botón Textura/Acabado. Para sombrero, banda y borcegos: 3 zonas con 3 colores y un patrón cada una, y "Retazo entero". Para los borcegos, también Espejo y Pie izq./der.
-- **Inventario** desde y 172.
-- **Panel lateral creativo** (160 px, solo Mesa creativa o Estilista creativa): Colocar, Mover y Moldes.
+*Pestaña Aplique:* 12 botones numerados (y 66, BTN 100 + i), Giro `<` `>` (y 88, BTN 11 / 10), Tamaño `<` `>` (y 108, BTN 13 / 12), Quitar (312,88, BTN 14), slider Blandura (214,150).
 
-### Panel Máquina (x 390..520, y 18..236)
-- Entrada y Salida con Aplicar ▶ en el medio.
-- Borrar y Línea.
-- Texto de info (diseño, o lo que falta).
-- Contadores de Hilo y Cuero (se cargan soltando el ítem encima).
-- Almacén de 18 slots (6 × 3) para plantillas, retazos, muestras y objetos.
+*Pestaña Correa:* lista de 8 correas (y 66), Modo (214,88), Ancho (296,88), Quitar/Cancelar (214,110), Recolorear (296,110), Largo −/+ (y 128, solo si el modo cuelga). Ids: quitar 480, colorear 490, ancho 520 + i·4, modo 700 + i·4, largo 760 + i·16.
 
-### Panel Diseños (x 526..654)
-- Cabecera con el tipo de prenda.
-- Fila "★ Último" (automática, es el que se aplica).
-- Hasta 8 diseños con nombre: clic carga y ✕ borra.
-- Campo de nombre y botón Guardar.
+*Pestaña Acabado:* botón Textura/Acabado (214,66, pone o quita el molde o el trim). Con sombrero, banda o borcegos: 3 filas de zona con 3 botones de color (BTN 300 + zona·4 + color), botón de patrón (BTN 330 + zona), "Retazo entero" (BTN 320) y, con borcegos, Pie izq./der. (BTN 500; los del pie izquierdo van de 800 a 832).
 
-### Para ordenar
-- Son 3 bloques anchos (editor, máquina y diseños) más el panel creativo opcional.
-- El slider Blandura se pisa con las pestañas en y 150..160.
-- La columna del editor (162 px) concentra slots, pestañas y botones de las 3 pestañas.
-- Fijar existe en el código (id 601) pero no tiene botón.
-- Los botones ⟲ ⟳ y Sacudir comparten zona con Quitar y Tamaño.
+**Panel creativo (solo creativa, 160 px):** páginas Colocar, Mover y Moldes, con 10 sliders de colocación, pivote, intensidad, velocidad y amplitud, y la biblioteca de moldes creados.
 
----
+**Sin botón en pantalla pero con id:** Fijar (BTN 601).
 
-## 5. Telar automático (176 × 226)
+### 2.5 Telar automático (176 × 226)
 
-Es la única con la ventana chica, dibujada por código y sin textura de fondo.
+**Slots:** Lana (1), Hilo (1), Salida (1). Se llena por cualquier lado del bloque y entrega por la derecha.
 
-- **Izquierda:** slots Lana (22, 34) e Hilo (22, 62).
-- **Centro (x 52..134):** 6 botones de prenda en 2 columnas (Remera, Pantalón, Medias, Calientabrazos, Pollera, Capa). Se tildan varias y se tejen de a una, en orden. Cada tooltip muestra lo que gasta.
-- **Derecha:** slot Salida (138, 48).
-- **Arriba a la derecha:** botón Línea (112, 6).
-- **Fila del lote (y 86):** −10, −, +, +10 y reiniciar ↻.
-- **Barra de progreso (y 106).**
-- **Texto (y 116..136):** lote (sin límite o "n, faltan m"), la prenda que sigue con su costo, y "Listo" o "Falta".
-- **Inventario** desde y 146.
+**Botones**
+| Control | Posición | Qué hace | BTN |
+|---|---|---|---|
+| 6 casillas de prenda | (52..134, 24..) | Tildan qué prendas se tejen, de a una y en orden | 620 + i |
+| −10, −, +, +10 | y 86 | Cantidad por lote (0 = sin límite, máximo 64) | 630..633 |
+| ↻ | (138,86) | Reinicia el lote con la misma cantidad | 634 |
+| Línea | (112,6) | Línea de producción | 900 |
+
+**Indicadores:** barra de progreso (y 106), texto del lote, de la prenda que sigue con su costo, y "Listo" o "Falta N lana, M hilo".
 
 ---
 
-## 6. Qué comparten y qué difiere
+## 3. Inconsistencias entre máquinas
 
-- **Línea (BTN 900)** está en las 5, pero cada una la pone en un lugar distinto: Modeladora y Tintes en la columna izquierda, Sublimadora al final de la izquierda, Estilista en el panel Máquina y Telar arriba a la derecha. También tiene un botón físico en el frente de cada máquina.
-- **Vista / nombre / Guardar diseño / 8 casilleros** se repiten en Modeladora, Tintes y Sublimadora, con ids de botón distintos.
-- **Categoría** (botón de 240 × 14 que cicla) aparece en las 3 de la grilla grande, con 10, 8 y N categorías.
-- **Entrada y salida** a 1.5 veces están en las mismas coordenadas (167 y 295, y 184) en las 3 grandes.
-- La Estilista usa paneles dibujados por código a la derecha. El Telar es todo por código.
-- Cuando la máquina trabaja, las 5 cierran la GUI sola y rechazan los botones.
+Todas son observaciones del código, sin tocar nada.
+
+1. **El botón de acción** (Modelar, Teñir, Prensar, Aplicar) está en el mismo lugar en las 3 máquinas grandes, pero en la Estilista cambió de posición y de forma. Además se comportan distinto: Modelar y Prensar también arrancan solas al cerrar la GUI, Teñir no, y Aplicar no.
+2. **Línea de producción:** está en lugares distintos en cada una. En la Modeladora está sobre Simetría, en Tintes pegada al almacén, en la Sublimadora al final de la columna, en la Estilista en el panel Máquina y en el Telar arriba a la derecha.
+3. **Simetría** significa tres cosas distintas:
+   - En la Modeladora y la Sublimadora, los pines o la foto de un lado mandan al otro lado.
+   - En Tintes es la simetría del torso del patrón.
+   - Cambia de lugar en cada máquina (columna izquierda, fila de controles, junto al inventario).
+4. **Ids de botón repetidos con otro significado:** `BTN 1..14` se usan en la Sublimadora (escala, posición, ángulo), en la Estilista (giro, tamaño, quitar) y en la Modeladora (fijar, anclaje, lado). Los diseños son 400/420, 300/320 y 30/40, y la categoría es 9 y 10.
+5. **Guardar diseño:** en Modeladora, Tintes y Sublimadora son botón + campo de nombre + 8 casilleros numerados. En la Estilista es otra mecánica: un "último" automático más una lista con nombre.
+6. **Almacén:** la Modeladora y la Sublimadora lo tienen a la derecha, Tintes a la izquierda, la Estilista en el panel Máquina y el Telar no tiene.
+7. **Insumos:** hay 4 formas distintas de cargarlos:
+   - Slots visibles (lana e hilo en el Telar).
+   - Un slot invisible (tijeras de la Modeladora).
+   - Barras sin slot (tinta, papel).
+   - Soltar sobre el contador (hilo y cuero de la Estilista).
+8. **Barras de progreso:** solo el Telar la muestra en la GUI. Las otras 4 la muestran en el modelo 3D del bloque.
+9. **Cambio de vista:** Vista gira 90° en 3 máquinas, y ⟲ ⟳ gira 45° en la Estilista.
+10. **Textos sin traducir:** los rótulos Cyan, Magenta, Yellow, Key y Transp. de Tintes están escritos a mano.
+11. **Código muerto:** botones ocultos en la Modeladora, el texto `hint()`, el slot Activo y el botón Fijar de la Estilista.
+12. **Densidad:** Tintes tiene unos 24 controles de capa en 4 filas de 237 px, y la Estilista concentra todo el editor en 162 px.
 
 ---
 
-## 7. Pestaña creativa "ModaMod" (la agregada al inventario creativo de vanilla)
+## 4. Ideas para normalizar (a charlar, nada hecho)
+
+**Lo que se puede dejar igual en las 5**
+- **Línea:** un único lugar fijo, por ejemplo arriba a la derecha de la ventana, como en el Telar.
+- **Acción:** un único lugar (el actual de las 3 grandes sirve) y una única regla de arranque.
+- **Salida:** misma posición relativa respecto de la entrada.
+- **Ids:** repartir rangos por máquina para que no se pisen.
+
+**Lo que se podría juntar**
+- **Diseños:** que Modeladora, Tintes y Sublimadora usen la misma lista "último + con nombre" que la Estilista, en vez de 8 casilleros numerados.
+- **Vista y giro:** una sola convención (90° o 45°).
+- **Simetría:** renombrar la de Tintes para que no se confunda con las otras dos.
+- **Almacén:** una sola ubicación y una sola forma de mostrarlo.
+
+**Lo que se podría sacar**
+- **Modelar y Prensar:** si arrancan al cerrar la GUI, el botón sobra, o al revés.
+- **Botones ocultos y `hint()`** de la Modeladora.
+- **El slot Activo** y el botón Fijar de la Estilista.
+- **Escanear estampa:** podría ir a un menú contextual.
+
+**Lo que habría que ordenar adentro**
+- **Tintes:** partir los controles de capa en pestañas (Color, Patrón, Mezcla, Capas), que ya estaba en pendientes.
+- **Estilista:** el slider Blandura contra las pestañas, y los 3 bloques de ancho.
+- **Sublimadora:** el slot Máscara junto a las capas.
+
+---
+
+## 5. Pestaña creativa "ModaMod"
 
 El ícono es la remera. Los ítems salen en este orden:
 
 1. **Máquinas normales:** Modeladora, Telar, Estilista, Tintes, Sublimadora, Guardarropas, Maniquí, Cinta y Empalme.
 2. **Máquinas creativas** (sin espera, sin insumos y con todo cargado): Modeladora, Telar, Estilista, Tintes y Sublimadora.
-3. **Kits en shulkers**, repartidos de a 27:
-   - Todos los patrones.
-   - **Todos** los moldes. Se reconocen por el nombre de la clase y entran todos, incluso los que no están sueltos más abajo.
-   - Insumos: 16 colorantes en pilas de 64, papel y frascos de vidrio.
-4. **Prendas y accesorios:**
-   - Remera, Hoodie.
-   - Medias (3/4, lisas y de red), Pantalón, Pollera, **Delantal**, Calientabrazos, Capa y Maid outfit.
-   - Sombreros: el de fábrica y 3 variantes.
-   - Banda, Collar (la banda con zona de cuello y ancho fino) y Borcegos.
+3. **Kits en shulkers**, repartidos de a 27: todos los patrones, **todos** los moldes (se reconocen por el nombre de la clase), y los insumos (16 colorantes en pilas de 64, papel y frascos de vidrio).
+4. **Prendas y accesorios:** Remera, Hoodie, Medias (3/4, lisas y de red), Pantalón, Pollera, Delantal, Calientabrazos, Capa, Maid outfit, Sombreros (de fábrica y 3 variantes), Banda, Collar y Borcegos.
 5. **Moldes de aplique** (Moño, Mariposa, Flor, Canguro, Corbata), moldes de textura (Fruncido, Acolchado) y Estrógenos.
-6. **Retazos de aplique** en 3 combinaciones de color.
-7. **Tinte mezcla** (muestra de color).
-8. **Moldes de correa:** Lisa, Cadena, Cadena fina, Ojalillos y Cordón.
-9. **Patrones sueltos:** Rayas, Corazones, Estrellas, Lunares y Vichy.
-10. **Moldes sueltos**, por familia:
-    - Corte.
-    - Cuello: Redondo, V, Polera, Cuadrado, Corazón y Camisa.
-    - Máscaras de sublimado.
-    - Rango: 7.
-    - Calce: 5.
-    - Trama: Fina, Gruesa, Hexagonal, Perforada, Encaje, Rayas, Escocesa, Denim y Cuero.
-    - Arnés: X, Tirantes y Bandas.
-    - Lisa.
-    - Pollera: 5 formas.
-    - Delantal: 5 formas y 3 tirantes.
-    - Volado: 2.
-    - Capa: ruedo y cuello.
-    - Sombrero: ala y punta.
-    - Banda: zona, ancho y herraje.
-    - Ruedo: 6.
-    - Chaqueta: frente, capucha y solapa.
-    - Calzado: 7.
+6. **Retazos de aplique** en 3 combinaciones de color, y el **tinte mezcla**.
+7. **Moldes de correa** (Lisa, Cadena, Cadena fina, Ojalillos, Cordón) y **patrones sueltos** (Rayas, Corazones, Estrellas, Lunares, Vichy).
+8. **Moldes sueltos** por familia: corte, cuello (6), máscaras, rango (7), calce (5), trama (9), arnés (3), lisa, pollera (5), delantal (5 formas y 3 tirantes), volado (2), capa, sombrero, banda, ruedo (6), chaqueta, calzado (7).
 
 Observaciones:
-- El orden mezcla máquinas, prendas, moldes y patrones sin separadores, así que cuesta ubicarse. Una opción sería partirla en 2 o 3 pestañas (Máquinas, Prendas y accesorios, Moldes y patrones).
-- La pestaña tiene más de 150 entradas.
-- Los moldes aparecen en el kit **y** sueltos, lo que duplica la lista.
-- Ni el Maniquí ni el Guardarropas tienen versión creativa.
-- Los retazos de aplique y la muestra de color tienen un solo ejemplar de cada uno.
+- Más de 150 entradas, sin separadores.
+- Los moldes salen dos veces: en los kits y sueltos.
+- Una opción es partirla en 2 o 3 pestañas: Máquinas, Prendas y accesorios, Moldes y patrones.
+- El Maniquí y el Guardarropas no tienen versión creativa.
