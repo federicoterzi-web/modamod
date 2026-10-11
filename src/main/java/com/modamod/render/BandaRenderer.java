@@ -44,7 +44,7 @@ public final class BandaRenderer {
         BandaZona zona = BandaItem.zona(banda);
         // El collar va en el pecho pero anclado a la cabeza (2026-10-11, "si el original esta anclado a la cabeza mejor
         // asi"): gira con ella. El cinto, en el torso.
-        ModelPart marco = zona == BandaZona.CINTURA ? biped.body : biped.head;
+        ModelPart marco = biped.body;
         if (!marco.visible) return;
         List<Integer> colores = BandaItem.colores(banda);
         List<SombreroPatron> patrones = BandaItem.patrones(banda);
