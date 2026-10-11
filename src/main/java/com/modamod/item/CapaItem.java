@@ -60,6 +60,38 @@ public class CapaItem extends ClothingTrinketItem {
         else stack.set(ModamodComponents.CAPA_CUELLO, true);
     }
 
+    /** Nivel de rango (0..6) del embozo sobre los hombros, o −1 si no lleva (2026-10-11). */
+    public static int embozo(ItemStack stack) {
+        Integer n = stack.get(ModamodComponents.CAPA_EMBOZO);
+        return n == null ? -1 : n;
+    }
+
+    public static void setEmbozo(ItemStack stack, int nivel) {
+        if (nivel < 0) {
+            stack.remove(ModamodComponents.CAPA_EMBOZO);
+            stack.remove(ModamodComponents.FRENTE_AHORA);
+        } else stack.set(ModamodComponents.CAPA_EMBOZO, Math.min(6, nivel));
+    }
+
+    /** Cuánto baja el embozo desde el hombro, en px (2 a 11). */
+    public static float profundidadEmbozo(ItemStack stack) {
+        return 2f + 1.5f * Math.max(0, embozo(stack));
+    }
+
+    public static boolean bordeEmbozo(ItemStack stack) {
+        return Boolean.TRUE.equals(stack.get(ModamodComponents.CAPA_BORDE_EMBOZO));
+    }
+
+    public static void setBordeEmbozo(ItemStack stack, boolean v) {
+        if (!v) stack.remove(ModamodComponents.CAPA_BORDE_EMBOZO);
+        else stack.set(ModamodComponents.CAPA_BORDE_EMBOZO, true);
+    }
+
+    /** ¿El frente del embozo está abierto un poco? (la tecla de abrir el frente, la misma de la chaqueta). */
+    public static boolean embozoAbierto(ItemStack stack) {
+        return embozo(stack) >= 0 && Boolean.TRUE.equals(stack.get(ModamodComponents.FRENTE_AHORA));
+    }
+
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
@@ -68,5 +100,6 @@ public class CapaItem extends ClothingTrinketItem {
                 .formatted(Formatting.GRAY));
         if (capucha(stack)) tooltip.add(Text.translatable("modamod.capa.con_capucha").formatted(Formatting.GRAY));
         if (cuelloAlto(stack)) tooltip.add(Text.translatable("modamod.capa.con_cuello").formatted(Formatting.GRAY));
+        if (embozo(stack) >= 0) tooltip.add(Text.translatable(bordeEmbozo(stack) ? "modamod.capa.con_embozo_borde" : "modamod.capa.con_embozo").formatted(Formatting.GRAY));
     }
 }

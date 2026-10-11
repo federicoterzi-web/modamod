@@ -252,7 +252,7 @@ public final class PolleraMalla {
 
     /** Los volados de los costados y del borde de arriba del delantal (2026-10-11) y la silueta a la que se pegan. */
     public record AdornoDelantal(com.modamod.item.DelantalForma forma, float largo, @Nullable PolleraVolado lateral,
-                                 @Nullable PolleraVolado superior) {}
+                                 @Nullable PolleraVolado superior, float cap) {}
 
     private static final int SUB = FILAS * 2, TRAMOS = 3;
 
@@ -294,7 +294,7 @@ public final class PolleraMalla {
                 float[][][] g = new float[SUB + 1][TRAMOS + 1][];
                 for (int j = 0; j <= SUB; j++) {
                     float y = j / (float) SUB * largo;
-                    float arc = sgn * Math.max(0.5f, ad.forma().medio(y, largo) - 0.15f);
+                    float arc = sgn * Math.max(0.5f, ad.forma().medio(y, largo, ad.cap()) - 0.15f);
                     float rowF = y / largo * FILAS;
                     float[] b = punto(p, rowF, arc), dentro = punto(p, rowF, arc - sgn * 0.6f);
                     float[] d = unitario(b[0] - dentro[0], b[1] - dentro[1], b[2] - dentro[2]);
@@ -312,7 +312,7 @@ public final class PolleraMalla {
         if (ad.superior() != null) {
             boolean circ = ad.superior() == PolleraVolado.CIRCULAR;
             float L = circ ? 3.0f : 2.0f, amp = circ ? 0.8f : 0.3f, per = circ ? 2.7f : 1.0f;
-            float m = Math.max(0.5f, ad.forma().medio(0f, largo) - 0.15f);
+            float m = Math.max(0.5f, ad.forma().medio(0f, largo, ad.cap()) - 0.15f);
             float[][][] g = new float[SUB + 1][TRAMOS + 1][];
             for (int i = 0; i <= SUB; i++) {
                 float s = -m + 2f * m * i / SUB;
@@ -364,10 +364,11 @@ public final class PolleraMalla {
     public static void dibujarDelantal(MatrixStack matrices, VertexConsumer vc, int luz, float dil, @Nullable Piernas piernas,
                                        CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion,
                                        float inicio, float largoPx, @Nullable PolleraVolado volado,
-                                       com.modamod.item.Ruedo hem, @Nullable float[] extraPorFila, @Nullable AdornoDelantal adorno) {
+                                       com.modamod.item.Ruedo hem, @Nullable float[] extraPorFila, @Nullable AdornoDelantal adorno,
+                                       int columnas) {
         dibujar(matrices, vc, luz, PolleraForma.TUBO, PolleraLargo.MAXIMO, volado, null, hem, dil, piernas, mov, twirl, cola,
                 inclinacion, inicio, 20f, 20f + largoPx, 0, extraPorFila, largoPx,
-                COL_FRENTE - DELANTAL_COLUMNAS, COL_FRENTE + DELANTAL_COLUMNAS, adorno);
+                COL_FRENTE - columnas, COL_FRENTE + columnas, adorno);
     }
 
     /**

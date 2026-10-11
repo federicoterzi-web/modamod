@@ -546,14 +546,16 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         PolleraMalla.AdornoDelantal adorno = com.modamod.item.DelantalItem.voladoLateral(stack) == null
                 && com.modamod.item.DelantalItem.voladoSuperior(stack) == null ? null
                 : new PolleraMalla.AdornoDelantal(com.modamod.item.DelantalItem.forma(stack), largo,
-                        com.modamod.item.DelantalItem.voladoLateral(stack), com.modamod.item.DelantalItem.voladoSuperior(stack));
+                        com.modamod.item.DelantalItem.voladoLateral(stack), com.modamod.item.DelantalItem.voladoSuperior(stack),
+                        com.modamod.item.DelantalItem.cobertura(stack).ancho);
+        int columnas = com.modamod.item.DelantalItem.cobertura(stack).columnas();
         MallaCapturada malla = grabar("delantal", !apliques.isEmpty()
                 || CorreaRenderer.hayEn(stack, com.modamod.correa.Correa.Superficie.DELANTAL), () ->
                 PolleraMalla.dibujarDelantal(matrices, buffer, luz, finalDilatacion,
                 new PolleraMalla.Piernas(biped.body, biped.rightLeg, biped.leftLeg), mov, twirl, cola, delJugador.pitch,
                 inicio, largo, com.modamod.item.DelantalItem.volado(stack),
                 com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.DELANTAL), extra,
-                adorno));
+                adorno, columnas));
         matrices.pop();
         TirantesDelantal.dibujar(com.modamod.item.DelantalItem.tirantes(stack),
                 com.modamod.region.RegionResolver.colorBase(stack, com.modamod.region.Lado.IZQUIERDA), inicio, finalDilatacion,
@@ -580,19 +582,20 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         com.modamod.item.DelantalForma forma = com.modamod.item.DelantalItem.forma(stack);
         float largo = com.modamod.item.DelantalItem.largo(stack);
         boolean redondas = com.modamod.item.DelantalItem.esquinasRedondas(stack);
+        com.modamod.item.DelantalCobertura cobertura = com.modamod.item.DelantalItem.cobertura(stack);
         com.modamod.item.PatronRed red = com.modamod.item.PatronRed.leer(stack);
         boolean estampado = com.modamod.sublimadora.EstampaTextures.tieneEstampa(stack);
         ClothingTextureCache.Encima encima = new ClothingTextureCache.Encima() {
             @Override
             public String clave() {
-                return "delantal_" + (estampado ? com.modamod.sublimadora.EstampaTextures.claveEstampas(stack) + "_" : "") + forma + "_" + Math.round(largo * 2) + (redondas ? "r" : "") + "_" + red;
+                return "delantal_" + (estampado ? com.modamod.sublimadora.EstampaTextures.claveEstampas(stack) + "_" : "") + forma + "_" + Math.round(largo * 2) + (redondas ? "r" : "") + "_" + cobertura + "_" + red;
             }
 
             @Override
             public boolean aplicar(net.minecraft.client.texture.NativeImage destino) {
                 if (estampado) com.modamod.sublimadora.EstampaTextures.estampar(destino, stack);
                 if (red != null) ClothingTextureCache.perforarRed(destino, red, Parte.TORSO, 0, 12);
-                recortarDelantal(destino, forma, largo, redondas);
+                recortarDelantal(destino, forma, largo, redondas, cobertura.ancho);
                 return true;
             }
         };
@@ -605,13 +608,13 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
      * frente está en u 24 y el borde de arriba del paño en v 20). Funciona a cualquier escala de la textura.
      */
     private static void recortarDelantal(net.minecraft.client.texture.NativeImage img, com.modamod.item.DelantalForma forma,
-                                         float largo, boolean redondas) {
+                                         float largo, boolean redondas, float cap) {
         float escala = img.getWidth() / 64f;
         for (int y = 0; y < img.getHeight(); y++) {
             float yy = (y + 0.5f) / escala - 20f;
             for (int x = 0; x < img.getWidth(); x++) {
                 float s = (x + 0.5f) / escala - 24f;
-                if (!forma.contiene(s, yy, largo, redondas)) img.setColor(x, y, 0);
+                if (!forma.contiene(s, yy, largo, redondas, cap)) img.setColor(x, y, 0);
             }
         }
     }
@@ -688,6 +691,15 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                 matrices.pop();
             }
         });
+        // Embozo sobre los hombros (2026-10-11): en el marco del torso, fuera de la malla de apliques.
+        if (com.modamod.item.CapaItem.embozo(stack) >= 0) {
+            ModelPart torso = CuerpoGeometria.delJugador(biped, Parte.TORSO);
+            matrices.push();
+            torso.rotate(matrices);
+            CapaMalla.dibujarEmbozo(matrices, buffer, luz, com.modamod.item.CapaItem.profundidadEmbozo(stack),
+                    com.modamod.item.CapaItem.bordeEmbozo(stack), com.modamod.item.CapaItem.embozoAbierto(stack), alejar);
+            matrices.pop();
+        }
         if (malla != null) { ApliqueRenderer.dibujarEnMalla(stack, com.modamod.aplique.Aplique.Superficie.CAPA, malla, vertexConsumers, luz, matrices.peek().getNormalMatrix());
         CorreaRenderer.dibujarEnMalla(stack, com.modamod.correa.Correa.Superficie.CAPA, malla, vertexConsumers, luz, matrices.peek().getNormalMatrix()); }
     }

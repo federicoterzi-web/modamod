@@ -536,6 +536,21 @@ public final class ModamodComponents {
                     .codec(StringIdentifiable.createCodec(DelantalTirantes::values))
                     .packetCodec(PacketCodecs.indexed(i -> DelantalTirantes.values()[i], Enum::ordinal))
                     .build());
+    /** Cobertura del delantal; ausente = ENVOLVENTE. */
+    public static final ComponentType<DelantalCobertura> DELANTAL_COBERTURA = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_cobertura"),
+            ComponentType.<DelantalCobertura>builder()
+                    .codec(StringIdentifiable.createCodec(DelantalCobertura::values))
+                    .packetCodec(PacketCodecs.indexed(i -> DelantalCobertura.values()[i], Enum::ordinal))
+                    .build());
+    /** Embozo de la capa (2026-10-11): nivel de rango 0..6 = hasta dónde baja sobre los hombros; ausente = sin embozo. */
+    public static final ComponentType<Integer> CAPA_EMBOZO = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "capa_embozo"),
+            ComponentType.<Integer>builder().codec(com.mojang.serialization.Codec.intRange(0, 6)).packetCodec(PacketCodecs.VAR_INT).build());
+    /** Borde del embozo (cinta alrededor del contorno, cerrando por el frente); ausente = sin borde. */
+    public static final ComponentType<Boolean> CAPA_BORDE_EMBOZO = Registry.register(
+            Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "capa_borde_embozo"),
+            ComponentType.<Boolean>builder().codec(com.mojang.serialization.Codec.BOOL).packetCodec(PacketCodecs.BOOL).build());
     /** Esquinas de abajo del delantal (solo se guarda REDONDEADO). */
     public static final ComponentType<CapaRuedo> DELANTAL_ESQUINAS = Registry.register(
             Registries.DATA_COMPONENT_TYPE, Identifier.of("modamod", "delantal_esquinas"),

@@ -19,10 +19,14 @@ import java.util.List;
 public class MoldeCapaItem extends Item {
 
     public enum Tipo {
-        RUEDO_RECTO, RUEDO_REDONDEADO, CON_CAPUCHA, SIN_CAPUCHA, CUELLO_ALTO, SIN_CUELLO, RUEDO_COLA;
+        RUEDO_RECTO, RUEDO_REDONDEADO, CON_CAPUCHA, SIN_CAPUCHA, CUELLO_ALTO, SIN_CUELLO, RUEDO_COLA,
+        /** Embozo sobre los hombros (2026-10-11): el largo sale del molde de rango; este lo quita. */
+        EMBOZO_NINGUNO, BORDE_EMBOZO, BORDE_NINGUNO;
 
         public boolean esRuedo() { return this == RUEDO_RECTO || this == RUEDO_REDONDEADO || this == RUEDO_COLA; }
         public boolean esCapucha() { return this == CON_CAPUCHA || this == SIN_CAPUCHA; }
+        public boolean esEmbozo() { return this == EMBOZO_NINGUNO; }
+        public boolean esBordeEmbozo() { return this == BORDE_EMBOZO || this == BORDE_NINGUNO; }
         public boolean esCuello() { return this == CUELLO_ALTO || this == SIN_CUELLO; }
     }
 

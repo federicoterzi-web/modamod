@@ -177,6 +177,14 @@ public final class PrendaModelado {
             }
         }
 
+        // Embozo de la capa (2026-10-11): largo por molde de rango (−1 = sin embozo) y borde.
+        if (out.getItem() instanceof com.modamod.item.CapaItem && combo.pollera().isPresent()
+                && combo.pollera().get().chaqueta().isPresent() && combo.pollera().get().chaqueta().get().embozo().isPresent()) {
+            var em = combo.pollera().get().chaqueta().get().embozo().get();
+            if (em.nivel().isPresent()) { com.modamod.item.CapaItem.setEmbozo(out, em.nivel().get()); cambio = true; }
+            if (em.borde().isPresent()) { com.modamod.item.CapaItem.setBordeEmbozo(out, em.borde().get()); cambio = true; }
+        }
+
         // Sombrero de bruja (2026-10-05): ala y punta.
         if (out.getItem() instanceof com.modamod.item.SombreroBrujaItem && combo.pollera().isPresent()) {
             var p = combo.pollera().get();
@@ -250,6 +258,7 @@ public final class PrendaModelado {
             if (d.lateral().isPresent()) { com.modamod.item.DelantalItem.setVoladoLateral(out, d.lateral().get()); cambio = true; }
             if (d.superior().isPresent()) { com.modamod.item.DelantalItem.setVoladoSuperior(out, d.superior().get()); cambio = true; }
             if (d.tirantes().isPresent()) { com.modamod.item.DelantalItem.setTirantes(out, d.tirantes().get()); cambio = true; }
+            if (d.cobertura().isPresent()) { com.modamod.item.DelantalItem.setCobertura(out, d.cobertura().get()); cambio = true; }
         }
 
         // Banda (2026-10-05): zona, ancho y herraje.

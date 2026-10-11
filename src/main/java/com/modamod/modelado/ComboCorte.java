@@ -264,7 +264,14 @@ public record ComboCorte(
      */
     public record ChaquetaCorte(Optional<com.modamod.item.ChaquetaFrente> frente, Optional<Boolean> capucha,
                                 Optional<com.modamod.item.ChaquetaSolapa> solapa, Optional<BorcegoCorte> borcego,
-                                Optional<Integer> faldon, Optional<DelantalCorte> delantal) {
+                                Optional<Integer> faldon, Optional<DelantalCorte> delantal,
+                                Optional<EmbozoCorte> embozo) {
+        public ChaquetaCorte(Optional<com.modamod.item.ChaquetaFrente> frente, Optional<Boolean> capucha,
+                             Optional<com.modamod.item.ChaquetaSolapa> solapa, Optional<BorcegoCorte> borcego,
+                             Optional<Integer> faldon, Optional<DelantalCorte> delantal) {
+            this(frente, capucha, solapa, borcego, faldon, delantal, Optional.empty());
+        }
+
         public ChaquetaCorte(Optional<com.modamod.item.ChaquetaFrente> frente, Optional<Boolean> capucha,
                              Optional<com.modamod.item.ChaquetaSolapa> solapa, Optional<BorcegoCorte> borcego,
                              Optional<Integer> faldon) {
@@ -289,8 +296,20 @@ public record ComboCorte(
                         .forGetter(ChaquetaCorte::solapa),
                 BorcegoCorte.CODEC.optionalFieldOf("borcego").forGetter(ChaquetaCorte::borcego),
                 Codec.intRange(0, 6).optionalFieldOf("faldon").forGetter(ChaquetaCorte::faldon),
-                DelantalCorte.CODEC.optionalFieldOf("delantal").forGetter(ChaquetaCorte::delantal)
+                DelantalCorte.CODEC.optionalFieldOf("delantal").forGetter(ChaquetaCorte::delantal),
+                EmbozoCorte.CODEC.optionalFieldOf("embozo").forGetter(ChaquetaCorte::embozo)
         ).apply(i, ChaquetaCorte::new));
+    }
+
+    /**
+     * El embozo de la capa (2026-10-11): nivel de rango 0..6 (−1 = quitarlo) y borde. Viaja dentro de
+     * {@link ChaquetaCorte}: el codec de {@link PolleraCorte} ya tiene sus 16 campos.
+     */
+    public record EmbozoCorte(Optional<Integer> nivel, Optional<Boolean> borde) {
+        static final Codec<EmbozoCorte> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.intRange(-1, 6).optionalFieldOf("nivel").forGetter(EmbozoCorte::nivel),
+                Codec.BOOL.optionalFieldOf("borde").forGetter(EmbozoCorte::borde)
+        ).apply(i, EmbozoCorte::new));
     }
 
     /**
@@ -304,7 +323,18 @@ public record ComboCorte(
                                 Optional<com.modamod.item.PolleraVolado> volado,
                                 Optional<com.modamod.item.PolleraVolado> lateral,
                                 Optional<com.modamod.item.PolleraVolado> superior,
-                                Optional<com.modamod.item.DelantalTirantes> tirantes) {
+                                Optional<com.modamod.item.DelantalTirantes> tirantes,
+                                Optional<com.modamod.item.DelantalCobertura> cobertura) {
+        public DelantalCorte(Optional<Integer> inicio, Optional<Integer> largo,
+                             Optional<com.modamod.item.DelantalForma> forma,
+                             Optional<com.modamod.item.CapaRuedo> esquinas,
+                             Optional<com.modamod.item.PolleraVolado> volado,
+                             Optional<com.modamod.item.PolleraVolado> lateral,
+                             Optional<com.modamod.item.PolleraVolado> superior,
+                             Optional<com.modamod.item.DelantalTirantes> tirantes) {
+            this(inicio, largo, forma, esquinas, volado, lateral, superior, tirantes, Optional.empty());
+        }
+
         public DelantalCorte(Optional<Integer> inicio, Optional<Integer> largo,
                              Optional<com.modamod.item.DelantalForma> forma,
                              Optional<com.modamod.item.CapaRuedo> esquinas,
@@ -335,7 +365,9 @@ public record ComboCorte(
                 StringIdentifiable.createCodec(com.modamod.item.PolleraVolado::values).optionalFieldOf("superior")
                         .forGetter(DelantalCorte::superior),
                 StringIdentifiable.createCodec(com.modamod.item.DelantalTirantes::values).optionalFieldOf("tirantes")
-                        .forGetter(DelantalCorte::tirantes)
+                        .forGetter(DelantalCorte::tirantes),
+                StringIdentifiable.createCodec(com.modamod.item.DelantalCobertura::values).optionalFieldOf("cobertura")
+                        .forGetter(DelantalCorte::cobertura)
         ).apply(i, DelantalCorte::new));
     }
 
@@ -403,6 +435,21 @@ public record ComboCorte(
     public static ComboCorte delantalTirantes(com.modamod.item.DelantalTirantes v) {
         return conDelantal(new DelantalCorte(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(v)));
+    }
+
+    public static ComboCorte capaEmbozo(int nivel) {
+        return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.of(new EmbozoCorte(Optional.of(nivel), Optional.empty()))));
+    }
+
+    public static ComboCorte capaBordeEmbozo(boolean v) {
+        return conChaqueta(new ChaquetaCorte(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.of(new EmbozoCorte(Optional.empty(), Optional.of(v)))));
+    }
+
+    public static ComboCorte delantalCobertura(com.modamod.item.DelantalCobertura v) {
+        return conDelantal(new DelantalCorte(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(v)));
     }
 
     public static ComboCorte delantalInicio(int nivel) {
@@ -821,6 +868,12 @@ public record ComboCorte(
                             writeOptEnum(buf, d.lateral());
                             writeOptEnum(buf, d.superior());
                             writeOptEnum(buf, d.tirantes());
+                            writeOptEnum(buf, d.cobertura());
+                        });
+                        buf.writeBoolean(c.embozo().isPresent());
+                        c.embozo().ifPresent(em -> {
+                            buf.writeByte(em.nivel().isPresent() ? em.nivel().get() : -2);
+                            writeOptBool(buf, em.borde());
                         });
                     });
                     buf.writeByte(p.cintura().isPresent() ? p.cintura().get() : -1);
@@ -878,10 +931,18 @@ public record ComboCorte(
                                             readOptEnum(buf, com.modamod.item.PolleraVolado.values()),
                                             readOptEnum(buf, com.modamod.item.PolleraVolado.values()),
                                             readOptEnum(buf, com.modamod.item.PolleraVolado.values()),
-                                            readOptEnum(buf, com.modamod.item.DelantalTirantes.values())))
+                                            readOptEnum(buf, com.modamod.item.DelantalTirantes.values()),
+                                            readOptEnum(buf, com.modamod.item.DelantalCobertura.values())))
+                                            : Optional.empty(),
+                                    buf.readBoolean() ? Optional.of(new EmbozoCorte(readNivelEmbozo(buf), readOptBool(buf)))
                                             : Optional.empty())) : Optional.empty(),
                             readCintura(buf)))
                             : Optional.empty()));
+
+    private static Optional<Integer> readNivelEmbozo(ByteBuf buf) {
+        byte b = buf.readByte();
+        return b < -1 ? Optional.empty() : Optional.of((int) b);
+    }
 
     private static Optional<Integer> readCintura(ByteBuf buf) {
         byte b = buf.readByte();

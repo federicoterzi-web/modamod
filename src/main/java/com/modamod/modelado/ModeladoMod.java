@@ -166,6 +166,19 @@ public final class ModeladoMod {
     public static final MoldeTirantesDelantalItem MOLDE_DELANTAL_TIRANTES_CRUZADOS = new MoldeTirantesDelantalItem(new Item.Settings().maxCount(1),
             com.modamod.item.DelantalTirantes.CRUZADOS);
 
+    public static final MoldeCoberturaDelantalItem MOLDE_DELANTAL_COBERTURA_ENVOLVENTE = new MoldeCoberturaDelantalItem(new Item.Settings().maxCount(1),
+            com.modamod.item.DelantalCobertura.ENVOLVENTE);
+    public static final MoldeCoberturaDelantalItem MOLDE_DELANTAL_COBERTURA_FRENTE = new MoldeCoberturaDelantalItem(new Item.Settings().maxCount(1),
+            com.modamod.item.DelantalCobertura.FRENTE);
+    public static final MoldeCoberturaDelantalItem MOLDE_DELANTAL_COBERTURA_ANGOSTO = new MoldeCoberturaDelantalItem(new Item.Settings().maxCount(1),
+            com.modamod.item.DelantalCobertura.ANGOSTO);
+    public static final MoldeCapaItem MOLDE_CAPA_EMBOZO_NINGUNO = new MoldeCapaItem(new Item.Settings().maxCount(1),
+            MoldeCapaItem.Tipo.EMBOZO_NINGUNO);
+    public static final MoldeCapaItem MOLDE_CAPA_BORDE_EMBOZO = new MoldeCapaItem(new Item.Settings().maxCount(1),
+            MoldeCapaItem.Tipo.BORDE_EMBOZO);
+    public static final MoldeCapaItem MOLDE_CAPA_BORDE_NINGUNO = new MoldeCapaItem(new Item.Settings().maxCount(1),
+            MoldeCapaItem.Tipo.BORDE_NINGUNO);
+
     public static final MoldeRuedoItem MOLDE_RUEDO_RECTO = new MoldeRuedoItem(new Item.Settings().maxCount(1),
             com.modamod.item.Ruedo.RECTO);
     public static final MoldeRuedoItem MOLDE_RUEDO_AJUSTADO = new MoldeRuedoItem(new Item.Settings().maxCount(1),
@@ -303,6 +316,12 @@ public final class ModeladoMod {
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_sin_capucha"), MOLDE_CAPA_SIN_CAPUCHA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_cuello_alto"), MOLDE_CAPA_CUELLO_ALTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_sin_cuello"), MOLDE_CAPA_SIN_CUELLO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_cobertura_envolvente"), MOLDE_DELANTAL_COBERTURA_ENVOLVENTE);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_cobertura_frente"), MOLDE_DELANTAL_COBERTURA_FRENTE);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_cobertura_angosto"), MOLDE_DELANTAL_COBERTURA_ANGOSTO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_embozo_ninguno"), MOLDE_CAPA_EMBOZO_NINGUNO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_borde_embozo"), MOLDE_CAPA_BORDE_EMBOZO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_borde_ninguno"), MOLDE_CAPA_BORDE_NINGUNO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_ancha"), MOLDE_SOMBRERO_ALA_ANCHA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_corta"), MOLDE_SOMBRERO_ALA_CORTA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_vincha"), MOLDE_SOMBRERO_ALA_VINCHA);

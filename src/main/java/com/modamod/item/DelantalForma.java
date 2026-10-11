@@ -30,7 +30,12 @@ public enum DelantalForma implements StringIdentifiable {
     public static final float RADIO_ESQUINA = 2.4f;
 
     /** Media anchura de la silueta a la altura {@code y} (px desde el borde de arriba). */
-    public float medio(float y, float largo) {
+    public float medio(float y, float largo) { return medio(y, largo, MEDIO_ANCHO); }
+
+    /** Igual, pero sin pasar de {@code cap} px a cada lado (la cobertura del delantal). */
+    public float medio(float y, float largo, float cap) { return Math.min(cap, medioBase(y, largo)); }
+
+    private float medioBase(float y, float largo) {
         return switch (this) {
             case TRAPECIO -> 3.9f + (MEDIO_ANCHO - 3.9f) * Math.min(1f, y / Math.max(1f, largo));
             case PETO -> {
@@ -52,6 +57,10 @@ public enum DelantalForma implements StringIdentifiable {
 
     /** ¿El punto (s, y) cae adentro de la silueta de un delantal de {@code largo} px? */
     public boolean contiene(float s, float y, float largo, boolean esquinasRedondas) {
+        return contiene(s, y, largo, esquinasRedondas, MEDIO_ANCHO);
+    }
+
+    public boolean contiene(float s, float y, float largo, boolean esquinasRedondas, float cap) {
         if (y < 0f || y > largo) return false;
         float a = Math.abs(s);
         float medio = switch (this) {
@@ -64,6 +73,7 @@ public enum DelantalForma implements StringIdentifiable {
             }
             default -> MEDIO_ANCHO;
         };
+        medio = Math.min(medio, cap);
         if (a > medio) return false;
         if (this == CORAZON) {
             float d = a - 2.0f;

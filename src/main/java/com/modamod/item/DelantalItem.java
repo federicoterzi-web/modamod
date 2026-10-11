@@ -82,6 +82,17 @@ public class DelantalItem extends ClothingTrinketItem {
         else stack.remove(ModamodComponents.DELANTAL_ESQUINAS);
     }
 
+    /** Cobertura (2026-10-11): ENVOLVENTE si no tiene. */
+    public static DelantalCobertura cobertura(ItemStack stack) {
+        DelantalCobertura c = stack.get(ModamodComponents.DELANTAL_COBERTURA);
+        return c == null ? DelantalCobertura.ENVOLVENTE : c;
+    }
+
+    public static void setCobertura(ItemStack stack, @Nullable DelantalCobertura c) {
+        if (c == null || c == DelantalCobertura.ENVOLVENTE) stack.remove(ModamodComponents.DELANTAL_COBERTURA);
+        else stack.set(ModamodComponents.DELANTAL_COBERTURA, c);
+    }
+
     /** Tirantes (2026-10-11); SIN si no lleva. */
     public static DelantalTirantes tirantes(ItemStack stack) {
         DelantalTirantes t = stack.get(ModamodComponents.DELANTAL_TIRANTES);

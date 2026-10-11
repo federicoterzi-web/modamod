@@ -28,12 +28,14 @@ public final class BandaRenderer {
     private BandaRenderer() {}
 
     /** Altura de la cintura en el torso (px desde arriba) y del choker bajo la cabeza. */
-    private static final float Y_CINTURA = 7.6f, Y_COLLAR = -0.3f;
+    private static final float Y_CINTURA = 7.6f, Y_COLLAR = -1.2f;
     private static final float GROSOR = 0.7f, BORDE_ALTO = 0.35f, BORDE_SALE = 0.12f;
     // Medidas del collar calcadas de la proporción del de Player Collars (2026-10-11, "el choker tiene que ser como el
     // collar de leashable collars... va como en el pecho"): anillo de ~8,5 × 6 px, de 0,85 px de grosor, que apenas
     // sobresale de los costados del torso y 1 px de frente y espalda (antes 4 + 0,7 por lado: pasaba por los hombros).
     private static final float COLLAR_HX = 3.4f, COLLAR_HZ = 1.44f, COLLAR_GROSOR = 0.85f;
+    /** El collar más angosto y un píxel más arriba que el original (2026-10-11, "el choker esta muy ancho y no se si deberia elevarse un poquito mas"). */
+    private static final float ANCHO_COLLAR = 10.6f;
 
     private static float hx(BandaZona z, float dil) { return (z == BandaZona.CINTURA ? 4f : COLLAR_HX) + dil; }
     private static float hz(BandaZona z, float dil) { return (z == BandaZona.CINTURA ? 2f : COLLAR_HZ) + dil; }
@@ -203,7 +205,7 @@ public final class BandaRenderer {
             {4, -1, 2, 5, 0, 4}, {11, -1, 2, 12, 0, 4}, {5, -1, 3, 11, 0, 4},    // esquinas y barra del frente
         };
         for (float[] e : el) {
-            float xa = -13.6f * (0.5f - e[0] / 16f), xb = -13.6f * (0.5f - e[3] / 16f);
+            float xa = -ANCHO_COLLAR * (0.5f - e[0] / 16f), xb = -ANCHO_COLLAR * (0.5f - e[3] / 16f);
             float ya = 13.6f * (e[2] / 16f - 0.1469f), yb = 13.6f * (e[5] / 16f - 0.1469f);
             float za = 13.6f * (-e[1] / 16f - 0.1769f), zb = 13.6f * (-e[4] / 16f - 0.1769f);
             out.add(caja(0, Math.min(xa, xb) - dil, Y_COLLAR + (Math.min(ya, yb) + 0.3f) * f, Math.min(za, zb) - dil,

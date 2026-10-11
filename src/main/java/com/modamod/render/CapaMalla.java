@@ -296,6 +296,111 @@ public final class CapaMalla {
         }
     }
 
+
+    // ── embozo ──────────────────────────────────────────────────────────
+    // 2026-10-11, "un molde de embozo para la capa que cubra los hombros y un molde para que la capa recorra todo el
+    // borde del embozo cerrando por el frente y que abra un poco con la tecla de abrir el frente": una esclavina de
+    // malla en el marco del torso (origen en el centro del torso a la altura de los hombros, y hacia abajo, frente en
+    // −z). Sube desde el cuello, pasa por encima de los hombros y baja por los costados hasta {@code profundidad}.
+    // Tela: el exterior de la capa; el borde, la cara del frente de la caja de detalles (zona Detalles de Tintes).
+
+    /** (fracción del radio, y) del tope del embozo, del cuello hacia el hombro. */
+    private static final float[][] EMBOZO_PERFIL = {{0.50f, -0.6f}, {0.68f, -1.4f}, {0.84f, -1.65f}, {0.96f, -1.4f}, {1.00f, -0.5f}};
+    private static final int EMBOZO_PASOS = 36;
+
+    /**
+     * @param profundidad cuánto baja el borde de abajo del embozo, en px
+     * @param borde       con cinta alrededor del contorno (abajo y a lo largo del cierre del frente)
+     * @param abierto     el frente abierto un poco (la tecla de abrir el frente)
+     * @param extra       cuánto más se aleja del cuerpo por la ropa gruesa que lleve debajo
+     */
+    public static void dibujarEmbozo(MatrixStack matrices, VertexConsumer vc, int luz, float profundidad, boolean borde,
+                                     boolean abierto, float extra) {
+        sinDoblar = true;
+        try {
+            embozo(matrices.peek(), vc, luz, profundidad, borde, abierto, extra);
+        } finally {
+            sinDoblar = false;
+        }
+    }
+
+    private static void embozo(MatrixStack.Entry e, VertexConsumer vc, int luz, float profundidad, boolean borde,
+                               boolean abierto, float extra) {
+        float rx = 9.4f + extra, rzf = 3.6f + extra, rzb = 4.4f + extra;
+        float gap = abierto ? 0.30f : 0.03f, vuelta = (float) (2 * Math.PI) - 2 * gap;
+        int n = EMBOZO_PERFIL.length + 1;
+        float[] pa = new float[n], py = new float[n], sv = new float[n];
+        for (int i = 0; i < n - 1; i++) {
+            pa[i] = EMBOZO_PERFIL[i][0];
+            py[i] = EMBOZO_PERFIL[i][1];
+        }
+        pa[n - 1] = 1f;
+        py[n - 1] = Math.max(profundidad, 1.2f);
+        for (int i = 1; i < n; i++) {
+            sv[i] = sv[i - 1] + (float) Math.hypot((pa[i] - pa[i - 1]) * rx, py[i] - py[i - 1]);
+        }
+        for (int i = 1; i < n; i++) sv[i] /= sv[n - 1];
+        for (int k = 0; k < n - 1; k++) {
+            for (int j = 0; j < EMBOZO_PASOS; j++) {
+                float t0 = gap + vuelta * j / EMBOZO_PASOS, t1 = gap + vuelta * (j + 1) / EMBOZO_PASOS;
+                float[] a = embozoPunto(pa[k], py[k], t0, rx, rzf, rzb, 0f, k < n - 2);
+                float[] b = embozoPunto(pa[k], py[k], t1, rx, rzf, rzb, 0f, k < n - 2);
+                float[] c = embozoPunto(pa[k + 1], py[k + 1], t1, rx, rzf, rzb, 0f, k + 1 < n - 1);
+                float[] d = embozoPunto(pa[k + 1], py[k + 1], t0, rx, rzf, rzb, 0f, k + 1 < n - 1);
+                float u0 = (1f + 10f * j / EMBOZO_PASOS) / 64f, u1 = (1f + 10f * (j + 1) / EMBOZO_PASOS) / 64f;
+                float v0 = (1f + 16f * sv[k]) / 64f, v1 = (1f + 16f * sv[k + 1]) / 64f;
+                embozoQuad(vc, e, luz, a, u0, v0, b, u1, v0, c, u1, v1, d, u0, v1);
+            }
+        }
+        if (!borde) return;
+        // Cinta del ruedo: una franja de 1,4 px sobre el borde de abajo.
+        float yb = py[n - 1], ya = Math.max(py[n - 2] + 0.2f, yb - 1.4f);
+        for (int j = 0; j < EMBOZO_PASOS; j++) {
+            float t0 = gap + vuelta * j / EMBOZO_PASOS, t1 = gap + vuelta * (j + 1) / EMBOZO_PASOS;
+            float[] a = embozoPunto(1f, ya, t0, rx, rzf, rzb, 0.12f, false);
+            float[] b = embozoPunto(1f, ya, t1, rx, rzf, rzb, 0.12f, false);
+            float[] c = embozoPunto(1f, yb, t1, rx, rzf, rzb, 0.12f, false);
+            float[] d = embozoPunto(1f, yb, t0, rx, rzf, rzb, 0.12f, false);
+            float u0 = (26f + 12f * j / EMBOZO_PASOS) / 64f, u1 = (26f + 12f * (j + 1) / EMBOZO_PASOS) / 64f;
+            embozoQuad(vc, e, luz, a, u0, 2 / 64f, b, u1, 2 / 64f, c, u1, 4 / 64f, d, u0, 4 / 64f);
+        }
+        // Cinta del cierre: una a cada lado del frente, del cuello al ruedo (por eso cierra el frente).
+        float dt = 1.4f / rx;
+        for (int lado = 0; lado < 2; lado++) {
+            float borde0 = lado == 0 ? gap : (float) (2 * Math.PI) - gap;
+            float interior = lado == 0 ? gap + dt : (float) (2 * Math.PI) - gap - dt;
+            for (int k = 0; k < n - 1; k++) {
+                float[] a = embozoPunto(pa[k], py[k], borde0, rx, rzf, rzb, 0.12f, k < n - 2);
+                float[] b = embozoPunto(pa[k], py[k], interior, rx, rzf, rzb, 0.12f, k < n - 2);
+                float[] c = embozoPunto(pa[k + 1], py[k + 1], interior, rx, rzf, rzb, 0.12f, k + 1 < n - 1);
+                float[] d = embozoPunto(pa[k + 1], py[k + 1], borde0, rx, rzf, rzb, 0.12f, k + 1 < n - 1);
+                float v0 = (2f + 8f * sv[k]) / 64f, v1 = (2f + 8f * sv[k + 1]) / 64f;
+                embozoQuad(vc, e, luz, a, 26 / 64f, v0, b, 38 / 64f, v0, c, 38 / 64f, v1, d, 26 / 64f, v1);
+            }
+        }
+    }
+
+    /** Un punto del embozo: fracción {@code a} del radio, altura {@code y}, ángulo {@code t} desde el frente (0 = frente). */
+    private static float[] embozoPunto(float a, float y, float t, float rx, float rzf, float rzb, float off, boolean tope) {
+        float s = (float) Math.sin(t), c = (float) Math.cos(t);
+        float zr = c > 0f ? rzf : rzb;
+        return new float[]{(rx * a + off) * s, tope ? y - off : y, -(zr * a + off) * c};
+    }
+
+    private static void embozoQuad(VertexConsumer vc, MatrixStack.Entry e, int luz,
+                                   float[] a, float ua, float va, float[] b, float ub, float vb,
+                                   float[] c, float uc, float vc2, float[] d, float ud, float vd) {
+        float ux = b[0] - a[0], uy = b[1] - a[1], uz = b[2] - a[2];
+        float wx = d[0] - a[0], wy = d[1] - a[1], wz = d[2] - a[2];
+        float nx = uy * wz - uz * wy, ny = uz * wx - ux * wz, nz = ux * wy - uy * wx;
+        // Hacia afuera del eje del embozo (que está unos 4 px bajo los hombros).
+        if (nx * a[0] + ny * (a[1] - 4f) + nz * a[2] < 0f) { nx = -nx; ny = -ny; nz = -nz; }
+        float l = (float) Math.sqrt(nx * nx + ny * ny + nz * nz);
+        if (l < 1e-6f) { nx = 0f; ny = -1f; nz = 0f; l = 1f; }
+        quad(vc, e, luz, a[0], a[1], a[2], ua, va, b[0], b[1], b[2], ub, vb, c[0], c[1], c[2], uc, vc2,
+                d[0], d[1], d[2], ud, vd, nx / l, ny / l, nz / l);
+    }
+
     private static void quad(VertexConsumer vc, MatrixStack.Entry e, int luz,
                              float x0, float y0, float z0, float u0, float v0,
                              float x1, float y1, float z1, float u1, float v1,

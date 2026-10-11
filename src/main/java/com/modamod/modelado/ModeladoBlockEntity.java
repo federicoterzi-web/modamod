@@ -236,6 +236,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         FORMA_DELANTAL, LARGO_DELANTAL, INICIO_DELANTAL, ESQUINAS_DELANTAL, VOLADO_DELANTAL, RUEDO_DELANTAL,
         /** Volados de los costados y del borde de arriba del delantal (2026-10-11). */
         VOLADO_LATERAL_DELANTAL, VOLADO_SUPERIOR_DELANTAL,
+        /** Cobertura del delantal y embozo (largo por rango) y borde de la capa (2026-10-11). */
+        COBERTURA_DELANTAL, EMBOZO_CAPA, BORDE_EMBOZO_CAPA,
         /** Tirantes del delantal (2026-10-11). */
         TIRANTES_DELANTAL }
 
@@ -256,7 +258,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                     Rol.VOLADO_INFERIOR, Rol.VOLADO_TOTAL, Rol.RUEDO_POLLERA},
             // Capa (2026-09-29, "podemos agregar todo eso como patrones de corte?"):
             // Largo, Ruedo, Capucha, Cuello y los 3 materiales.
-            {Rol.LARGO_CAPA, Rol.RUEDO_CAPA, Rol.CAPUCHA_CAPA, Rol.CUELLO_CAPA, Rol.MAT1, Rol.NINGUNO, Rol.NINGUNO,
+            {Rol.LARGO_CAPA, Rol.RUEDO_CAPA, Rol.CAPUCHA_CAPA, Rol.CUELLO_CAPA, Rol.MAT1, Rol.EMBOZO_CAPA, Rol.BORDE_EMBOZO_CAPA,
                     Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO},
             // Sombrero (2026-10-05): Ala y Punta.
             {Rol.ALA_SOMBRERO, Rol.PUNTA_SOMBRERO, Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO, Rol.NINGUNO,
@@ -272,7 +274,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             // cajón) y Esquinas — sobre esquema_delantal.png (provisoriamente el de la pollera).
             {Rol.FORMA_DELANTAL, Rol.LARGO_DELANTAL, Rol.CALCE, Rol.MAT1, Rol.INICIO_DELANTAL, Rol.TIRANTES_DELANTAL,
                     Rol.VOLADO_DELANTAL, Rol.ESQUINAS_DELANTAL, Rol.RUEDO_DELANTAL,
-                    Rol.VOLADO_LATERAL_DELANTAL, Rol.VOLADO_SUPERIOR_DELANTAL}
+                    Rol.VOLADO_LATERAL_DELANTAL, Rol.VOLADO_SUPERIOR_DELANTAL, Rol.COBERTURA_DELANTAL}
     });
 
     private static Rol[][] rellenarRoles(Rol[][] filas) {
@@ -493,7 +495,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case SOMBRERO -> item instanceof MoldeSombreroItem;
             case BANDA -> item instanceof MoldeBandaItem;
             case CALZADO -> item instanceof MoldeBorcegoItem;
-            case DELANTAL -> item instanceof MoldeFormaDelantalItem || item instanceof MoldeVoladoItem
+            case DELANTAL -> item instanceof MoldeFormaDelantalItem || item instanceof MoldeTirantesDelantalItem
+                    || item instanceof MoldeCoberturaDelantalItem || item instanceof MoldeVoladoItem
                     || item instanceof MoldeRuedoItem
                     || (item instanceof MoldeCapaItem c && (c.tipo == MoldeCapaItem.Tipo.RUEDO_RECTO || c.tipo == MoldeCapaItem.Tipo.RUEDO_REDONDEADO));
         };
@@ -1053,6 +1056,16 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case CUELLO_CAPA -> {
                 if (item instanceof MoldeCapaItem m && m.tipo.esCuello()) c = comboDeMoldeCapa(item);
             }
+            case EMBOZO_CAPA -> {
+                if (item instanceof MoldeRangoItem m) c = ComboCorte.capaEmbozo(m.rango.nivel());
+                else if (item instanceof MoldeCapaItem m && m.tipo.esEmbozo()) c = ComboCorte.capaEmbozo(-1);
+            }
+            case BORDE_EMBOZO_CAPA -> {
+                if (item instanceof MoldeCapaItem m && m.tipo.esBordeEmbozo()) c = ComboCorte.capaBordeEmbozo(m.tipo == MoldeCapaItem.Tipo.BORDE_EMBOZO);
+            }
+            case COBERTURA_DELANTAL -> {
+                if (item instanceof MoldeCoberturaDelantalItem m) c = ComboCorte.delantalCobertura(m.valor);
+            }
             case FRENTE_CHAQUETA -> {
                 if (item instanceof MoldeChaquetaItem m && m.tipo.esFrente()) c = comboDeMoldeChaqueta(item);
             }
@@ -1209,6 +1222,9 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case SIN_CAPUCHA -> ComboCorte.capaCapucha(false);
             case CUELLO_ALTO -> ComboCorte.capaCuello(true);
             case SIN_CUELLO -> ComboCorte.capaCuello(false);
+            case EMBOZO_NINGUNO -> ComboCorte.capaEmbozo(-1);
+            case BORDE_EMBOZO -> ComboCorte.capaBordeEmbozo(true);
+            case BORDE_NINGUNO -> ComboCorte.capaBordeEmbozo(false);
         };
     }
 
@@ -2019,7 +2035,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 || item instanceof MoldeCalceItem || item instanceof MoldeRedItem
                 || item instanceof MoldeCuelloItem
                 || item instanceof MoldePolleraItem || item instanceof MoldeVoladoItem || item instanceof MoldeRuedoItem || item instanceof MoldeCapaItem || item instanceof MoldeSombreroItem
-                || item instanceof MoldeBandaItem || item instanceof MoldeChaquetaItem || item instanceof MoldeBorcegoItem;
+                || item instanceof MoldeBandaItem || item instanceof MoldeChaquetaItem || item instanceof MoldeBorcegoItem
+                || item instanceof MoldeFormaDelantalItem || item instanceof MoldeTirantesDelantalItem || item instanceof MoldeCoberturaDelantalItem;
     }
 
     @Override
