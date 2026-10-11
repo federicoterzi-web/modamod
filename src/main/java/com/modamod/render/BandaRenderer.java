@@ -42,8 +42,9 @@ public final class BandaRenderer {
     public static void dibujar(ItemStack banda, BipedEntityModel<?> biped, MatrixStack matrices,
                                VertexConsumerProvider vertexConsumers, int luz, float dil) {
         BandaZona zona = BandaItem.zona(banda);
-        // El collar también va en el torso (2026-10-08, "como los modelos no tienen cuello queda mejor fijarlo al pecho").
-        ModelPart marco = biped.body;
+        // El collar va en el pecho pero anclado a la cabeza (2026-10-11, "si el original esta anclado a la cabeza mejor
+        // asi"): gira con ella. El cinto, en el torso.
+        ModelPart marco = zona == BandaZona.CINTURA ? biped.body : biped.head;
         if (!marco.visible) return;
         List<Integer> colores = BandaItem.colores(banda);
         List<SombreroPatron> patrones = BandaItem.patrones(banda);

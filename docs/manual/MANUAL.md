@@ -716,3 +716,5 @@ Al componer, cada pixel parte del color base de la tela y cada capa se **funde**
 **Cuello de camisa sin aro** (2026-10-11; sin probar en el juego): el cuello de camisa ya no lleva el aro alrededor del cuello; quedan las dos puntas de tela, que siguen el escote y se tiñen con la zona Solapas.
 
 **Collar más chico y pegado al pecho** (2026-10-11; sin probar en el juego): el collar (la Banda en la zona Collar) ahora es un anillo más fino y chico, de unos 8,5 × 6 píxeles, que apenas sobresale del pecho en vez de pasar por los hombros. Los herrajes (placa, aro, campana, hueso, corazón, medalla) y los colgantes siguen igual.
+
+**Collar anclado a la cabeza** (2026-10-11; sin probar en el juego): el collar ahora sigue los movimientos de la cabeza (gira y se inclina con ella), como el de Player Collars. Los apliques y correas que ya tenías puestos en un collar pueden quedar corridos y hay que volver a ponerlos.

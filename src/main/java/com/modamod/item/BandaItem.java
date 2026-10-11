@@ -108,7 +108,9 @@ public class BandaItem extends TrinketItem implements ZonasTenibles {
 
     @Override
     public Parte marco(ItemStack stack) {
-        return Parte.TORSO;   // el collar también va en el pecho (2026-10-08): los modelos no tienen cuello
+        // El cinto va en el torso; el collar, en el pecho pero anclado a la cabeza como el de Player Collars
+        // (2026-10-11, "si el original esta anclado a la cabeza mejor asi").
+        return zona(stack) == BandaZona.CUELLO ? Parte.CABEZA : Parte.TORSO;
     }
 
     @Override
