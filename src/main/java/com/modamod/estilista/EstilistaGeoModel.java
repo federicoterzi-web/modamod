@@ -25,20 +25,22 @@ public class EstilistaGeoModel extends GeoModel<EstilistaBlockEntity> {
             new com.modamod.render.PantallaLed.Rect(112, 16, 1, 1),
             new com.modamod.render.PantallaLed.Rect(0, 32, 1, 1),
     };
-    private static final int VERDE = 0xFF00FF00, ROJO = 0xFF0000FF;
+    private static final int VERDE = 0xFF00FF00, ROJO = 0xFF0000FF, AMARILLO = 0xFF00FFFF;
     private static final float FACTOR_PROGRESO = 4.4f / 2.6371f;   // el mismo cubo de la Modeladora
 
     public static com.modamod.render.PantallaLed.Rect[] leds() { return LEDS; }
 
     static int[] coloresLed(EstilistaBlockEntity be) {
-        int verde = 0, rojo = 0;
+        int verde = 0, rojo = 0, amarillo = 0;
         if (be.estado() == EstilistaBlockEntity.Estado.LISTO) {
             verde = VERDE;
         } else if (be.estado() == EstilistaBlockEntity.Estado.PROCESANDO) {
             long t = be.getWorld() == null ? 0 : be.getWorld().getTime();
             if (t % 20 < 10) rojo = ROJO;
         }
-        return new int[]{verde, rojo, 0};
+        long t = be.getWorld() == null ? 0 : be.getWorld().getTime();
+        if (be.linea() && t % 40 < 20) amarillo = AMARILLO;
+        return new int[]{verde, rojo, amarillo};
     }
 
     @Override public Identifier getModelResource(EstilistaBlockEntity be) { return GEO; }
@@ -67,9 +69,6 @@ public class EstilistaGeoModel extends GeoModel<EstilistaBlockEntity> {
     @Override
     public void setCustomAnimations(EstilistaBlockEntity be, long instanceId, AnimationState<EstilistaBlockEntity> state) {
         super.setCustomAnimations(be, instanceId, state);
-        // LED del botón de la línea de producción del frente (2026-10-08): visible solo con la línea encendida.
-        GeoBone ledLinea = getAnimationProcessor().getBone("led_linea");
-        if (ledLinea != null) ledLinea.setHidden(!be.linea());
         GeoBone progreso = getAnimationProcessor().getBone("progress");
         if (progreso != null) {
             float nivel = switch (be.estado()) {

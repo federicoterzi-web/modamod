@@ -1728,6 +1728,15 @@ public class TinturasBlockEntity extends BlockEntity
         } else {
             items.set(slot, stack);
             if (stack.getCount() > stack.getMaxCount()) stack.setCount(stack.getMaxCount());
+            int casilla = slot - CASILLAS_INICIO;
+            if (!stack.isEmpty() && casilla >= 0 && casilla < CASILLAS * Categoria.values().length) {
+                Categoria cat = Categoria.values()[casilla / CASILLAS];
+                int i = casilla % CASILLAS;
+                if (cat == categoria && regionDe(cat, i) != null && stack.getItem() instanceof ClothingPatternItem) {
+                    if (stack.getCount() > 1) stack.setCount(1);
+                    chincheta(i);
+                }
+            }
         }
         sincronizar();
     }

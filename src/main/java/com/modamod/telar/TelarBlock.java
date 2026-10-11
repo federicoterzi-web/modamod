@@ -91,6 +91,11 @@ public class TelarBlock extends BlockWithEntity {
             return ItemActionResult.SUCCESS;
         }
         if (!(world.getBlockEntity(pos) instanceof TelarBlockEntity be)) return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        // Debajo de la tapa se abre la pantalla aunque tengas lana/hilo en la mano; arriba carga insumos.
+        if (!com.modamod.util.ZonaMaquina.arriba(hit, pos, com.modamod.util.ZonaMaquina.ARRIBA_BAJA_PX)) {
+            if (!world.isClient && !be.trabajando()) player.openHandledScreen(be);
+            return ItemActionResult.SUCCESS;
+        }
         int slot = be.isValid(TelarBlockEntity.SLOT_LANA, stack) ? TelarBlockEntity.SLOT_LANA
                 : be.isValid(TelarBlockEntity.SLOT_HILO, stack) ? TelarBlockEntity.SLOT_HILO : -1;
         if (slot < 0) return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -119,6 +124,11 @@ public class TelarBlock extends BlockWithEntity {
         }
         if (world.isClient) return ActionResult.SUCCESS;
         if (!(world.getBlockEntity(pos) instanceof TelarBlockEntity be)) return ActionResult.PASS;
+        // Debajo de la tapa abre la pantalla; arriba queda para retirar la prenda o meter la mano en la lanzadera.
+        if (!com.modamod.util.ZonaMaquina.arriba(hit, pos, com.modamod.util.ZonaMaquina.ARRIBA_BAJA_PX)) {
+            player.openHandledScreen(be);
+            return ActionResult.SUCCESS;
+        }
         ItemStack salida = be.getStack(TelarBlockEntity.SLOT_SALIDA);
         if (!salida.isEmpty()) {
             player.getInventory().offerOrDrop(salida.copy());

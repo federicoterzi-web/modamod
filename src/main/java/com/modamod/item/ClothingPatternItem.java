@@ -31,6 +31,7 @@ public class ClothingPatternItem extends Item {
     public final com.modamod.render.PatronGenerador.Forma forma;
     /** Grosor en tamaño GRANDE (px, escala 8x); Mediano/Chico lo escalan (§{@link TamanoPatron}). */
     public final int grosorBase;
+    private final boolean visibleEnListas;
 
     /**
      * La Estación de Tintes guarda solo el {@code Identifier} en su lista
@@ -52,22 +53,30 @@ public class ClothingPatternItem extends Item {
 
     public ClothingPatternItem(Settings settings, Identifier patternId,
                                com.modamod.render.PatronGenerador.Forma forma, int grosorBase) {
-        this(settings, patternId, forma, grosorBase, null);
+        this(settings, patternId, forma, grosorBase, null, true);
+    }
+
+    public ClothingPatternItem(Settings settings, Identifier patternId,
+                               com.modamod.render.PatronGenerador.Forma forma, int grosorBase,
+                               boolean visibleEnListas) {
+        this(settings, patternId, forma, grosorBase, null, visibleEnListas);
     }
 
     /** Molde de motivo (2026-09-28, Fase 1 de la propuesta de patrones). */
     public ClothingPatternItem(Settings settings, Identifier patternId, com.modamod.render.Motivo motivo, int escala) {
-        this(settings, patternId, com.modamod.render.PatronGenerador.Forma.ALTERNADO, escala, motivo);
+        this(settings, patternId, com.modamod.render.PatronGenerador.Forma.ALTERNADO, escala, motivo, true);
     }
 
     private ClothingPatternItem(Settings settings, Identifier patternId,
                                 com.modamod.render.PatronGenerador.Forma forma, int grosorBase,
-                                @org.jetbrains.annotations.Nullable com.modamod.render.Motivo motivo) {
+                                @org.jetbrains.annotations.Nullable com.modamod.render.Motivo motivo,
+                                boolean visibleEnListas) {
         super(settings);
         this.patternId = patternId;
         this.forma = forma;
         this.grosorBase = grosorBase;
         this.motivo = motivo;
+        this.visibleEnListas = visibleEnListas;
         POR_ID.put(patternId, this);
     }
 
@@ -77,7 +86,7 @@ public class ClothingPatternItem extends Item {
 
     /** Todos los patrones registrados — para cargar la Estación de Tintes creativa y el kit de la pestaña creativa. */
     public static java.util.Collection<ClothingPatternItem> todos() {
-        return POR_ID.values();
+        return POR_ID.values().stream().filter(p -> p.visibleEnListas).toList();
     }
 
     @Override

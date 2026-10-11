@@ -88,7 +88,8 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
     /** Trabajando de verdad: la GUI se cierra y no se toca (2026-10-08). */
     public boolean trabajando() { return estado == Estado.PROCESANDO; }
     public int progreso() { return progreso; }
-    public int duracion() { return com.modamod.util.MaquinaCreativa.duracion(this, TICKS_PROCESO); }
+    public boolean creativa() { return com.modamod.util.MaquinaCreativa.es(this) || getCachedState().isOf(TelarMod.TELAR_CREATIVA); }
+    public int duracion() { return creativa() ? 1 : TICKS_PROCESO; }
     public boolean elegida(int ordinal) { return (seleccion & (1 << ordinal)) != 0; }
     public int lote() { return lote; }
     public int restantes() { return restantes; }
@@ -100,7 +101,7 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
     /** La próxima prenda a tejer (la rotación sigue el orden fijo desde {@code cursor}), o -1 si no hay: lote cumplido, nada tildado o faltan insumos. */
     public int proxima() {
         if (lote > 0 && restantes <= 0) return -1;
-        boolean gratis = com.modamod.util.MaquinaCreativa.es(this);
+        boolean gratis = creativa();
         int n = TelarPrenda.values().length;
         for (int k = 0; k < n; k++) {
             int i = (cursor + k) % n;
@@ -209,9 +210,9 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
         int elegida = proxima();
         if (elegida < 0) return;
         TelarPrenda p = TelarPrenda.values()[elegida];
-        boolean creativa = com.modamod.util.MaquinaCreativa.es(this);
+        boolean esCreativa = creativa();
         colorEnCurso = colorDeLaLana();
-        if (!creativa) {
+        if (!esCreativa) {
             items.get(SLOT_LANA).decrement(p.lana);
             items.get(SLOT_HILO).decrement(p.hilo);
         }

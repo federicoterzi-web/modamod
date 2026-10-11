@@ -2,13 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "SSS",
     "PPP",
+    "SSS",
     "PPP"
   ],
   "key": {
     "S": { "item": "minecraft:string" },
     "P": { "item": "minecraft:paper" }
   },
-  "result": { "id": "modamod:pattern_stripe_top", "count": 1 }
+  "result": { "id": "modamod:pattern_rayas", "count": 1 }
 }

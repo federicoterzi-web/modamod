@@ -41,14 +41,12 @@ public class ModeladoGeoModel extends GeoModel<ModeladoBlockEntity> {
             new com.modamod.render.PantallaLed.Rect(112, 16, 1, 1), // rojo
             new com.modamod.render.PantallaLed.Rect(0, 32, 1, 1),   // amarillo
     };
-    private static final int VERDE = 0xFF00FF00, ROJO = 0xFF0000FF;
+    private static final int VERDE = 0xFF00FF00, ROJO = 0xFF0000FF, AMARILLO = 0xFF00FFFF;
 
     /**
-     * Verde fijo cuando la prenda está lista, rojo titilando (medio
-     * segundo prendido/apagado, igual ritmo que el código muerto viejo
-     * de Sublimadora) mientras procesa. El amarillo queda apagado a
-     * propósito — sin lógica confirmada todavía (2026-09-21, "del
-     * amarillo no se opine").
+     * Verde fijo cuando la prenda está lista, rojo titilando mientras
+     * procesa. El amarillo titila más lento cuando la línea de producción
+     * está encendida.
      */
     static int[] coloresLed(ModeladoBlockEntity be) {
         int verde = 0, rojo = 0, amarillo = 0;
@@ -58,6 +56,8 @@ public class ModeladoGeoModel extends GeoModel<ModeladoBlockEntity> {
             long t = be.getWorld() == null ? 0 : be.getWorld().getTime();
             if (t % 20 < 10) rojo = ROJO;
         }
+        long t = be.getWorld() == null ? 0 : be.getWorld().getTime();
+        if (be.linea() && t % 40 < 20) amarillo = AMARILLO;
         return new int[]{verde, rojo, amarillo};
     }
 
@@ -89,10 +89,6 @@ public class ModeladoGeoModel extends GeoModel<ModeladoBlockEntity> {
     @Override
     public void setCustomAnimations(ModeladoBlockEntity be, long instanceId, AnimationState<ModeladoBlockEntity> state) {
         super.setCustomAnimations(be, instanceId, state);
-        // LED del botón de la línea de producción del frente (2026-10-08): visible solo con la línea encendida.
-        GeoBone ledLinea = getAnimationProcessor().getBone("led_linea");
-        if (ledLinea != null) ledLinea.setHidden(!be.linea());
-
         GeoBone progreso = getAnimationProcessor().getBone("progress");
         if (progreso != null) {
             // Llena mientras la prenda espera en la salida, igual que la

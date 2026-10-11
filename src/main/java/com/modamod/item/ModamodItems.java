@@ -131,15 +131,20 @@ public final class ModamodItems {
     // parte superior de la prenda"): una sola banda pegada arriba, no
     // repetida — coherente con el nombre, a diferencia de los otros dos
     // que sí son un ritmo de rayas de punta a punta.
+    public static final ClothingPatternItem PATTERN_RAYAS = register("pattern_rayas",
+            new ClothingPatternItem(new Item.Settings().maxCount(1),
+                    Identifier.of("modamod", "rayas"),
+                    com.modamod.render.PatronGenerador.Forma.ALTERNADO, 16));
+
     public static final ClothingPatternItem PATTERN_STRIPE_TOP = register("pattern_stripe_top",
             new ClothingPatternItem(new Item.Settings().maxCount(1),
                     Identifier.of("modamod", "stripe_top"),
-                    com.modamod.render.PatronGenerador.Forma.ARRIBA, 8));
+                    com.modamod.render.PatronGenerador.Forma.ARRIBA, 8, false));
 
     public static final ClothingPatternItem PATTERN_STRIPE_ALT = register("pattern_stripe_alt",
             new ClothingPatternItem(new Item.Settings().maxCount(1),
                     Identifier.of("modamod", "stripe_alt"),
-                    com.modamod.render.PatronGenerador.Forma.ALTERNADO, 16));
+                    com.modamod.render.PatronGenerador.Forma.ALTERNADO, 16, false));
 
     // TRES_RAYAS y no ALTERNADO (2026-09-19, "las tres rayitas son solo
     // tres, no se repiten"): antes tapizaba toda la prenda como stripe_alt;
@@ -148,7 +153,7 @@ public final class ModamodItems {
     public static final ClothingPatternItem PATTERN_TRIPLE_STRIPE = register("pattern_triple_stripe",
             new ClothingPatternItem(new Item.Settings().maxCount(1),
                     Identifier.of("modamod", "triple_stripe"),
-                    com.modamod.render.PatronGenerador.Forma.TRES_RAYAS, 12));
+                    com.modamod.render.PatronGenerador.Forma.TRES_RAYAS, 12, false));
 
     // Moldes de MOTIVO (2026-09-28, Fase 1 de la propuesta de patrones):
     // el último número es la escala del sprite en tamaño GRANDE (px del

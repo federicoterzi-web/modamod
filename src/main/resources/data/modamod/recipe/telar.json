@@ -1,0 +1,21 @@
+{
+  "_comment": "Telar automatico: parte de un telar vanilla, le suma lana/hilo para tejido y redstone para automatizacion.",
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SSS",
+    "WLW",
+    "RPR"
+  ],
+  "key": {
+    "S": { "item": "minecraft:string" },
+    "W": { "tag": "minecraft:wool" },
+    "L": { "item": "minecraft:loom" },
+    "R": { "item": "minecraft:redstone" },
+    "P": { "item": "minecraft:oak_planks" }
+  },
+  "result": {
+    "id": "modamod:telar",
+    "count": 1
+  }
+}
