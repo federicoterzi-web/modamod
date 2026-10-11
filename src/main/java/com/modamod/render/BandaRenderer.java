@@ -28,12 +28,12 @@ public final class BandaRenderer {
     private BandaRenderer() {}
 
     /** Altura de la cintura en el torso (px desde arriba) y del choker bajo la cabeza. */
-    private static final float Y_CINTURA = 7.6f, Y_COLLAR = -0.2f;
+    private static final float Y_CINTURA = 7.6f, Y_COLLAR = -0.3f;
     private static final float GROSOR = 0.7f, BORDE_ALTO = 0.35f, BORDE_SALE = 0.12f;
     // Medidas del collar calcadas de la proporción del de Player Collars (2026-10-11, "el choker tiene que ser como el
     // collar de leashable collars... va como en el pecho"): anillo de ~8,5 × 6 px, de 0,85 px de grosor, que apenas
     // sobresale de los costados del torso y 1 px de frente y espalda (antes 4 + 0,7 por lado: pasaba por los hombros).
-    private static final float COLLAR_HX = 3.4f, COLLAR_HZ = 2.15f, COLLAR_GROSOR = 0.85f;
+    private static final float COLLAR_HX = 3.4f, COLLAR_HZ = 1.44f, COLLAR_GROSOR = 0.85f;
 
     private static float hx(BandaZona z, float dil) { return (z == BandaZona.CINTURA ? 4f : COLLAR_HX) + dil; }
     private static float hz(BandaZona z, float dil) { return (z == BandaZona.CINTURA ? 2f : COLLAR_HZ) + dil; }
@@ -50,13 +50,6 @@ public final class BandaRenderer {
         List<SombreroPatron> patrones = BandaItem.patrones(banda);
         List<SombreroRenderer.Caja> cajas = cajas(banda, dil);
         for (int z = 0; z < 3; z++) {
-            // El collar (2026-10-11, "me lo estas haciendo cuadrado... como el de leashable collars"): la banda y su borde
-            // son anillos de malla redondeados; el herraje sigue siendo de cajas. Las cajas quedan para apuntar el mouse.
-            if (zona == BandaZona.CUELLO && z < 2) {
-                dibujarAnilloCollar(banda, z, SombreroRenderer.textura(colores.get(z), patrones.get(z)), marco, dil,
-                        matrices, vertexConsumers, luz);
-                continue;
-            }
             ModelPart parte = parte(cajas, z, zona, banda, dil);
             if (parte == null) continue;
             GarmentFeatureRenderer.dibujarModelPart(parte, CuerpoGeometria.Superficie.CUERPO,
@@ -70,22 +63,6 @@ public final class BandaRenderer {
         }
         // Los colgantes: apliques apoyados en la banda (el punto es de una de sus cajas, en el marco de la parte).
         ApliqueRenderer.dibujar(banda, 0f, biped, matrices, vertexConsumers, luz);
-    }
-
-    /** La banda (zona 0) o su borde (zona 1, dos tiras finas arriba y abajo) del collar como anillos de malla. */
-    private static void dibujarAnilloCollar(ItemStack banda, int zonaTinte, net.minecraft.util.Identifier tela, ModelPart marco,
-                                            float dil, MatrixStack matrices, VertexConsumerProvider vcp, int luz) {
-        float t = grosor(BandaZona.CUELLO);
-        float hx = hx(BandaZona.CUELLO, dil), hz = hz(BandaZona.CUELLO, dil);
-        float h = BandaItem.ancho(banda).alto(BandaZona.CUELLO);
-        float y0 = Y_COLLAR, y1 = Y_COLLAR + h;
-        if (zonaTinte == 0) {
-            SolapaMalla.anillo(tela, 0.05F, 0.95F, 0.1F, 0.9F, hx + t, hz + t, t, y0, y1, marco, matrices, vcp, luz);
-        } else {
-            float o = hx + t + BORDE_SALE, oz = hz + t + BORDE_SALE;
-            SolapaMalla.anillo(tela, 0.05F, 0.95F, 0.1F, 0.9F, o, oz, t + BORDE_SALE, y0 - 0.1F, y0 + BORDE_ALTO, marco, matrices, vcp, luz);
-            SolapaMalla.anillo(tela, 0.05F, 0.95F, 0.1F, 0.9F, o, oz, t + BORDE_SALE, y1 - BORDE_ALTO, y1 + 0.1F, marco, matrices, vcp, luz);
-        }
     }
 
     /** Las cajas de cada zona con la holgura por defecto — para apuntar el mouse en la Mesa de estilado. */
@@ -123,11 +100,15 @@ public final class BandaRenderer {
         float h = ancho.alto(zona);
         float hx = hx(zona, dil), hz = hz(zona, dil), t = grosor(zona);
         List<SombreroRenderer.Caja> out = new ArrayList<>();
+        if (!cintura) {
+            collarOriginal(out, h / 1.6f, dil);
+        } else {
         // Banda: frente, espalda y los dos costados.
         losas(out, 0, hx, hz, t, y0, y0 + h, 0f);
         // Borde: tiras de arriba y abajo, un poquito más afuera y más altas que la banda para no pelear el plano.
         losas(out, 1, hx, hz, t, y0 - 0.1f, y0 + BORDE_ALTO, BORDE_SALE);
         losas(out, 1, hx, hz, t, y0 + h - BORDE_ALTO, y0 + h + 0.1f, BORDE_SALE);
+        }
         // Herraje al frente, apoyado en la cara de afuera.
         float escala = cintura ? 1f : 0.6f;
         float zf0 = -hz - t - BORDE_SALE - 0.5f * escala, zf1 = -hz - t - BORDE_SALE;
@@ -208,6 +189,27 @@ public final class BandaRenderer {
         parte.pitch = pitch;
         parte.roll = roll;
         GarmentFeatureRenderer.dibujarModelPart(parte, CuerpoGeometria.Superficie.CUERPO, tela, marco, matrices, vertexConsumers, luz);
+    }
+
+    /**
+     * El anillo del collar de Player Collars (jlortiz, licencia MIT; 2026-10-11, "copia el modelo de leashable collars y el
+     * anclaje"): los 6 cubos de su {@code item/collar.json} llevados al marco de la cabeza con la cadena de su
+     * {@code CollarRenderer} — display "head" [90,0,180] / [0,-12,25,-10,75], roll + π, escala 0,85 y desplazamiento
+     * (0; 0,4125; −0,005) bloques —; como las rotaciones son de 90°, cada cubo sigue siendo una caja. {@code f} escala el
+     * alto del anillo (1 = el original) y {@code dil} lo infla.
+     */
+    private static void collarOriginal(List<SombreroRenderer.Caja> out, float f, float dil) {
+        float[][] el = {
+            {3, -6, 2, 4, 0, 3}, {12, -6, 2, 13, 0, 3}, {4, -6, 2, 12, -5, 3},   // costados y barra de atrás
+            {4, -1, 2, 5, 0, 4}, {11, -1, 2, 12, 0, 4}, {5, -1, 3, 11, 0, 4},    // esquinas y barra del frente
+        };
+        for (float[] e : el) {
+            float xa = -13.6f * (0.5f - e[0] / 16f), xb = -13.6f * (0.5f - e[3] / 16f);
+            float ya = 13.6f * (e[2] / 16f - 0.1469f), yb = 13.6f * (e[5] / 16f - 0.1469f);
+            float za = 13.6f * (-e[1] / 16f - 0.1769f), zb = 13.6f * (-e[4] / 16f - 0.1769f);
+            out.add(caja(0, Math.min(xa, xb) - dil, Y_COLLAR + (Math.min(ya, yb) + 0.3f) * f, Math.min(za, zb) - dil,
+                    Math.max(xa, xb) + dil, Y_COLLAR + (Math.max(ya, yb) + 0.3f) * f, Math.max(za, zb) + dil));
+        }
     }
 
     private static SombreroRenderer.Caja caja(int zona, float x0, float y0, float z0, float x1, float y1, float z1) {
