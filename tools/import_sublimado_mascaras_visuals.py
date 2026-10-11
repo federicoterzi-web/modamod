@@ -6,7 +6,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = Path(
-    r"C:\Users\feder\.codex\generated_images\01a11ed5-d9e5-7eb2-86f4-0f97c96f0646\call_vLZ5q8MSSBioYae63TPF30KL.png"
+    r"C:\Users\feder\.codex\generated_images\01a11ed5-d9e5-7eb2-86f4-0f97c96f0646\call_AlxNCr45nKansBttqMTozs2S.png"
 )
 OUT = ROOT / "src/main/resources/assets/modamod/textures/item"
 
