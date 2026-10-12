@@ -60,7 +60,7 @@ public final class TopCorte {
     }
 
     public static void setFaldon(ItemStack stack, int nivel) {
-        if (nivel < 0) stack.remove(ModamodComponents.FALDON_TOP);
+        if (nivel < 0 || nivel > 6) stack.remove(ModamodComponents.FALDON_TOP);
         else stack.set(ModamodComponents.FALDON_TOP, Math.min(6, nivel));
     }
 

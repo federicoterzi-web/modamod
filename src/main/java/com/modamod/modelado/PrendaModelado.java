@@ -202,11 +202,11 @@ public final class PrendaModelado {
         if (out.getItem() instanceof com.modamod.item.PolleraItem && combo.pollera().isPresent()) {
             var p = combo.pollera().get();
             if (p.voladoRuedo().isPresent()) {
-                com.modamod.item.PolleraItem.setVoladoRuedo(out, p.voladoRuedo().get());
+                com.modamod.item.PolleraItem.setVoladoRuedo(out, sinVolado(p.voladoRuedo().get()));
                 cambio = true;
             }
             if (p.voladoTodo().isPresent()) {
-                com.modamod.item.PolleraItem.setVoladoTodo(out, p.voladoTodo().get());
+                com.modamod.item.PolleraItem.setVoladoTodo(out, sinVolado(p.voladoTodo().get()));
                 cambio = true;
             }
             if (p.cintura().isPresent()) {
@@ -254,9 +254,9 @@ public final class PrendaModelado {
             if (d.largo().isPresent()) { com.modamod.item.DelantalItem.setLargo(out, d.largo().get()); cambio = true; }
             if (d.forma().isPresent()) { com.modamod.item.DelantalItem.setForma(out, d.forma().get()); cambio = true; }
             if (d.esquinas().isPresent()) { com.modamod.item.DelantalItem.setEsquinas(out, d.esquinas().get()); cambio = true; }
-            if (d.volado().isPresent()) { com.modamod.item.DelantalItem.setVolado(out, d.volado().get()); cambio = true; }
-            if (d.lateral().isPresent()) { com.modamod.item.DelantalItem.setVoladoLateral(out, d.lateral().get()); cambio = true; }
-            if (d.superior().isPresent()) { com.modamod.item.DelantalItem.setVoladoSuperior(out, d.superior().get()); cambio = true; }
+            if (d.volado().isPresent()) { com.modamod.item.DelantalItem.setVolado(out, sinVolado(d.volado().get())); cambio = true; }
+            if (d.lateral().isPresent()) { com.modamod.item.DelantalItem.setVoladoLateral(out, sinVolado(d.lateral().get())); cambio = true; }
+            if (d.superior().isPresent()) { com.modamod.item.DelantalItem.setVoladoSuperior(out, sinVolado(d.superior().get())); cambio = true; }
             if (d.tirantes().isPresent()) { com.modamod.item.DelantalItem.setTirantes(out, d.tirantes().get()); cambio = true; }
             if (d.cobertura().isPresent()) { com.modamod.item.DelantalItem.setCobertura(out, d.cobertura().get()); cambio = true; }
         }
@@ -320,5 +320,11 @@ public final class PrendaModelado {
                     && (r.ordinal() <= com.modamod.item.Ruedo.CAMPANA.ordinal() || r.volado() != null || r.borde() != null);
             default -> false;
         };
+    }
+
+    /** SIN (el molde en blanco) quita el volado: los setters reciben null. */
+    @org.jetbrains.annotations.Nullable
+    private static com.modamod.item.PolleraVolado sinVolado(com.modamod.item.PolleraVolado v) {
+        return v == com.modamod.item.PolleraVolado.SIN ? null : v;
     }
 }

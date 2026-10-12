@@ -42,7 +42,9 @@ public class PolleraItem extends ClothingTrinketItem {
     }
 
     public static void setCintura(ItemStack stack, int nivel) {
-        stack.set(ModamodComponents.POLLERA_CINTURA, Math.max(0, Math.min(6, nivel)));
+        // 7 = "ninguna" (2026-10-12, molde en blanco): vuelve a la cadera de siempre.
+        if (nivel < 0 || nivel > 6) stack.remove(ModamodComponents.POLLERA_CINTURA);
+        else stack.set(ModamodComponents.POLLERA_CINTURA, nivel);
     }
 
     public static PolleraForma forma(ItemStack stack) {

@@ -253,7 +253,7 @@ public record ComboCorte(
                         .forGetter(PolleraCorte::voladoTodo),
                 RuedoCorte.CODEC.optionalFieldOf("ruedo").forGetter(PolleraCorte::ruedo),
                 ChaquetaCorte.CODEC.optionalFieldOf("chaqueta").forGetter(PolleraCorte::chaqueta),
-                Codec.intRange(0, 6).optionalFieldOf("cintura").forGetter(PolleraCorte::cintura)
+                Codec.intRange(0, 7).optionalFieldOf("cintura").forGetter(PolleraCorte::cintura)
         ).apply(i, PolleraCorte::new));
     }
 
@@ -295,7 +295,7 @@ public record ComboCorte(
                 StringIdentifiable.createCodec(com.modamod.item.ChaquetaSolapa::values).optionalFieldOf("solapa")
                         .forGetter(ChaquetaCorte::solapa),
                 BorcegoCorte.CODEC.optionalFieldOf("borcego").forGetter(ChaquetaCorte::borcego),
-                Codec.intRange(0, 6).optionalFieldOf("faldon").forGetter(ChaquetaCorte::faldon),
+                Codec.intRange(0, 7).optionalFieldOf("faldon").forGetter(ChaquetaCorte::faldon),
                 DelantalCorte.CODEC.optionalFieldOf("delantal").forGetter(ChaquetaCorte::delantal),
                 EmbozoCorte.CODEC.optionalFieldOf("embozo").forGetter(ChaquetaCorte::embozo)
         ).apply(i, ChaquetaCorte::new));

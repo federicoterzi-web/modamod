@@ -983,7 +983,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         // Ítem en blanco (2026-10-12, "que todos los moldes 'sin' no existan"): quita el rasgo del pin.
         if (item instanceof MoldeEnBlancoItem b) {
             return switch (b.tipo) {
-                case MOLDE -> comboEnBlanco(rol, lado);
+                case MOLDE -> comboEnBlanco(rol, lado, cat);
                 case TRAMA -> switch (rol) {
                     case MAT1, MAT2, MAT3, PERS_IZQ1, PERS_IZQ2, PERS_IZQ3, PERS_DER1, PERS_DER2, PERS_DER3 ->
                             ComboCorte.red(com.modamod.item.PatronRed.LISA);
@@ -1252,7 +1252,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
      * pollera y capa, volados, faldón, cintura): ahí el blanco no entra.
      */
     @Nullable
-    private static ComboCorte comboEnBlanco(Rol rol, Lado lado) {
+    private static ComboCorte comboEnBlanco(Rol rol, Lado lado, Categoria cat) {
         return switch (rol) {
             case CUELLO -> ComboCorte.remeraCuello(Variante.Cuello.CERRADO);
             case MANGA_IZQ, MANGA_DER -> ComboCorte.remeraManga(Variante.Manga.SIN, lado);
@@ -1288,6 +1288,26 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case COBERTURA_DELANTAL -> ComboCorte.delantalCobertura(com.modamod.item.DelantalCobertura.ENVOLVENTE);
             case ALA_SOMBRERO -> ComboCorte.sombreroAla(com.modamod.item.SombreroAla.ANCHA);
             case PUNTA_SOMBRERO -> ComboCorte.sombreroPunta(com.modamod.item.SombreroPunta.RECTA);
+            // Rangos y volados (2026-10-12, "vamos con la uno"): el blanco vuelve al largo/tiro de fábrica o quita el volado.
+            case TIRO -> ComboCorte.tiro(com.modamod.item.PantalonTiro.MEDIO);
+            case BOTA_IZQ, BOTA_DER -> ComboCorte.pantalonSuperior(com.modamod.item.Botamanga.PIE, lado);
+            case SUP_IZQ, SUP_DER, INF_IZQ, INF_DER -> {
+                boolean sup = rol == Rol.INF_IZQ || rol == Rol.INF_DER;
+                if (cat == Categoria.MEDIAS) yield sup ? ComboCorte.mediasSuperior(com.modamod.item.Botamanga.PIE, lado)
+                        : ComboCorte.mediasInferior(com.modamod.item.Botamanga.PIE, lado);
+                if (cat == Categoria.CALIENTABRAZOS) yield sup ? ComboCorte.calientabrazosSuperior(Variante.Manga.LARGA, lado)
+                        : ComboCorte.calientabrazosInferior(Variante.Manga.LARGA, lado);
+                yield null;
+            }
+            case LARGO_POLLERA -> ComboCorte.polleraLargo(com.modamod.item.PolleraLargo.MEDIO);
+            case LARGO_CAPA -> ComboCorte.capaLargo(com.modamod.item.CapaLargo.MEDIO);
+            case CINTURA_POLLERA -> ComboCorte.polleraCintura(7);
+            case FALDON_TOP -> ComboCorte.faldon(7);
+            case VOLADO_INFERIOR -> ComboCorte.voladoRuedo(com.modamod.item.PolleraVolado.SIN);
+            case VOLADO_TOTAL -> ComboCorte.voladoTodo(com.modamod.item.PolleraVolado.SIN);
+            case VOLADO_DELANTAL -> ComboCorte.delantalVolado(com.modamod.item.PolleraVolado.SIN);
+            case VOLADO_LATERAL_DELANTAL -> ComboCorte.delantalLateral(com.modamod.item.PolleraVolado.SIN);
+            case VOLADO_SUPERIOR_DELANTAL -> ComboCorte.delantalSuperior(com.modamod.item.PolleraVolado.SIN);
             default -> null;
         };
     }

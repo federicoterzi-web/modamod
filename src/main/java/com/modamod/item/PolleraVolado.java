@@ -10,7 +10,9 @@ import net.minecraft.util.StringIdentifiable;
  */
 public enum PolleraVolado implements StringIdentifiable {
     RECTO("recto"),
-    CIRCULAR("circular");
+    CIRCULAR("circular"),
+    /** Sin volado (2026-10-12): lo pone el molde en blanco para quitarlo; nunca se guarda en la prenda. */
+    SIN("sin");
 
     public final String clave;
 
