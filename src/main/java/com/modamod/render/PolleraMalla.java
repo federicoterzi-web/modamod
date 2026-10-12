@@ -59,6 +59,9 @@ public final class PolleraMalla {
     private static final int COLUMNAS = 48;
     /** 24 filas (2026-10-05, volados): tres filas de volado necesitan resolución para que se lea el borde de cada una. */
     static final int FILAS = 24;
+
+    /** Vértices de la malla que se arma en {@code dibujar}, reusados cuadro a cuadro (hilo de render, sin reentrada). */
+    private static final float[][][] POOL_VERTICES = new float[FILAS + 1][COLUMNAS + 1][5];
     private static final int TABLAS = 12;
     /** Largo del perímetro de la caja del torso en la textura (4+8+4+8). */
     private static final float PERIMETRO = 24f;
@@ -148,7 +151,8 @@ public final class PolleraMalla {
                                 CapaMalla.Movimiento mov, float twirl, float cola, float inclinacion, float cintura,
                                 float vDesde, float vHasta, int hueco, @Nullable float[] extraPorFila,
                                 float lPx, int colDesde, int colHasta, @Nullable AdornoDelantal adorno) {
-        float[][][] p = new float[FILAS + 1][COLUMNAS + 1][];
+        // Los vértices se reusan entre cuadros (la malla se arma y se dibuja completa dentro de esta llamada).
+        float[][][] p = POOL_VERTICES;
         PolleraBorde borde = hem.borde();
         float l = Float.isNaN(lPx) ? largo.pixeles : lPx;
         // Nunca más pegada que Normal: la cintura (sección casi recta) tiene
@@ -225,8 +229,12 @@ public final class PolleraMalla {
                 z += dz;
                 x += dx;
                 yy -= (dz * 0.35f + Math.abs(dx) * 0.2f + abrir * l * 0.2f * peso);
-                p[f][c] = new float[]{x, yy, z, perfil.u[f][c] / 64f,
-                        (Float.isNaN(vDesde) ? perfil.v[f] : vDesde + (vHasta - vDesde) * t) / 64f};
+                float[] v = p[f][c];
+                v[0] = x;
+                v[1] = yy;
+                v[2] = z;
+                v[3] = perfil.u[f][c] / 64f;
+                v[4] = (Float.isNaN(vDesde) ? perfil.v[f] : vDesde + (vHasta - vDesde) * t) / 64f;
             }
         }
 
@@ -456,7 +464,31 @@ public final class PolleraMalla {
      * tableada, el zigzag de las tablas. Columna 0 y {@link #COLUMNAS} son
      * el mismo punto (la costura).
      */
+    /**
+     * Memoria de {@link #anillo0} (2026-10-12, "vamos por las seguras y despues midamos"): armar un anillo cuesta 240
+     * muestras de superelipse con {@code pow}, y se pide una vez por fila (25) por pollera, delantal y faldón en cada
+     * cuadro, más {@code holguraEn} desde el hoodie y el delantal. Quieto, los parámetros se repiten cuadro a cuadro.
+     * Los arreglos devueltos NO se pueden modificar (están compartidos).
+     */
+    private record ClaveAnillo(float t, float a0, float b0, float l, float abrir, PolleraForma forma,
+                               @Nullable PolleraVolado ruedo, @Nullable PolleraVolado todo) {}
+
+    private static final java.util.HashMap<ClaveAnillo, float[][]> ANILLOS = new java.util.HashMap<>();
+
     private static float[][] anillo(float t, float a0, float b0, float l, float abrir, PolleraForma forma,
+                                    @Nullable PolleraVolado voladoRuedo, @Nullable PolleraVolado voladoTodo) {
+        ClaveAnillo clave = new ClaveAnillo(t, a0, b0, l, abrir, forma, voladoRuedo, voladoTodo);
+        float[][] hecho = ANILLOS.get(clave);
+        if (hecho == null) {
+            // Moviéndose, `abrir` cambia cada cuadro: sin tope la memoria crecería sin parar.
+            if (ANILLOS.size() > 4096) ANILLOS.clear();
+            hecho = anillo0(t, a0, b0, l, abrir, forma, voladoRuedo, voladoTodo);
+            ANILLOS.put(clave, hecho);
+        }
+        return hecho;
+    }
+
+    private static float[][] anillo0(float t, float a0, float b0, float l, float abrir, PolleraForma forma,
                                     @Nullable PolleraVolado voladoRuedo, @Nullable PolleraVolado voladoTodo) {
         boolean tableada = forma == PolleraForma.TABLEADA;
         float peso = (float) Math.pow(t, 1.6);
@@ -500,7 +532,7 @@ public final class PolleraMalla {
         // en la tela, no enganchan las dos partes"): espaciadas por el perímetro de la caja (s parejo), la vuelta
         // de tela no repartía su u entre 16 y 40 y en el ruedo la costura leía texeles de afuera de la franja del
         // torso (transparentes). Con arco parejo la costura cae justo en u 16 = 40.
-        final int muestras = 240;
+        final int muestras = 120;
         float[] arco = new float[muestras + 1];
         float[] ant = seccion(0f, a, b, n);
         for (int i = 1; i <= muestras; i++) {
@@ -670,7 +702,7 @@ public final class PolleraMalla {
         float l = largo.pixeles;
         float a0 = 4.35f, b0 = 2.35f;
         float[][][] anillos = new float[FILAS + 1][][];
-        for (int f = 0; f <= FILAS; f++) anillos[f] = anillo(f / (float) FILAS, a0, b0, l, 0f, forma, null, null);
+        for (int f = 0; f <= FILAS; f++) anillos[f] = anillo(f / (float) FILAS, a0, b0, l, 0f, forma, null, null).clone();
         if (cola > 0.05f) {
             // La misma deformación de la espalda que hace la malla al dibujar (con y, que anillo() no trae).
             float[][][] p3 = new float[FILAS + 1][COLUMNAS + 1][];

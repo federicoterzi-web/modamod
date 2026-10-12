@@ -150,7 +150,25 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         }
     }
 
+    private static boolean MAPAS_EN_USO = false, REUSA_MAPAS = false;
+    private static final Map<Parte, List<Pieza>> MAPA_POR_PARTE = new EnumMap<>(Parte.class);
+    private static final Map<Pieza, ItemStack> MAPA_ORIGEN = new java.util.IdentityHashMap<>();
+
     public void render0(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int luz,
+                       T entidad, float limbAngle, float limbDistance, float tickDelta,
+                       float animationProgress, float headYaw, float headPitch) {
+        boolean anterior = REUSA_MAPAS, esteReusa = !MAPAS_EN_USO;
+        REUSA_MAPAS = esteReusa;
+        if (esteReusa) MAPAS_EN_USO = true;
+        try {
+            render1(matrices, vertexConsumers, luz, entidad, limbAngle, limbDistance, tickDelta, animationProgress, headYaw, headPitch);
+        } finally {
+            if (esteReusa) MAPAS_EN_USO = false;
+            REUSA_MAPAS = anterior;
+        }
+    }
+
+    private void render1(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int luz,
                        T entidad, float limbAngle, float limbDistance, float tickDelta,
                        float animationProgress, float headYaw, float headPitch) {
 
@@ -200,9 +218,16 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         // Las piezas de tela, agrupadas por parte. EnumMap para que el
         // recorrido sea estable: dos frames no pueden dibujar en distinto
         // orden dos piezas de la misma capa.
-        Map<Parte, List<Pieza>> porParte = new EnumMap<>(Parte.class);
+        // Los dos mapas se reusan entre cuadros (2026-10-12, "vamos por las seguras"); si este render quedara anidado en otro
+        // (otro mod dibujando un jugador adentro de un jugador) cada uno usa los suyos.
+        boolean reusar = REUSA_MAPAS;
+        Map<Parte, List<Pieza>> porParte = reusar ? MAPA_POR_PARTE : new EnumMap<>(Parte.class);
         // De qué prenda sale cada pieza: el relieve mira su calce, su textura y su archivo de extrusión.
-        Map<Pieza, ItemStack> origen = new java.util.IdentityHashMap<>();
+        Map<Pieza, ItemStack> origen = reusar ? MAPA_ORIGEN : new java.util.IdentityHashMap<>();
+        if (reusar) {
+            porParte.clear();
+            origen.clear();
+        }
         for (ItemStack stack : prendas) {
             for (Pieza pieza : PiezasDePrenda.de(stack, entidad)) {
                 porParte.computeIfAbsent(pieza.parte(), k -> new ArrayList<>()).add(pieza);
