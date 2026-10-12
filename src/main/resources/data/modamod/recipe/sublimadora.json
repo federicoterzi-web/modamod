@@ -1,16 +1,27 @@
 {
-  "_comment": "El hierro es el bastidor, el piston es la prensa que baja y el horno es el calor. Sin receta el bloque solo existia en el menu de creativo.",
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "III",
-    "IPI",
-    "IFI"
+    "DCD",
+    "ABA",
+    "EEE"
   ],
   "key": {
-    "I": { "item": "minecraft:iron_ingot" },
-    "P": { "item": "minecraft:piston" },
-    "F": { "item": "minecraft:furnace" }
+    "A": {
+      "item": "minecraft:redstone_block"
+    },
+    "B": {
+      "item": "minecraft:furnace"
+    },
+    "C": {
+      "item": "minecraft:piston"
+    },
+    "D": {
+      "item": "minecraft:iron_ingot"
+    },
+    "E": {
+      "tag": "minecraft:planks"
+    }
   },
   "result": {
     "id": "modamod:sublimadora",

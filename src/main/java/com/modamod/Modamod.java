@@ -23,6 +23,7 @@ public class Modamod implements ModInitializer {
     public void onInitialize() {
         ModamodItems.init();
         ModamodComponents.init();
+        com.modamod.receta.ModamodRecetas.init();
         // Que items son prendas del sistema de capas. Va DESPUES de los
         // items: registra por instancia, no por id.
         PrendasDelMod.init();

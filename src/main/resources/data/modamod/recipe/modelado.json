@@ -1,17 +1,27 @@
 {
-  "_comment": "Mesa de Modelado: una mesa de trabajo de tela (tablones) con papel para los patrones e hilo para coser.",
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "PPP",
-    "SCS",
-    "TTT"
+    "DBD",
+    "AEA",
+    "CCC"
   ],
   "key": {
-    "P": { "item": "minecraft:paper" },
-    "S": { "item": "minecraft:string" },
-    "C": { "item": "minecraft:shears" },
-    "T": { "item": "minecraft:oak_planks" }
+    "A": {
+      "item": "minecraft:redstone_block"
+    },
+    "B": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "tag": "minecraft:planks"
+    },
+    "D": {
+      "item": "minecraft:paper"
+    },
+    "E": {
+      "item": "minecraft:shears"
+    }
   },
   "result": {
     "id": "modamod:modelado",

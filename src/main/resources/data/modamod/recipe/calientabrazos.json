@@ -1,11 +1,18 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
+  "type": "modamod:prenda_tenida",
   "pattern": [
-    "W",
-    "W",
-    " "
+    "B B",
+    "B B",
+    "A A"
   ],
-  "key": { "W": { "item": "minecraft:white_wool" } },
-  "result": { "id": "modamod:calientabrazos", "count": 1 }
+  "key": {
+    "A": {
+      "item": "minecraft:string"
+    },
+    "B": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "prenda": "calientabrazos",
+  "count": 3
 }

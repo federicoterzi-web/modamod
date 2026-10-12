@@ -1,11 +1,14 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
+  "type": "modamod:prenda_tenida",
   "pattern": [
-    "W W",
-    "WWW",
-    "   "
+    "AAA",
+    "A A",
+    "A A"
   ],
-  "key": { "W": { "item": "minecraft:white_wool" } },
-  "result": { "id": "modamod:pantalon", "count": 1 }
+  "key": {
+    "A": {
+      "tag": "minecraft:wool"
+    }
+  },
+  "prenda": "pantalon"
 }

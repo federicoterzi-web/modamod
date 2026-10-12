@@ -547,24 +547,35 @@ Para probar sin esperas ni insumos ya no hay comandos: están las **máquinas cr
 
 ![Íconos de los ítems del mod](img/iconos.png)
 
+**Recetas nuevas** (2026-10-12, planilla `docs/recetas_propuesta.xlsx` editada por el usuario; compiladas, falta probar en el juego). `L` = lana de cualquier color, `H` = hilo, `C` = cuero, `T` = tijeras, `I` = lingote de hierro, `P` = papel, `R` = bloque de redstone, `M` = tablones, `V` = vidrio. **Las prendas de lana salen del color de las lanas** (promedio de las que pongas), con un tipo de receta propio (`modamod:prenda_tenida`).
+
 | Ítem | Receta |
 |---|---|
-| Remera (16 colores) | 8 lanas del mismo color: `L _ L / L L L / L L L` |
-| Medias Color Pleno (16 colores) | 6 lanas del mismo color: `L _ L / L _ L / L _ L` |
-| Pantalón | 5 lanas blancas: `L _ L / L L L` |
-| Calentadores de Brazo | 2 lanas blancas, una arriba de la otra |
-| Medias 3/4 (armadura) | 4 lanas blancas: `L _ L / L _ L` |
-| Medias de Red (armadura) | 4 hilos: `H _ H / H _ H` |
-| Traje de Maid (armadura) | 8 lanas blancas alrededor de 1 lana negra |
-| Hoodie (chaqueta) | 8 lanas blancas: `L L L / L L L / L _ L` (la receta del Buzo Oversize viejo) |
-| Mesa de Modelado | 3 papeles, hilo + tijeras + hilo, 3 tablones de roble |
-| Sublimadora | Hierro alrededor, un pistón en el medio y un horno abajo |
-| Molde de manga | Papel + hilo (sin forma) |
-| Rayas alternadas | Papel / hilo / papel (filas) |
-| Rayas superiores | Hilo / papel / papel (filas) |
-| Tres rayas | Hilo / hilo / papel (filas) |
+| Remera | `L _ L / L L L / L L L` |
+| Pantalón | `L L L / L _ L / L _ L` |
+| Medias (x3) | `H _ H / L _ L / L _ L` |
+| Calentadores de brazo (x3) | `L _ L / L _ L / H _ H` |
+| Pollera | `H H H / L L L / L L L` |
+| Capa | `H L H / L L L / L L L` |
+| Delantal | `_ L _ / L L L / L L L` |
+| Sombrero | `_ L _ / _ L _ / C C C` |
+| Cinto | `C pepita C` (en fila) |
+| Borcegos | `H _ H / C _ C / C _ C` |
+| Hoodie | Sin forma: 6 lanas + 1 remera (el color sale de la mezcla de lanas y remera) |
+| Telar automático | `I M I / R U R / M M M` (U = telar de vanilla) |
+| Mesa de Modelado | `P I P / R T R / M M M` |
+| Sublimadora | `I pistón I / R horno R / M M M` |
+| Estación de Tintes | `V I V / R caldero R / M M M` |
+| Estilista automática | `T C T / R telar R / M M M` |
+| Guardarropas | `M M M / barras de hierro, pantalón, barras de hierro / M M M` |
+| Maniquí | `_ M _ / M pantalón M / M soporte de armadura M` |
+| Cinta transportadora (x10) | `I I I / C C C / I R I` |
+| Empalme | tolva / bloque de redstone / cinta (en columna) |
+| Medias 3/4 y de Red (armadura), Traje de Maid | sin cambios (las recetas viejas) |
+| Rayas | Papel / hilo / papel (filas) y las dos variantes (la receta vieja) |
 
-**Sin receta todavía (solo en creativo):** las máquinas creativas y los kits, Estación de Tintes, Guardarropas, Maniquí, Mesa de estilado, Pollera, Estrógenos, moldes de textura, moldes de rango, torso, cuello, calce, red, arnés, pollera y capa, molde de corte, la Capa, y los patrones de corazones, estrellas, lunares y vichy.
+
+**Sin receta todavía (solo en creativo):** las máquinas creativas y los kits, Mesa de estilado (jubilada), Vincha, Cofia, Collar, Traje de Maid con las prendas nuevas, todos los moldes (se van a poder craftear; se define en una segunda tanda), Estrógenos, moldes de textura, moldes de rango, torso, cuello, calce, red, arnés, pollera y capa, molde de corte, la Capa, y los patrones de corazones, estrellas, lunares y vichy.
 
 Todo el contenido del mod está en su propia pestaña del inventario creativo: **ModaMod**.
 
