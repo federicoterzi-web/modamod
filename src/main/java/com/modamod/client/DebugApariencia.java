@@ -82,7 +82,8 @@ public final class DebugApariencia {
                     return 1;
                 }))
                 .then(relieve())
-                .then(cuello());
+                .then(cuello())
+                .then(delantal());
     }
 
     /**
@@ -108,6 +109,29 @@ public final class DebugApariencia {
             }));
         }
         return raiz;
+    }
+
+    /** Delantal en una sola pieza de malla o con cajas sueltas (2026-10-12): {@code pieza}, {@code partes}; sin argumento alterna. */
+    private static LiteralArgumentBuilder<FabricClientCommandSource> delantal() {
+        return ClientCommandManager.literal("delantal")
+                .executes(ctx -> {
+                    com.modamod.render.DelantalPieza.activa = !com.modamod.render.DelantalPieza.activa;
+                    return avisoDelantal(ctx.getSource());
+                })
+                .then(ClientCommandManager.literal("pieza").executes(ctx -> {
+                    com.modamod.render.DelantalPieza.activa = true;
+                    return avisoDelantal(ctx.getSource());
+                }))
+                .then(ClientCommandManager.literal("partes").executes(ctx -> {
+                    com.modamod.render.DelantalPieza.activa = false;
+                    return avisoDelantal(ctx.getSource());
+                }));
+    }
+
+    private static int avisoDelantal(FabricClientCommandSource fuente) {
+        fuente.sendFeedback(Text.literal("[modamod debug] delantal: "
+                + (com.modamod.render.DelantalPieza.activa ? "pieza única" : "partes sueltas")));
+        return 1;
     }
 
     /**

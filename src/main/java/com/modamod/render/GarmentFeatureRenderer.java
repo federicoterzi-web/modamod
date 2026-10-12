@@ -543,11 +543,15 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
         float cola = busto == null ? 0f : busto.cola();
         List<com.modamod.aplique.Aplique> apliques = ApliqueRenderer.apliquesEn(stack, com.modamod.aplique.Aplique.Superficie.DELANTAL);
         float finalDilatacion = dilatacion;
-        PolleraMalla.AdornoDelantal adorno = com.modamod.item.DelantalItem.voladoLateral(stack) == null
-                && com.modamod.item.DelantalItem.voladoSuperior(stack) == null ? null
+        float bustoExtra = Math.min(2.4F, 0.4F * talle);
+        boolean pieza = DelantalPieza.activa;
+        boolean sinVolados = com.modamod.item.DelantalItem.voladoLateral(stack) == null
+                && com.modamod.item.DelantalItem.voladoSuperior(stack) == null;
+        PolleraMalla.AdornoDelantal adorno = sinVolados && !pieza ? null
                 : new PolleraMalla.AdornoDelantal(com.modamod.item.DelantalItem.forma(stack), largo,
                         com.modamod.item.DelantalItem.voladoLateral(stack), com.modamod.item.DelantalItem.voladoSuperior(stack),
-                        com.modamod.item.DelantalItem.cobertura(stack).ancho);
+                        com.modamod.item.DelantalItem.cobertura(stack).ancho, pieza,
+                        com.modamod.item.DelantalItem.tirantes(stack), finalDilatacion, bustoExtra);
         int columnas = com.modamod.item.DelantalItem.cobertura(stack).columnas();
         MallaCapturada malla = grabar("delantal", !apliques.isEmpty()
                 || CorreaRenderer.hayEn(stack, com.modamod.correa.Correa.Superficie.DELANTAL), () ->
@@ -557,7 +561,7 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
                 com.modamod.item.Ruedos.get(stack, com.modamod.item.ZonaRuedo.DELANTAL), extra,
                 adorno, columnas));
         matrices.pop();
-        TirantesDelantal.dibujar(com.modamod.item.DelantalItem.tirantes(stack),
+        if (!pieza) TirantesDelantal.dibujar(com.modamod.item.DelantalItem.tirantes(stack),
                 com.modamod.region.RegionResolver.colorBase(stack, com.modamod.region.Lado.IZQUIERDA), inicio, finalDilatacion,
                 Math.min(2.4F, 0.4F * talle), delJugador, matrices, vertexConsumers, luz);
         if (malla != null) {

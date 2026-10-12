@@ -770,3 +770,6 @@ La capucha del hoodie (puesta con la tecla H o caída sobre la espalda) ahora es
 
 ### Delantal: volados y caída más naturales
 Los volados de los costados y del borde de arriba del delantal ahora forman pliegues grandes y suaves que nacen del borde y caen con la gravedad, y el delantal acompaña mejor el movimiento de la pollera y queda más pegado a ella.
+
+### Delantal como pieza única
+La cinta de la cintura y los tirantes del delantal ahora son cintas de la misma malla de tela (en vez de cajas aparte), con las esquinas redondeadas. Para comparar con la versión anterior: `/modamoddebug delantal partes` y `/modamoddebug delantal pieza`.

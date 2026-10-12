@@ -252,12 +252,19 @@ public final class PolleraMalla {
 
     /** Los volados de los costados y del borde de arriba del delantal (2026-10-11) y la silueta a la que se pegan. */
     public record AdornoDelantal(com.modamod.item.DelantalForma forma, float largo, @Nullable PolleraVolado lateral,
-                                 @Nullable PolleraVolado superior, float cap) {}
+                                 @Nullable PolleraVolado superior, float cap,
+                                 boolean pieza, @Nullable com.modamod.item.DelantalTirantes tirantes, float dil,
+                                 float bustoExtra) {
+        public AdornoDelantal(com.modamod.item.DelantalForma forma, float largo, @Nullable PolleraVolado lateral,
+                              @Nullable PolleraVolado superior, float cap) {
+            this(forma, largo, lateral, superior, cap, false, null, 0f, 0f);
+        }
+    }
 
     private static final int SUB = FILAS * 2, TRAMOS = 3;
 
     /** Un punto de la malla: fila fraccionaria {@code rowF} (0..FILAS) y arco {@code arcPx} desde el centro del frente (px). */
-    private static float[] punto(float[][][] p, float rowF, float arcPx) {
+    static float[] punto(float[][][] p, float rowF, float arcPx) {
         float rf = Math.max(0f, Math.min(FILAS, rowF));
         int f0 = Math.min(FILAS - 1, (int) rf);
         float tf = rf - f0;
@@ -287,6 +294,7 @@ public final class PolleraMalla {
      */
     private static void adornar(float[][][] p, AdornoDelantal ad, MatrixStack.Entry e, VertexConsumer vc, int luz, int ov) {
         float largo = ad.largo();
+        if (ad.pieza()) DelantalPieza.dibujar(p, ad, e, vc, luz, ov);
         if (ad.lateral() != null) {
             boolean circ = ad.lateral() == PolleraVolado.CIRCULAR;
             float L = circ ? 3.0f : 2.0f, amp = circ ? 0.8f : 0.3f, per = circ ? 2.7f : 1.0f;
@@ -332,7 +340,7 @@ public final class PolleraMalla {
         }
     }
 
-    private static void emitirTira(float[][][] g, MatrixStack.Entry e, VertexConsumer vc, int luz, int ov) {
+    static void emitirTira(float[][][] g, MatrixStack.Entry e, VertexConsumer vc, int luz, int ov) {
         for (int j = 0; j < g.length - 1; j++) {
             for (int k = 0; k < g[j].length - 1; k++) {
                 float[][] q = {g[j][k], g[j + 1][k], g[j + 1][k + 1], g[j][k + 1]};
