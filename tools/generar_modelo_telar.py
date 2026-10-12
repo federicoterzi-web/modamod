@@ -24,7 +24,7 @@ RES = os.path.join(RAIZ, "src", "main", "resources", "assets", "modamod")
 NUEVO = os.path.join(RAIZ, "assets_nuevos_prueba", "telar")
 # Texels propios y libres del atlas (2026-10-07, "el telar automatico tiene q tener la barra de progreso y dos barras de
 # insumos como la autoestiladora"): barra de progreso granate y las de lana (blanca) e hilo (dorado).
-TEXEL_ACENTO, TEXEL_LANA, TEXEL_HILO = (100, 60), (101, 60), (102, 60)
+TEXEL_ACENTO, TEXEL_LANA, TEXEL_HILO, TEXEL_CUERO = (100, 60), (101, 60), (102, 60), (105, 60)
 
 
 def geo(ruta):
@@ -63,16 +63,18 @@ def main():
             for c in b["cubes"]:
                 for cara in c["uv"].values():
                     cara["uv"] = [TEXEL_ACENTO[0], TEXEL_ACENTO[1]]
-    # Dos indicadores verticales de insumos en el hueco del panel (como la Estilista); el cliente los escala en Y.
-    for nombre, x0, texel in (("lana", 1.55, TEXEL_LANA), ("hilo", 3.55, TEXEL_HILO)):
+    # Tres indicadores verticales de insumos en el hueco del panel (lana, hilo y cuero; 2026-10-12, "achiquemos las dos
+    # barras que hay para meter una tercera"); el cliente los escala en Y.
+    ANCHO_BARRA = 0.76
+    for nombre, x0, texel in (("lana", 1.53, TEXEL_LANA), ("hilo", 2.73, TEXEL_HILO), ("cuero", 3.93, TEXEL_CUERO)):
         base["cubes"].append({
-            "origin": [x0 - 0.12, 5.18, -8.86], "size": [1.34, 3.34, 0.1],
+            "origin": [x0 - 0.1, 5.18, -8.86], "size": [ANCHO_BARRA + 0.2, 3.34, 0.1],
             "uv": {cara: {"uv": [126, 1], "uv_size": [0.3, 0.3]} for cara in ("north", "south", "east", "west", "up", "down")},
         })
         huesos.append({
-            "name": nombre, "parent": "root", "pivot": [x0 + 0.55, 5.3, -8.78],
+            "name": nombre, "parent": "root", "pivot": [x0 + ANCHO_BARRA / 2, 5.3, -8.78],
             "cubes": [{
-                "origin": [x0, 5.3, -8.9], "size": [1.1, 3.1, 0.24],
+                "origin": [x0, 5.3, -8.9], "size": [ANCHO_BARRA, 3.1, 0.24],
                 "uv": {cara: {"uv": [texel[0], texel[1]], "uv_size": [0.3, 0.3]} for cara in ("north", "south", "east", "west", "up", "down")},
             }],
         })
@@ -106,6 +108,7 @@ def main():
     atlas.putpixel(TEXEL_ACENTO, (0xA3, 0x26, 0x3A, 255))
     atlas.putpixel(TEXEL_LANA, (0xF2, 0xF2, 0xF2, 255))
     atlas.putpixel(TEXEL_HILO, (0xD8, 0xA8, 0x5A, 255))
+    atlas.putpixel(TEXEL_CUERO, (0x8A, 0x5A, 0x34, 255))
     # La pista gris de las barras (texel 126,1) la usa también la Estilista: se copia a este atlas si falta.
     est_atlas = Image.open(os.path.join(RES, "textures", "block", "estilista_atlas.png")).convert("RGBA")
     atlas.putpixel((126, 1), est_atlas.getpixel((126, 1)))

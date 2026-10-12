@@ -78,9 +78,10 @@ public class TelarGeoModel extends GeoModel<TelarBlockEntity> {
             progreso.setScaleX(Math.max(0.001f, nivel * FACTOR_PROGRESO));
             progreso.setHidden(nivel <= 0.001f);
         }
-        // Dos barras verticales de insumos en el frente, como la Estilista (2026-10-07): lana e hilo, sobre 64.
+        // Tres barras verticales de insumos en el frente (2026-10-07, 2026-10-12 + cuero): lana, hilo y cuero, sobre 64.
         indicador("lana", be.lana());
         indicador("hilo", be.hilo());
+        indicador("cuero", be.cuero());
         GeoBone prenda = getAnimationProcessor().getBone("garment");
         if (prenda != null) prenda.setHidden(true);
     }
