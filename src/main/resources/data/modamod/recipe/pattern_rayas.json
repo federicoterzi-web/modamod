@@ -1,14 +1,19 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "minecraft:crafting_shapeless",
   "category": "misc",
-  "pattern": [
-    "PPP",
-    "SSS",
-    "PPP"
+  "ingredients": [
+    {
+      "item": "modamod:patron_en_blanco"
+    },
+    {
+      "item": "minecraft:ink_sac"
+    },
+    {
+      "item": "minecraft:bamboo"
+    }
   ],
-  "key": {
-    "S": { "item": "minecraft:string" },
-    "P": { "item": "minecraft:paper" }
-  },
-  "result": { "id": "modamod:pattern_rayas", "count": 1 }
+  "result": {
+    "id": "modamod:pattern_rayas",
+    "count": 1
+  }
 }
