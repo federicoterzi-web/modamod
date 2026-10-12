@@ -767,3 +767,6 @@ El delantal tiene un pin de cobertura: Envolvente (da la vuelta a los costados),
 ### Capucha de malla
 
 La capucha del hoodie (puesta con la tecla H o caída sobre la espalda) ahora es de tela continua y más amplia, con un borde de forro que enmarca la cara.
+
+### Delantal: volados y caída más naturales
+Los volados de los costados y del borde de arriba del delantal ahora forman pliegues grandes y suaves que nacen del borde y caen con la gravedad, y el delantal acompaña mejor el movimiento de la pollera y queda más pegado a ella.

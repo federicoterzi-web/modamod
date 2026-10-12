@@ -516,7 +516,7 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
             }
         }
         float propia = Math.max(0F, com.modamod.item.Calce.dilatacionEfectiva(stack));
-        float dilatacion = Math.max(propia, otras) + 0.2F + (nivel + 1) * SEPARACION_POLLERAS;
+        float dilatacion = Math.max(propia, otras) + 0.1F + nivel * SEPARACION_POLLERAS + 0.1F;
         Identifier textura = texturaDelantal(stack);
         float[] extra = new float[PolleraMalla.FILAS + 1];
         com.modamod.render.relieve.BustoRender.Busto busto = com.modamod.render.relieve.BustoRender.actual;
@@ -526,7 +526,7 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
             float e = 0F;
             if (!polleras.isEmpty()) {
                 float hol = holguraPollera(y);
-                if (hol >= 0F) e = Math.max(0F, hol + 0.5F - (dilatacion + 0.1F));
+                if (hol >= 0F) e = Math.max(0F, hol + 0.12F - (dilatacion + 0.1F));
             }
             // El busto: las cúpulas sobresalen entre y 2 y 7 (más en el medio).
             float peso = Math.max(0F, 1F - Math.abs(y - 4.5F) / 3.4F);

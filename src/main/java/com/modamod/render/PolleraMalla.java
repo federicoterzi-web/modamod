@@ -164,7 +164,7 @@ public final class PolleraMalla {
         float giro = 0.18f * mov.paso() / 32f;
         // Cuánto se mueve según la forma (2026-10-05): el tubo casi no vuela, el globo un poco menos que la campana
         // y la circular más.
-        float movimiento = movimientoDe(forma);
+        float movimiento = colDesde >= 0 ? 0.7f : movimientoDe(forma);
         // Twirl (2026-09-30, "que se abran y giren"): la campana se abre casi
         // horizontal a mitad de la vuelta y el ruedo queda atrasado respecto
         // del giro del cuerpo (la tela arrastra). Vale también en rígida.
@@ -254,7 +254,7 @@ public final class PolleraMalla {
     public record AdornoDelantal(com.modamod.item.DelantalForma forma, float largo, @Nullable PolleraVolado lateral,
                                  @Nullable PolleraVolado superior, float cap) {}
 
-    private static final int SUB = FILAS * 2, TRAMOS = 3;
+    private static final int SUB = FILAS * 2, TRAMOS = 4;
 
     /** Un punto de la malla: fila fraccionaria {@code rowF} (0..FILAS) y arco {@code arcPx} desde el centro del frente (px). */
     private static float[] punto(float[][][] p, float rowF, float arcPx) {
@@ -289,7 +289,8 @@ public final class PolleraMalla {
         float largo = ad.largo();
         if (ad.lateral() != null) {
             boolean circ = ad.lateral() == PolleraVolado.CIRCULAR;
-            float L = circ ? 3.0f : 2.0f, amp = circ ? 0.8f : 0.3f, per = circ ? 2.7f : 1.0f;
+            // Pliegues grandes y suaves que nacen en 0 junto al borde y caen con la gravedad (2026-10-12, "los volados de los bordes creo que es lo peor").
+            float L = circ ? 3.2f : 2.2f, amp = circ ? 0.9f : 0.6f, per = circ ? 5.0f : 3.4f;
             for (int sgn = -1; sgn <= 1; sgn += 2) {
                 float[][][] g = new float[SUB + 1][TRAMOS + 1][];
                 for (int j = 0; j <= SUB; j++) {
@@ -301,8 +302,9 @@ public final class PolleraMalla {
                     float[] n = unitario(b[0], 0f, b[2]);
                     for (int k = 0; k <= TRAMOS; k++) {
                         float t = k / (float) TRAMOS;
-                        float onda = amp * t * (float) Math.sin(2.0 * Math.PI * y / per);
-                        g[j][k] = new float[]{b[0] + d[0] * L * t + n[0] * onda, b[1] + d[1] * L * t + n[1] * onda,
+                        float onda = amp * t * t * (float) Math.sin(2.0 * Math.PI * y / per);
+                        float cae = L * 0.55f * t * t;
+                        g[j][k] = new float[]{b[0] + d[0] * L * t + n[0] * onda, b[1] + d[1] * L * t + n[1] * onda + cae,
                                 b[2] + d[2] * L * t + n[2] * onda, (24f + arc) / 64f, (20f + y) / 64f};
                     }
                 }
@@ -311,7 +313,8 @@ public final class PolleraMalla {
         }
         if (ad.superior() != null) {
             boolean circ = ad.superior() == PolleraVolado.CIRCULAR;
-            float L = circ ? 3.0f : 2.0f, amp = circ ? 0.8f : 0.3f, per = circ ? 2.7f : 1.0f;
+            // Pliegues grandes y suaves que nacen en 0 junto al borde y caen con la gravedad (2026-10-12, "los volados de los bordes creo que es lo peor").
+            float L = circ ? 3.2f : 2.2f, amp = circ ? 0.9f : 0.6f, per = circ ? 5.0f : 3.4f;
             float m = Math.max(0.5f, ad.forma().medio(0f, largo, ad.cap()) - 0.15f);
             float[][][] g = new float[SUB + 1][TRAMOS + 1][];
             for (int i = 0; i <= SUB; i++) {
@@ -323,9 +326,10 @@ public final class PolleraMalla {
                 float[] n = unitario(b[0], 0f, b[2]);
                 for (int k = 0; k <= TRAMOS; k++) {
                     float t = k / (float) TRAMOS;
-                    float onda = amp * t * (float) Math.sin(2.0 * Math.PI * s / per);
-                    g[i][k] = new float[]{b[0] + d[0] * L * t + n[0] * onda, b[1] + d[1] * L * t + n[1] * onda,
-                            b[2] + d[2] * L * t + n[2] * onda, (24f + s) / 64f, (20f + y) / 64f};
+                    float onda = amp * t * t * (float) Math.sin(2.0 * Math.PI * s / per);
+                    float cae = L * 0.5f * t * t;
+                    g[i][k] = new float[]{b[0] + d[0] * L * t + n[0] * (onda + cae * 1.2f), b[1] + d[1] * L * t + n[1] * onda + cae,
+                            b[2] + d[2] * L * t + n[2] * (onda + cae * 1.2f), (24f + s) / 64f, (20f + y) / 64f};
                 }
             }
             emitirTira(g, e, vc, luz, ov);
