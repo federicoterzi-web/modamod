@@ -405,7 +405,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     // ── borrador: valor actual de cada eje que el molde ACTIVO permite tocar ─
     private Variante.Largo remeraLargo = Variante.Largo.NORMAL;
     private Variante.Manga remeraManga = Variante.Manga.SIN;
-    private Variante.Cuello remeraCuello = Variante.Cuello.REDONDO;
+    private Variante.Cuello remeraCuello = Variante.Cuello.CERRADO;
     private Variante.Manga calientabrazosCobertura = Variante.Manga.LARGA;
     /** Anclaje y lado del borrador — solo importan para los 3 ejes de extremidad. */
     private Anclaje anclaje = Anclaje.SUPERIOR;
@@ -473,6 +473,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     public static boolean esMoldeDeCategoria(ItemStack stack, Categoria cat) {
         Item item = stack.getItem();
         if (item instanceof MoldeDeCorteItem) return true;
+        // Molde y trama en blanco (2026-10-12): "quitar este rasgo", valen en cualquier categoría.
+        if (item instanceof MoldeEnBlancoItem b && (b.tipo == MoldeEnBlancoItem.Tipo.MOLDE || b.tipo == MoldeEnBlancoItem.Tipo.TRAMA)) return true;
         // Molde de rango unificado (a pedido): sirve para las 4 categorías
         // de extremidad, cada una lo traduce a su propia escala (ver fijar()).
         if (item instanceof MoldeRangoItem) return true;
@@ -977,6 +979,18 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         } else if (item instanceof MoldeChaquetaItem m && m.tipo.esSolapa()) {
             if (rol == Rol.CUELLO) rol = Rol.SOLAPA_CHAQUETA;
         }
+        // Ítem en blanco (2026-10-12, "que todos los moldes 'sin' no existan"): quita el rasgo del pin.
+        if (item instanceof MoldeEnBlancoItem b) {
+            return switch (b.tipo) {
+                case MOLDE -> comboEnBlanco(rol, lado);
+                case TRAMA -> switch (rol) {
+                    case MAT1, MAT2, MAT3, PERS_IZQ1, PERS_IZQ2, PERS_IZQ3, PERS_DER1, PERS_DER2, PERS_DER3 ->
+                            ComboCorte.red(com.modamod.item.PatronRed.LISA);
+                    default -> null;
+                };
+                default -> null;
+            };
+        }
         ComboCorte c = null;
         switch (rol) {
             case CUELLO -> {
@@ -1225,6 +1239,52 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
             case EMBOZO_NINGUNO -> ComboCorte.capaEmbozo(-1);
             case BORDE_EMBOZO -> ComboCorte.capaBordeEmbozo(true);
             case BORDE_NINGUNO -> ComboCorte.capaBordeEmbozo(false);
+        };
+    }
+
+    /**
+     * Lo que hace un molde en blanco en el pin de {@code rol}: devuelve el rasgo a su valor de fábrica (el que tiene
+     * la prenda sin componente). Null donde no hay un "de fábrica" expresable (rangos de extremidad, tiro, largos de
+     * pollera y capa, volados, faldón, cintura): ahí el blanco no entra.
+     */
+    @Nullable
+    private static ComboCorte comboEnBlanco(Rol rol, Lado lado) {
+        return switch (rol) {
+            case CUELLO -> ComboCorte.remeraCuello(Variante.Cuello.CERRADO);
+            case MANGA_IZQ, MANGA_DER -> ComboCorte.remeraManga(Variante.Manga.SIN, lado);
+            case CALCE -> ComboCorte.calce(com.modamod.item.Calce.NORMAL);
+            case TORSO -> ComboCorte.remeraLargo(Variante.Largo.NORMAL);
+            case FRENTE_CHAQUETA -> ComboCorte.chaquetaFrente(com.modamod.item.ChaquetaFrente.CERRADA);
+            case CAPUCHA_CHAQUETA -> ComboCorte.chaquetaCapucha(false);
+            case SOLAPA_CHAQUETA -> ComboCorte.chaquetaSolapa(com.modamod.item.ChaquetaSolapa.NINGUNA);
+            case RUEDO_TORSO -> ComboCorte.ruedo(com.modamod.item.ZonaRuedo.TORSO, com.modamod.item.Ruedo.RECTO, false);
+            case RUEDO_PUNO_IZQ, RUEDO_PUNO_DER, RUEDO_BOTA_IZQ, RUEDO_BOTA_DER, RUEDO_SUP_IZQ, RUEDO_SUP_DER,
+                 RUEDO_INF_IZQ, RUEDO_INF_DER ->
+                    ComboCorte.ruedo(zonaDeRol(rol, lado == Lado.DERECHA), com.modamod.item.Ruedo.RECTO, lado == Lado.AMBAS);
+            case RUEDO_POLLERA -> ComboCorte.ruedo(com.modamod.item.ZonaRuedo.POLLERA, com.modamod.item.Ruedo.RECTO, false);
+            case RUEDO_DELANTAL -> ComboCorte.ruedo(com.modamod.item.ZonaRuedo.DELANTAL, com.modamod.item.Ruedo.RECTO, false);
+            case FORMA_POLLERA -> ComboCorte.polleraForma(com.modamod.item.PolleraForma.CAMPANA);
+            case RUEDO_CAPA -> ComboCorte.capaRuedo(com.modamod.item.CapaRuedo.RECTO);
+            case CAPUCHA_CAPA -> ComboCorte.capaCapucha(false);
+            case CUELLO_CAPA -> ComboCorte.capaCuello(false);
+            case EMBOZO_CAPA -> ComboCorte.capaEmbozo(-1);
+            case BORDE_EMBOZO_CAPA -> ComboCorte.capaBordeEmbozo(false);
+            case ZONA_BANDA -> ComboCorte.bandaZona(com.modamod.item.BandaZona.CINTURA);
+            case ANCHO_BANDA -> ComboCorte.bandaAncho(com.modamod.item.BandaAncho.MEDIO);
+            case HERRAJE_BANDA -> ComboCorte.bandaHerraje(com.modamod.item.BandaHerraje.NINGUNO);
+            case CANA_BORCEGO_IZQ, CANA_BORCEGO_DER -> ComboCorte.borcegoCana(com.modamod.item.BorcegoCana.MEDIA, lado);
+            case SUELA_BORCEGO_IZQ, SUELA_BORCEGO_DER -> ComboCorte.borcegoSuela(com.modamod.item.BorcegoSuela.CHATA, lado);
+            case BOTAMANGA_BORCEGO_IZQ, BOTAMANGA_BORCEGO_DER ->
+                    ComboCorte.borcegoBotamanga(com.modamod.item.BorcegoBotamanga.ADENTRO, lado);
+            case FORMA_DELANTAL -> ComboCorte.delantalForma(com.modamod.item.DelantalForma.RECTO);
+            case LARGO_DELANTAL -> ComboCorte.delantalLargo(com.modamod.item.DelantalItem.LARGO_DE_FABRICA);
+            case INICIO_DELANTAL -> ComboCorte.delantalInicio(com.modamod.item.DelantalItem.INICIO_DE_FABRICA);
+            case ESQUINAS_DELANTAL -> ComboCorte.delantalEsquinas(com.modamod.item.CapaRuedo.RECTO);
+            case TIRANTES_DELANTAL -> ComboCorte.delantalTirantes(com.modamod.item.DelantalTirantes.SIN);
+            case COBERTURA_DELANTAL -> ComboCorte.delantalCobertura(com.modamod.item.DelantalCobertura.ENVOLVENTE);
+            case ALA_SOMBRERO -> ComboCorte.sombreroAla(com.modamod.item.SombreroAla.ANCHA);
+            case PUNTA_SOMBRERO -> ComboCorte.sombreroPunta(com.modamod.item.SombreroPunta.RECTA);
+            default -> null;
         };
     }
 
@@ -2031,6 +2091,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     public static boolean esMolde(ItemStack stack) {
         Item item = stack.getItem();
         return item instanceof MoldeItem || item instanceof MoldeDeCorteItem
+                || (item instanceof MoldeEnBlancoItem b && (b.tipo == MoldeEnBlancoItem.Tipo.MOLDE || b.tipo == MoldeEnBlancoItem.Tipo.TRAMA))
                 || item instanceof MoldeRangoItem
                 || item instanceof MoldeCalceItem || item instanceof MoldeRedItem
                 || item instanceof MoldeCuelloItem

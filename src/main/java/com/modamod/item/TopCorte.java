@@ -117,21 +117,4 @@ public final class TopCorte {
         return conCapucha(stack) || solapa(stack) != ChaquetaSolapa.NINGUNA || frenteDeCorte(stack) != ChaquetaFrente.CERRADA
                 || faldon(stack) >= 0;
     }
-
-    /**
-     * El hoodie de fábrica (2026-10-07, "un solo top"; era el ítem {@code chaqueta}): una remera larga, de manga larga,
-     * cuello redondo, calce Oversize, con capucha y ruedo y puños ajustados. Para la pestaña creativa y la receta.
-     */
-    public static ItemStack hoodie() {
-        ItemStack s = new ItemStack(com.modamod.sublimadora.ModItems.REMERA);
-        s.set(com.modamod.sublimadora.ModItems.VARIANTE, new com.modamod.sublimadora.Variante(
-                com.modamod.sublimadora.Variante.Largo.LARGO, com.modamod.sublimadora.Variante.Manga.LARGA,
-                com.modamod.sublimadora.Variante.Cuello.REDONDO));
-        s.set(ModamodComponents.CALCE, Calce.OVERSIZE);
-        setConCapucha(s, true);
-        Ruedos.set(s, ZonaRuedo.TORSO, Ruedo.AJUSTADO);
-        Ruedos.set(s, ZonaRuedo.PUNO_IZQ, Ruedo.AJUSTADO);
-        Ruedos.set(s, ZonaRuedo.PUNO_DER, Ruedo.AJUSTADO);
-        return s;
-    }
 }

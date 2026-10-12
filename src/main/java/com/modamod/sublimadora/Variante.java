@@ -103,7 +103,13 @@ public record Variante(Largo largo, Manga manga, Cuello cuello) {
         CUADRADO("cuadrado"),
         CORAZON("corazon"),
         /** Cuello de camisa (2026-10-07, "traje separado"): escote en V chico + solapitas 3D (CuelloYCapucha). */
-        CAMISA("camisa");
+        CAMISA("camisa"),
+        /**
+         * El cuello de fábrica (2026-10-12, "tienen el cuello cerrado, me parece que ese puede ser el de fabrica"):
+         * el frente entero, sin escote (solo la tapa de arriba abierta). El REDONDO pasó a ser el escote en U con su
+         * molde. Al FINAL: el cuello viaja por red y se guarda por ordinal. Usa los archivos del redondo.
+         */
+        CERRADO("cerrado");
 
         public final String clave;
 
@@ -119,14 +125,14 @@ public record Variante(Largo largo, Manga manga, Cuello cuello) {
      * sin mangas por defecto (2026-09-23, "de hecho la default tiene
      * que venir sin mangas").
      */
-    public static final Variante BASE = new Variante(Largo.NORMAL, Manga.SIN, Cuello.REDONDO);
+    public static final Variante BASE = new Variante(Largo.NORMAL, Manga.SIN, Cuello.CERRADO);
 
     public static final Codec<Variante> CODEC = RecordCodecBuilder.create(i -> i.group(
             StringIdentifiable.createCodec(Largo::values).optionalFieldOf("largo", Largo.NORMAL)
                     .forGetter(Variante::largo),
             StringIdentifiable.createCodec(Manga::values).optionalFieldOf("manga", Manga.CORTA)
                     .forGetter(Variante::manga),
-            StringIdentifiable.createCodec(Cuello::values).optionalFieldOf("cuello", Cuello.REDONDO)
+            StringIdentifiable.createCodec(Cuello::values).optionalFieldOf("cuello", Cuello.CERRADO)
                     .forGetter(Variante::cuello)
     ).apply(i, Variante::new));
 
@@ -158,7 +164,8 @@ public record Variante(Largo largo, Manga manga, Cuello cuello) {
     /** La clave de archivo: los largos nuevos usan la textura y el modelo del largo de siempre que los contiene. */
     public String claveBase() {
         // La camisa no tiene sprites ni modelos propios (2026-10-07): usa los del cuello en V.
-        return largo.base().clave + "_" + manga.clave + "_" + (cuello == Cuello.CAMISA ? Cuello.V : cuello).clave;
+        return largo.base().clave + "_" + manga.clave + "_" + (cuello == Cuello.CAMISA ? Cuello.V
+                : cuello == Cuello.CERRADO ? Cuello.REDONDO : cuello).clave;
     }
 
     public boolean tieneMangas() {
@@ -167,7 +174,7 @@ public record Variante(Largo largo, Manga manga, Cuello cuello) {
 
     public Identifier texturaCuerpo() {
         // Cuadrado y corazón no tienen archivo: se recortan en runtime del redondo (ver CuelloRecorte).
-        Cuello archivo = CuelloRecorte.recortaEnRuntime(cuello) ? Cuello.REDONDO : cuello;
+        Cuello archivo = CuelloRecorte.recortaEnRuntime(cuello) || cuello == Cuello.CERRADO ? Cuello.REDONDO : cuello;
         return Identifier.of(Modamod.MOD_ID, "textures/entity/cuerpo_" + largo.base().clave + "_" + manga.clave
                 + "_" + archivo.clave + ".png");
     }
@@ -175,6 +182,7 @@ public record Variante(Largo largo, Manga manga, Cuello cuello) {
     public Identifier modeloItem() {
         // La camisa no tiene modelos propios (2026-10-07): usa los del cuello en V.
         if (cuello == Cuello.CAMISA) return new Variante(largo, manga, Cuello.V).modeloItem();
+        if (cuello == Cuello.CERRADO) return new Variante(largo, manga, Cuello.REDONDO).modeloItem();
         return Identifier.of(Modamod.MOD_ID, "item/corte_" + claveBase());
     }
 

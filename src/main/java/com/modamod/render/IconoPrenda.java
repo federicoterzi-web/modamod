@@ -89,6 +89,8 @@ public final class IconoPrenda {
             var cuello = com.modamod.sublimadora.RemeraItem.variante(stack).cuello();
             // La camisa usa la plantilla del cuello en V (2026-10-07).
             if (cuello == com.modamod.sublimadora.Variante.Cuello.CAMISA) cuello = com.modamod.sublimadora.Variante.Cuello.V;
+            // El cerrado de fábrica usa la plantilla del redondo (2026-10-12).
+            if (cuello == com.modamod.sublimadora.Variante.Cuello.CERRADO) cuello = com.modamod.sublimadora.Variante.Cuello.REDONDO;
             return "remera_" + cuello.asString();
         }
         if (item == com.modamod.item.ModamodItems.PANTALON) return "pantalon";

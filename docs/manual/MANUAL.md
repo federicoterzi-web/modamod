@@ -240,13 +240,13 @@ La Modeladora cambia el **corte** de la prenda. En el centro está el **dibujo d
 | Molde | Dónde va | Qué hace |
 |---|---|---|
 | **Molde de rango** (Cero, Mínimo, Corto, Medio, Medio largo, Largo, Máximo) | Mangas, piernas, cortes sup./inf., largo de remera, tiro de pantalón, largo de pollera y de capa | Son **7 niveles de una línea medida desde arriba**: el nivel *k* está a *2k* filas desde el hombro o la cintura (0, 2, 4, 6, 8, 10, 12). Sirve para todas las prendas: cada una lo traduce a su propia medida (nivel 3 = una manga media, una pantorrilla, una pollera a la rodilla). El Cero es la línea más alta: manga sin nada, pierna de 0, top, tiro hasta los hombros, pollera ultramicro (3 px) y capelet (6 px). |
-| **Molde de cuello** (Redondo, V, Polera) | Cuello de remera | Forma del cuello. |
+| **Molde de cuello** (Redondo en U, V, Polera, Cuadrado, Corazón, Camisa; el de fábrica es Cerrado) | Cuello de remera | Forma del cuello. |
 | **Molde de manga** | Activo (remera, calientabrazos) | Molde viejo de manga: cada uso pasa al largo siguiente. |
-| **Molde de calce** (Pegado, Ajustado, Normal, Suelto, Oversize) | Calce | Qué tan despegada del cuerpo va la prenda. |
+| **Molde de calce** (Pegado, Ajustado, Suelto, Oversize; Normal es el de fábrica) | Calce | Qué tan despegada del cuerpo va la prenda. |
 | **Molde de pollera** (Campana, Tableada, Tubo, Globo, Circular) | Forma de la pollera | **Campana** y **Tableada** (pliegues) como siempre. **Tubo** (2026-10-05): recta o lápiz, pegada a la cadera, casi sin vuelo ni movimiento. **Globo**: abombada, ancha en el medio y cerrada en el ruedo. **Circular**: de círculo completo, se abre desde la cadera y es la que más vuela (y más se abre en el twirl). |
 | **Molde de volado** (Recto, Circular) | Volados de la pollera | **Recto**: tira fruncida con muchas ondas chicas y poca apertura. **Circular**: ruedo abierto con pocas ondas grandes. El mismo molde sirve en dos pines de la categoría Pollera de la Modeladora: **Corte inferior** (una fila de volado en el borde de abajo, el último tercio) y **Toda la pollera** (tres filas parejas de arriba a abajo; cada una nace pegada y se abre hacia su borde, y la de abajo se apoya sobre la de arriba). Si ponés los dos, el del ruedo manda en la última fila. Las rayas, lunares y fotos de la tela siguen la pollera lisa (sobre el volado se estiran un poco). |
 | **Molde de borde** (Ondulado, Festoneado, Con pico) | Borde decorativo del ruedo | Va en el pin **Custom** de la Pollera (2026-10-05, "era un custom para el ruedo"): cambia el largo de la tela a lo largo del borde de abajo — **ondulado** (onda suave de ±0,9 px), **festoneado** (arcos de medio círculo hacia abajo, hasta 1,6 px) o **con pico** (triángulos, hasta 2,2 px) — 8 repeticiones por vuelta. Se combina con los volados y con cualquier forma. |
-| **Moldes de capa** (Ruedo recto, Ruedo redondeado, Ruedo con cola, Con capucha, Sin capucha, Cuello alto, Sin cuello) | Ruedo, Capucha y Cuello de la capa | Cada uno en su pin. Los "Sin" le sacan la capucha o el cuello a una capa que ya los tiene. |
+| **Moldes de capa** (Ruedo redondeado, Ruedo con cola, Con capucha, Cuello alto) | Ruedo, Capucha y Cuello de la capa | Cada uno en su pin. Los "Sin" le sacan la capucha o el cuello a una capa que ya los tiene. |
 | **Molde de red** | Materiales / Personalización | La trama de la tela (ver abajo). |
 | **Molde de corte** | Activo | Un combo de cortes guardado en un solo ítem. |
 
@@ -279,6 +279,10 @@ Las capas se respetan siempre: una prenda de arriba nunca queda por dentro de un
 **Pollera** (px desde la cintura): ultramicro 3, micro 5, mini 7, a la rodilla 9, midi 11, larga 13 y hasta el tobillo 15. **Capa** (px desde los hombros): capelet 6, a la cintura 9, a la cadera 12, clásica 16, a la rodilla 18, larga 21 y hasta el tobillo 24.
 
 El top, el corto, la cadera alta y la cadera comparten la textura del crop, el normal y el largo que los contienen: la tela se recorta a las filas elegidas. Un tiro hasta los hombros hoy es solo una banda que cubre todo el torso; el peto con tirantes (overall, jardinera) queda para más adelante.
+
+### Moldes en blanco (2026-10-12)
+
+Cinco ítems en blanco: **Molde en blanco**, **Trama en blanco**, **Patrón en blanco**, **Máscara en blanco** y **Plantilla en blanco** (materia prima de los moldes; el perfilado por crafteo está en la planilla `docs/recetas_moldes_propuesta.xlsx`). En la Modeladora el **molde en blanco** (y la **trama en blanco** en los casilleros de trama) puesto en un casillero **quita ese rasgo**: devuelve el valor de fábrica. Por eso ya no existen los moldes que representaban el valor de fábrica: Calce Normal, Frente cerrado, Sin capucha (remera y capa), Sin solapas, Ruedo recto, Sin cuello / Sin embozo / Sin borde de la capa, Pollera Campana, Delantal Recto / Sin tirantes / Cobertura envolvente, Banda Ancho medio / Sin herraje, Borcegos Caña media / Suela chata / Botamanga por dentro, Sombrero Ala ancha / Punta recta y Trama lisa. Valores de fábrica nuevos: **cuello Cerrado** (el frente entero; el cuello **Redondo** pasó a ser el escote en U, con su molde) y el **cinto sin hebilla** (la placa es un molde). El blanco no entra todavía en los casilleros de rango de las extremidades, tiro, largo de pollera y capa, volados, faldón ni cintura. Íconos provisorios (copias).
 
 ### Redes y arneses (trama de la tela)
 
@@ -561,7 +565,7 @@ Para probar sin esperas ni insumos ya no hay comandos: están las **máquinas cr
 | Sombrero | `_ L _ / _ L _ / C C C` |
 | Cinto | `C pepita C` (en fila) |
 | Borcegos | `H _ H / C _ C / C _ C` |
-| Hoodie | Sin forma: 6 lanas + 1 remera (el color sale de la mezcla de lanas y remera) |
+| Hoodie | No tiene receta: se arma desde una remera en la Modeladora (capucha, ruedo ajustado en torso y puños, calce Oversize) |
 | Telar automático | `I M I / R U R / M M M` (U = telar de vanilla) |
 | Mesa de Modelado | `P I P / R T R / M M M` |
 | Sublimadora | `I pistón I / R horno R / M M M` |

@@ -167,3 +167,13 @@ marcos de slot: Forma, Hasta (con el cajón Desde), Calce, Trama, Volado (con el
 
 **Vincha y cofia (2, PROVISORIOS = copia del ala corta):** `molde_sombrero_ala_vincha` (vincha con moño, de lado, sobre papel) y
 `molde_sombrero_ala_cofia` (cofia de maid con volado y moñito). Destaque cobre (Modeladora).
+
+## H. Ítems en blanco (2026-10-12)
+
+Cinco íconos de 64×64 px, mismo estilo "taller de sastrería" (papel kraft doblado en cuatro zonas de luz, recuadro del color de la máquina), pero **en blanco**: papel liso sin dibujo ni recorte.
+- `molde_en_blanco.png` — carpeta de papel kraft vacía con un cordón; acento cobre (Modeladora). Ruta: `src/main/resources/assets/modamod/textures/item/`.
+- `trama_en_blanco.png` — retazo de tela de lino sin estampado, borde deshilachado.
+- `patron_en_blanco.png` — aro de bordado vacío con la tela tensada, sin dibujo.
+- `mascara_en_blanco.png` — hoja de estarcido (acetato/cartulina) lisa, sin recorte.
+- `plantilla_en_blanco.png` — cuero y bronce lisos: un cuadrado de cuero con remache de bronce, sin forma.
+Hoy son copias provisorias de otros íconos.

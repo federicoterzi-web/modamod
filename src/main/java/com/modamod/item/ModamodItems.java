@@ -58,10 +58,6 @@ public final class ModamodItems {
             new ClothingArmorItem(ModamodArmorMaterials.CLOTH, ArmorItem.Type.CHESTPLATE,
                     new Item.Settings().maxCount(1), false));
 
-    public static final ClothingArmorItem OVERSIZED_HOODIE = registerArmor("oversized_hoodie",
-            new ClothingArmorItem(ModamodArmorMaterials.CLOTH, ArmorItem.Type.CHESTPLATE,
-                    new Item.Settings().maxCount(1), true));
-
     // --- Slot custom "arms" (via Trinkets) ---
     // Reemplaza a ARMWARMERS: aquel nunca se enganchó al sistema de capas
     // (sin color por lado, sin Garment, sin Pieza — no dibujaba nada). El

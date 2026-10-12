@@ -64,7 +64,6 @@ public final class ModeladoMod {
 
     public static final MoldeCalceItem MOLDE_CALCE_PEGADO = new MoldeCalceItem(new Item.Settings().maxCount(1), Calce.PEGADO);
     public static final MoldeCalceItem MOLDE_CALCE_AJUSTADO = new MoldeCalceItem(new Item.Settings().maxCount(1), Calce.AJUSTADO);
-    public static final MoldeCalceItem MOLDE_CALCE_NORMAL = new MoldeCalceItem(new Item.Settings().maxCount(1), Calce.NORMAL);
     public static final MoldeCalceItem MOLDE_CALCE_SUELTO = new MoldeCalceItem(new Item.Settings().maxCount(1), Calce.SUELTO);
     public static final MoldeCalceItem MOLDE_CALCE_OVERSIZE = new MoldeCalceItem(new Item.Settings().maxCount(1), Calce.OVERSIZE);
 
@@ -76,7 +75,6 @@ public final class ModeladoMod {
     public static final MoldeRedItem MOLDE_RED_FINA = new MoldeRedItem(new Item.Settings().maxCount(1), PatronRed.FINA);
     public static final MoldeRedItem MOLDE_RED_GRUESA = new MoldeRedItem(new Item.Settings().maxCount(1), PatronRed.GRUESA);
     /** Revierte la red: deja la textura lisa (2026-09-26, "un molde de textura lisa para revertir el media red"). */
-    public static final MoldeRedItem MOLDE_RED_LISA = new MoldeRedItem(new Item.Settings().maxCount(1), PatronRed.LISA);
     /** Panal de abejas (2026-09-28, "media red hexagonal"). */
     public static final MoldeRedItem MOLDE_RED_HEXAGONAL = new MoldeRedItem(new Item.Settings().maxCount(1), PatronRed.HEXAGONAL);
     /** Agujeritos redondos en tresbolillo, tipo broderie (2026-09-28). */
@@ -99,39 +97,27 @@ public final class ModeladoMod {
     // ── molde de pollera (a pedido 2026-09-29) ─────────────────────────
     // Forma de la pollera: campana o tableada. Exclusivo de la pollera.
 
-    public static final MoldePolleraItem MOLDE_POLLERA_CAMPANA = new MoldePolleraItem(new Item.Settings().maxCount(1),
-            com.modamod.item.PolleraForma.CAMPANA);
     public static final MoldePolleraItem MOLDE_POLLERA_TABLEADA = new MoldePolleraItem(new Item.Settings().maxCount(1),
             com.modamod.item.PolleraForma.TABLEADA);
 
     // ── moldes de capa (a pedido 2026-09-29, "podemos agregar todo eso como patrones de corte?") ──
     // Ruedo, capucha y cuello alto de la capa, cada uno para su pin. Exclusivos de la capa.
-    public static final MoldeCapaItem MOLDE_CAPA_RUEDO_RECTO = new MoldeCapaItem(new Item.Settings().maxCount(1),
-            MoldeCapaItem.Tipo.RUEDO_RECTO);
     public static final MoldeCapaItem MOLDE_CAPA_RUEDO_COLA = new MoldeCapaItem(new Item.Settings().maxCount(1),
             MoldeCapaItem.Tipo.RUEDO_COLA);
     public static final MoldeCapaItem MOLDE_CAPA_RUEDO_REDONDEADO = new MoldeCapaItem(new Item.Settings().maxCount(1),
             MoldeCapaItem.Tipo.RUEDO_REDONDEADO);
     public static final MoldeCapaItem MOLDE_CAPA_CON_CAPUCHA = new MoldeCapaItem(new Item.Settings().maxCount(1),
             MoldeCapaItem.Tipo.CON_CAPUCHA);
-    public static final MoldeCapaItem MOLDE_CAPA_SIN_CAPUCHA = new MoldeCapaItem(new Item.Settings().maxCount(1),
-            MoldeCapaItem.Tipo.SIN_CAPUCHA);
     public static final MoldeCapaItem MOLDE_CAPA_CUELLO_ALTO = new MoldeCapaItem(new Item.Settings().maxCount(1),
             MoldeCapaItem.Tipo.CUELLO_ALTO);
-    public static final MoldeCapaItem MOLDE_CAPA_SIN_CUELLO = new MoldeCapaItem(new Item.Settings().maxCount(1),
-            MoldeCapaItem.Tipo.SIN_CUELLO);
 
     // ── moldes del sombrero de bruja (2026-10-05, "segunda tanda del sombrero") ──
-    public static final MoldeSombreroItem MOLDE_SOMBRERO_ALA_ANCHA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
-            MoldeSombreroItem.Tipo.ALA_ANCHA);
     public static final MoldeSombreroItem MOLDE_SOMBRERO_ALA_CORTA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
             MoldeSombreroItem.Tipo.ALA_CORTA);
     public static final MoldeSombreroItem MOLDE_SOMBRERO_ALA_VINCHA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
             MoldeSombreroItem.Tipo.ALA_VINCHA);
     public static final MoldeSombreroItem MOLDE_SOMBRERO_ALA_COFIA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
             MoldeSombreroItem.Tipo.ALA_COFIA);
-    public static final MoldeSombreroItem MOLDE_SOMBRERO_PUNTA_RECTA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
-            MoldeSombreroItem.Tipo.PUNTA_RECTA);
     public static final MoldeSombreroItem MOLDE_SOMBRERO_PUNTA_DOBLADA = new MoldeSombreroItem(new Item.Settings().maxCount(1),
             MoldeSombreroItem.Tipo.PUNTA_DOBLADA);
 
@@ -148,8 +134,6 @@ public final class ModeladoMod {
     public static final MoldePolleraItem MOLDE_POLLERA_CIRCULAR = new MoldePolleraItem(new Item.Settings().maxCount(1),
             com.modamod.item.PolleraForma.CIRCULAR);
 
-    public static final MoldeFormaDelantalItem MOLDE_DELANTAL_RECTO = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
-            com.modamod.item.DelantalForma.RECTO);
     public static final MoldeFormaDelantalItem MOLDE_DELANTAL_TRAPECIO = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
             com.modamod.item.DelantalForma.TRAPECIO);
     public static final MoldeFormaDelantalItem MOLDE_DELANTAL_PETO = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
@@ -159,28 +143,18 @@ public final class ModeladoMod {
     public static final MoldeFormaDelantalItem MOLDE_DELANTAL_FESTON = new MoldeFormaDelantalItem(new Item.Settings().maxCount(1),
             com.modamod.item.DelantalForma.FESTON);
 
-    public static final MoldeTirantesDelantalItem MOLDE_DELANTAL_TIRANTES_SIN = new MoldeTirantesDelantalItem(new Item.Settings().maxCount(1),
-            com.modamod.item.DelantalTirantes.SIN);
     public static final MoldeTirantesDelantalItem MOLDE_DELANTAL_TIRANTES_RECTOS = new MoldeTirantesDelantalItem(new Item.Settings().maxCount(1),
             com.modamod.item.DelantalTirantes.RECTOS);
     public static final MoldeTirantesDelantalItem MOLDE_DELANTAL_TIRANTES_CRUZADOS = new MoldeTirantesDelantalItem(new Item.Settings().maxCount(1),
             com.modamod.item.DelantalTirantes.CRUZADOS);
 
-    public static final MoldeCoberturaDelantalItem MOLDE_DELANTAL_COBERTURA_ENVOLVENTE = new MoldeCoberturaDelantalItem(new Item.Settings().maxCount(1),
-            com.modamod.item.DelantalCobertura.ENVOLVENTE);
     public static final MoldeCoberturaDelantalItem MOLDE_DELANTAL_COBERTURA_FRENTE = new MoldeCoberturaDelantalItem(new Item.Settings().maxCount(1),
             com.modamod.item.DelantalCobertura.FRENTE);
     public static final MoldeCoberturaDelantalItem MOLDE_DELANTAL_COBERTURA_ANGOSTO = new MoldeCoberturaDelantalItem(new Item.Settings().maxCount(1),
             com.modamod.item.DelantalCobertura.ANGOSTO);
-    public static final MoldeCapaItem MOLDE_CAPA_EMBOZO_NINGUNO = new MoldeCapaItem(new Item.Settings().maxCount(1),
-            MoldeCapaItem.Tipo.EMBOZO_NINGUNO);
     public static final MoldeCapaItem MOLDE_CAPA_BORDE_EMBOZO = new MoldeCapaItem(new Item.Settings().maxCount(1),
             MoldeCapaItem.Tipo.BORDE_EMBOZO);
-    public static final MoldeCapaItem MOLDE_CAPA_BORDE_NINGUNO = new MoldeCapaItem(new Item.Settings().maxCount(1),
-            MoldeCapaItem.Tipo.BORDE_NINGUNO);
 
-    public static final MoldeRuedoItem MOLDE_RUEDO_RECTO = new MoldeRuedoItem(new Item.Settings().maxCount(1),
-            com.modamod.item.Ruedo.RECTO);
     public static final MoldeRuedoItem MOLDE_RUEDO_AJUSTADO = new MoldeRuedoItem(new Item.Settings().maxCount(1),
             com.modamod.item.Ruedo.AJUSTADO);
     public static final MoldeRuedoItem MOLDE_RUEDO_CAMPANA = new MoldeRuedoItem(new Item.Settings().maxCount(1),
@@ -199,12 +173,8 @@ public final class ModeladoMod {
             MoldeBandaItem.Tipo.ZONA_CUELLO);
     public static final MoldeBandaItem MOLDE_BANDA_ANCHO_FINO = new MoldeBandaItem(new Item.Settings().maxCount(1),
             MoldeBandaItem.Tipo.ANCHO_FINO);
-    public static final MoldeBandaItem MOLDE_BANDA_ANCHO_MEDIO = new MoldeBandaItem(new Item.Settings().maxCount(1),
-            MoldeBandaItem.Tipo.ANCHO_MEDIO);
     public static final MoldeBandaItem MOLDE_BANDA_ANCHO_ANCHO = new MoldeBandaItem(new Item.Settings().maxCount(1),
             MoldeBandaItem.Tipo.ANCHO_ANCHO);
-    public static final MoldeBandaItem MOLDE_BANDA_HERRAJE_NINGUNO = new MoldeBandaItem(new Item.Settings().maxCount(1),
-            MoldeBandaItem.Tipo.HERRAJE_NINGUNO);
     public static final MoldeBandaItem MOLDE_BANDA_HERRAJE_PLACA = new MoldeBandaItem(new Item.Settings().maxCount(1),
             MoldeBandaItem.Tipo.HERRAJE_PLACA);
     public static final MoldeBandaItem MOLDE_BANDA_HERRAJE_ARO = new MoldeBandaItem(new Item.Settings().maxCount(1),
@@ -219,31 +189,19 @@ public final class ModeladoMod {
             MoldeBandaItem.Tipo.HERRAJE_MEDALLA);
     public static final MoldeBorcegoItem MOLDE_BORCEGO_CANA_BAJA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
             MoldeBorcegoItem.Tipo.CANA_BAJA);
-    public static final MoldeBorcegoItem MOLDE_BORCEGO_CANA_MEDIA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
-            MoldeBorcegoItem.Tipo.CANA_MEDIA);
     public static final MoldeBorcegoItem MOLDE_BORCEGO_CANA_ALTA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
             MoldeBorcegoItem.Tipo.CANA_ALTA);
-    public static final MoldeBorcegoItem MOLDE_BORCEGO_SUELA_CHATA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
-            MoldeBorcegoItem.Tipo.SUELA_CHATA);
     public static final MoldeBorcegoItem MOLDE_BORCEGO_SUELA_PLATAFORMA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
             MoldeBorcegoItem.Tipo.SUELA_PLATAFORMA);
-    public static final MoldeBorcegoItem MOLDE_BORCEGO_BOTAMANGA_ADENTRO = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
-            MoldeBorcegoItem.Tipo.BOTAMANGA_ADENTRO);
     public static final MoldeBorcegoItem MOLDE_BORCEGO_BOTAMANGA_AFUERA = new MoldeBorcegoItem(new Item.Settings().maxCount(1),
             MoldeBorcegoItem.Tipo.BOTAMANGA_AFUERA);
 
     // ── moldes de la chaqueta (2026-10-07) ──
-    public static final MoldeChaquetaItem MOLDE_CHAQUETA_FRENTE_CERRADA = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
-            MoldeChaquetaItem.Tipo.FRENTE_CERRADA);
     public static final MoldeChaquetaItem MOLDE_CHAQUETA_FRENTE_ABIERTA = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
             MoldeChaquetaItem.Tipo.FRENTE_ABIERTA);
     public static final MoldeChaquetaItem MOLDE_CHAQUETA_CAPUCHA_CON = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
             MoldeChaquetaItem.Tipo.CAPUCHA_CON);
-    public static final MoldeChaquetaItem MOLDE_CHAQUETA_CAPUCHA_SIN = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
-            MoldeChaquetaItem.Tipo.CAPUCHA_SIN);
 
-    public static final MoldeChaquetaItem MOLDE_CHAQUETA_SOLAPA_NINGUNA = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
-            MoldeChaquetaItem.Tipo.SOLAPA_NINGUNA);
     public static final MoldeChaquetaItem MOLDE_CHAQUETA_SOLAPA_PICO = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
             MoldeChaquetaItem.Tipo.SOLAPA_PICO);
     public static final MoldeChaquetaItem MOLDE_CHAQUETA_SOLAPA_REDONDA = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
@@ -255,6 +213,12 @@ public final class ModeladoMod {
     public static final MoldeChaquetaItem MOLDE_CHAQUETA_SOLAPA_CHAL = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
             MoldeChaquetaItem.Tipo.SOLAPA_CHAL);
 
+    public static final MoldeEnBlancoItem MOLDE_EN_BLANCO = new MoldeEnBlancoItem(new Item.Settings().maxCount(64), MoldeEnBlancoItem.Tipo.MOLDE);
+    public static final MoldeEnBlancoItem TRAMA_EN_BLANCO = new MoldeEnBlancoItem(new Item.Settings().maxCount(64), MoldeEnBlancoItem.Tipo.TRAMA);
+    public static final MoldeEnBlancoItem PATRON_EN_BLANCO = new MoldeEnBlancoItem(new Item.Settings().maxCount(64), MoldeEnBlancoItem.Tipo.PATRON);
+    public static final MoldeEnBlancoItem MASCARA_EN_BLANCO = new MoldeEnBlancoItem(new Item.Settings().maxCount(64), MoldeEnBlancoItem.Tipo.MASCARA);
+    public static final MoldeEnBlancoItem PLANTILLA_EN_BLANCO = new MoldeEnBlancoItem(new Item.Settings().maxCount(64), MoldeEnBlancoItem.Tipo.PLANTILLA);
+
     public static void register() {
         Identifier bloqueId = Identifier.of(Modamod.MOD_ID, "modelado");
         Registry.register(Registries.BLOCK, bloqueId, MODELADO_BLOCK);
@@ -264,6 +228,11 @@ public final class ModeladoMod {
         Registry.register(Registries.BLOCK, creativaId, MODELADO_CREATIVA);
         Registry.register(Registries.ITEM, creativaId, MODELADO_CREATIVA_ITEM);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_de_corte"), MOLDE_DE_CORTE);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_en_blanco"), MOLDE_EN_BLANCO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "trama_en_blanco"), TRAMA_EN_BLANCO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "patron_en_blanco"), PATRON_EN_BLANCO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "mascara_en_blanco"), MASCARA_EN_BLANCO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "plantilla_en_blanco"), PLANTILLA_EN_BLANCO);
 
 
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_rango_cero"), MOLDE_RANGO_CERO);
@@ -277,13 +246,11 @@ public final class ModeladoMod {
 
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_calce_pegado"), MOLDE_CALCE_PEGADO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_calce_ajustado"), MOLDE_CALCE_AJUSTADO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_calce_normal"), MOLDE_CALCE_NORMAL);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_calce_suelto"), MOLDE_CALCE_SUELTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_calce_oversize"), MOLDE_CALCE_OVERSIZE);
 
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_fina"), MOLDE_RED_FINA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_gruesa"), MOLDE_RED_GRUESA);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_lisa"), MOLDE_RED_LISA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_hexagonal"), MOLDE_RED_HEXAGONAL);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_perforada"), MOLDE_RED_PERFORADA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_encaje"), MOLDE_RED_ENCAJE);
@@ -294,46 +261,33 @@ public final class ModeladoMod {
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_arnes_x"), MOLDE_RED_ARNES_X);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_arnes_tirantes"), MOLDE_RED_ARNES_TIRANTES);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_red_arnes_bandas"), MOLDE_RED_ARNES_BANDAS);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_pollera_campana"), MOLDE_POLLERA_CAMPANA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_pollera_tableada"), MOLDE_POLLERA_TABLEADA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_pollera_tubo"), MOLDE_POLLERA_TUBO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_pollera_globo"), MOLDE_POLLERA_GLOBO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_pollera_circular"), MOLDE_POLLERA_CIRCULAR);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_recto"), MOLDE_DELANTAL_RECTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_trapecio"), MOLDE_DELANTAL_TRAPECIO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_peto"), MOLDE_DELANTAL_PETO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_corazon"), MOLDE_DELANTAL_CORAZON);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_feston"), MOLDE_DELANTAL_FESTON);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_tirantes_sin"), MOLDE_DELANTAL_TIRANTES_SIN);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_tirantes_rectos"), MOLDE_DELANTAL_TIRANTES_RECTOS);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_tirantes_cruzados"), MOLDE_DELANTAL_TIRANTES_CRUZADOS);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_volado_recto"), MOLDE_VOLADO_RECTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_volado_circular"), MOLDE_VOLADO_CIRCULAR);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_ruedo_recto"), MOLDE_CAPA_RUEDO_RECTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_ruedo_redondeado"), MOLDE_CAPA_RUEDO_REDONDEADO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_ruedo_cola"), MOLDE_CAPA_RUEDO_COLA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_con_capucha"), MOLDE_CAPA_CON_CAPUCHA);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_sin_capucha"), MOLDE_CAPA_SIN_CAPUCHA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_cuello_alto"), MOLDE_CAPA_CUELLO_ALTO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_sin_cuello"), MOLDE_CAPA_SIN_CUELLO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_cobertura_envolvente"), MOLDE_DELANTAL_COBERTURA_ENVOLVENTE);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_cobertura_frente"), MOLDE_DELANTAL_COBERTURA_FRENTE);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_cobertura_angosto"), MOLDE_DELANTAL_COBERTURA_ANGOSTO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_embozo_ninguno"), MOLDE_CAPA_EMBOZO_NINGUNO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_borde_embozo"), MOLDE_CAPA_BORDE_EMBOZO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_borde_ninguno"), MOLDE_CAPA_BORDE_NINGUNO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_ancha"), MOLDE_SOMBRERO_ALA_ANCHA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_corta"), MOLDE_SOMBRERO_ALA_CORTA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_vincha"), MOLDE_SOMBRERO_ALA_VINCHA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_ala_cofia"), MOLDE_SOMBRERO_ALA_COFIA);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_punta_recta"), MOLDE_SOMBRERO_PUNTA_RECTA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_sombrero_punta_doblada"), MOLDE_SOMBRERO_PUNTA_DOBLADA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_zona_cintura"), MOLDE_BANDA_ZONA_CINTURA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_zona_cuello"), MOLDE_BANDA_ZONA_CUELLO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_ancho_fino"), MOLDE_BANDA_ANCHO_FINO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_ancho_medio"), MOLDE_BANDA_ANCHO_MEDIO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_ancho_ancho"), MOLDE_BANDA_ANCHO_ANCHO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_ninguno"), MOLDE_BANDA_HERRAJE_NINGUNO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_placa"), MOLDE_BANDA_HERRAJE_PLACA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_aro"), MOLDE_BANDA_HERRAJE_ARO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_campana"), MOLDE_BANDA_HERRAJE_CAMPANA);
@@ -341,23 +295,16 @@ public final class ModeladoMod {
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_corazon"), MOLDE_BANDA_HERRAJE_CORAZON);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_banda_herraje_medalla"), MOLDE_BANDA_HERRAJE_MEDALLA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_cana_baja"), MOLDE_BORCEGO_CANA_BAJA);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_cana_media"), MOLDE_BORCEGO_CANA_MEDIA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_cana_alta"), MOLDE_BORCEGO_CANA_ALTA);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_suela_chata"), MOLDE_BORCEGO_SUELA_CHATA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_suela_plataforma"), MOLDE_BORCEGO_SUELA_PLATAFORMA);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_botamanga_adentro"), MOLDE_BORCEGO_BOTAMANGA_ADENTRO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_borcego_botamanga_afuera"), MOLDE_BORCEGO_BOTAMANGA_AFUERA);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_recto"), MOLDE_RUEDO_RECTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_ajustado"), MOLDE_RUEDO_AJUSTADO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_campana"), MOLDE_RUEDO_CAMPANA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_ondulado"), MOLDE_RUEDO_ONDULADO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_festoneado"), MOLDE_RUEDO_FESTONEADO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_pico"), MOLDE_RUEDO_PICO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_frente_cerrada"), MOLDE_CHAQUETA_FRENTE_CERRADA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_frente_abierta"), MOLDE_CHAQUETA_FRENTE_ABIERTA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_capucha_con"), MOLDE_CHAQUETA_CAPUCHA_CON);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_capucha_sin"), MOLDE_CHAQUETA_CAPUCHA_SIN);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_solapa_ninguna"), MOLDE_CHAQUETA_SOLAPA_NINGUNA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_solapa_pico"), MOLDE_CHAQUETA_SOLAPA_PICO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_solapa_redonda"), MOLDE_CHAQUETA_SOLAPA_REDONDA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_solapa_chal"), MOLDE_CHAQUETA_SOLAPA_CHAL);

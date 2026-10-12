@@ -87,7 +87,6 @@ public class Modamod implements ModInitializer {
             for (ItemStack kit : com.modamod.util.KitsCreativos.todos()) entries.add(kit);
             // Prendas.
             entries.add(com.modamod.sublimadora.ModItems.REMERA);
-            entries.add(com.modamod.item.TopCorte.hoodie());
             // Apliques (2026-10-01): los 3 moldes y retazos de prueba con colores
             // de fábrica, hasta que Tintes los tiña (fase 4).
             entries.add(ModamodItems.MOLDE_APLIQUE_MONO);
@@ -154,6 +153,11 @@ public class Modamod implements ModInitializer {
             entries.add(ModamodItems.PATTERN_LUNARES);
             entries.add(ModamodItems.PATTERN_VICHY);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DE_CORTE);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_EN_BLANCO);
+            entries.add(com.modamod.modelado.ModeladoMod.TRAMA_EN_BLANCO);
+            entries.add(com.modamod.modelado.ModeladoMod.PATRON_EN_BLANCO);
+            entries.add(com.modamod.modelado.ModeladoMod.MASCARA_EN_BLANCO);
+            entries.add(com.modamod.modelado.ModeladoMod.PLANTILLA_EN_BLANCO);
             // Moldes de la Sublimadora (manga y cuello por valor).
             entries.add(com.modamod.sublimadora.ModItems.MOLDE_CUELLO_REDONDO);
             entries.add(com.modamod.sublimadora.ModItems.MOLDE_CUELLO_V);
@@ -181,7 +185,6 @@ public class Modamod implements ModInitializer {
             // controla la dilatación de la geometría 3D, no recorta tela.
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CALCE_PEGADO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CALCE_AJUSTADO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CALCE_NORMAL);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CALCE_SUELTO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CALCE_OVERSIZE);
             // Molde de red (a pedido): transversal a las 4 categorías,
@@ -198,63 +201,45 @@ public class Modamod implements ModInitializer {
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RED_ARNES_X);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RED_ARNES_TIRANTES);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RED_ARNES_BANDAS);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RED_LISA);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_POLLERA_CAMPANA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_POLLERA_TABLEADA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_POLLERA_TUBO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_POLLERA_GLOBO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_POLLERA_CIRCULAR);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_RECTO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_TRAPECIO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_PETO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_CORAZON);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_FESTON);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_TIRANTES_SIN);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_TIRANTES_RECTOS);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_TIRANTES_CRUZADOS);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_VOLADO_RECTO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_VOLADO_CIRCULAR);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_RUEDO_RECTO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_RUEDO_REDONDEADO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_RUEDO_COLA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_CON_CAPUCHA);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_SIN_CAPUCHA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_CUELLO_ALTO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_SIN_CUELLO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_EMBOZO_NINGUNO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_BORDE_EMBOZO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_BORDE_NINGUNO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_COBERTURA_ENVOLVENTE);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_COBERTURA_FRENTE);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_COBERTURA_ANGOSTO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_ALA_ANCHA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_ALA_CORTA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_ALA_VINCHA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_ALA_COFIA);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_PUNTA_RECTA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_SOMBRERO_PUNTA_DOBLADA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_ZONA_CINTURA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_ZONA_CUELLO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RUEDO_RECTO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RUEDO_AJUSTADO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RUEDO_CAMPANA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RUEDO_ONDULADO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RUEDO_FESTONEADO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RUEDO_PICO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_FRENTE_CERRADA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_FRENTE_ABIERTA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_CAPUCHA_CON);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_CAPUCHA_SIN);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_SOLAPA_NINGUNA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_SOLAPA_PICO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_SOLAPA_REDONDA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_SOLAPA_CHAL);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_FRENTE_CRUZADA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CHAQUETA_FRENTE_ABIERTA_PECHO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_ANCHO_FINO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_ANCHO_MEDIO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_ANCHO_ANCHO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_NINGUNO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_PLACA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_ARO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_CAMPANA);
@@ -262,11 +247,8 @@ public class Modamod implements ModInitializer {
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_CORAZON);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BANDA_HERRAJE_MEDALLA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_CANA_BAJA);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_CANA_MEDIA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_CANA_ALTA);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_SUELA_CHATA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_SUELA_PLATAFORMA);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_BOTAMANGA_ADENTRO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_BORCEGO_BOTAMANGA_AFUERA);
             })
             .build();

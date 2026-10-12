@@ -20,9 +20,6 @@ public final class ModamodRecetas {
 
     public static final RecipeSerializer<RecetaTenida> TENIDA = Registry.register(Registries.RECIPE_SERIALIZER,
             Identifier.of(Modamod.MOD_ID, "prenda_tenida"), new RecetaTenida.Serializer());
-    public static final RecipeSerializer<RecetaTenidaSinForma> TENIDA_SIN_FORMA = Registry.register(
-            Registries.RECIPE_SERIALIZER, Identifier.of(Modamod.MOD_ID, "prenda_tenida_sin_forma"),
-            new RecetaTenidaSinForma.Serializer());
 
     public static void init() { }
 

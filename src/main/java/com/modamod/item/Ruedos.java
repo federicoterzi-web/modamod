@@ -17,7 +17,7 @@ public final class Ruedos {
     public static final Codec<Map<ZonaRuedo, Ruedo>> CODEC = Codec.unboundedMap(
             StringIdentifiable.createCodec(ZonaRuedo::values), StringIdentifiable.createCodec(Ruedo::values));
 
-    /** El ruedo de fábrica de {@code zona}: recto (el hoodie lo trae ajustado, ver {@link TopCorte#hoodie}). */
+    /** El ruedo de fábrica de {@code zona}: recto (el hoodie lo trae ajustado, el hoodie se arma en la Modeladora). */
     public static Ruedo deFabrica(ItemStack stack, ZonaRuedo zona) {
         return Ruedo.RECTO;
     }

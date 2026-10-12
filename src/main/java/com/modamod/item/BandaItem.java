@@ -42,7 +42,8 @@ public class BandaItem extends TrinketItem implements ZonasTenibles {
 
     public static BandaHerraje herraje(ItemStack stack) {
         BandaHerraje h = stack.get(ModamodComponents.BANDA_HERRAJE);
-        return h == null ? BandaHerraje.PLACA : h;
+        // De fábrica sin hebilla (2026-10-12, "defaulteemos el cinto sin hebilla"): la placa es un molde.
+        return h == null ? BandaHerraje.NINGUNO : h;
     }
 
     public static void setZona(ItemStack stack, BandaZona v) {
@@ -56,7 +57,7 @@ public class BandaItem extends TrinketItem implements ZonasTenibles {
     }
 
     public static void setHerraje(ItemStack stack, BandaHerraje v) {
-        if (v == BandaHerraje.PLACA) stack.remove(ModamodComponents.BANDA_HERRAJE);
+        if (v == BandaHerraje.NINGUNO) stack.remove(ModamodComponents.BANDA_HERRAJE);
         else stack.set(ModamodComponents.BANDA_HERRAJE, v);
     }
 
