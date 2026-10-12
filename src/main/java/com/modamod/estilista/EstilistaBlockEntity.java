@@ -641,6 +641,15 @@ public class EstilistaBlockEntity extends BlockEntity implements SidedInventory,
         }
     }
 
+    /** Al cerrar la GUI con una prenda en la Entrada: el mismo Aplicar del botón, pero callado si no hay nada que aplicar. */
+    public void aplicarAlCerrar(PlayerEntity jugador) {
+        if (guiAbiertas > 0 || estado != Estado.REPOSO || items.get(SLOT_PRENDA).isEmpty() || !items.get(SLOT_SALIDA).isEmpty()) return;
+        fijarDeLaMuestraDelEditor(items.get(SLOT_PRENDA));
+        if (diseno(items.get(SLOT_PRENDA)) == null) return;
+        Resultado r = iniciar();
+        if (r == Resultado.FALTA) jugador.sendMessage(Text.translatable("modamod.estilista.falta", faltaParaLaEntrada().getName()), true);
+    }
+
     public void alAbrirGui() { guiAbiertas++; }
 
     public void alCerrarGui() { guiAbiertas = Math.max(0, guiAbiertas - 1); }

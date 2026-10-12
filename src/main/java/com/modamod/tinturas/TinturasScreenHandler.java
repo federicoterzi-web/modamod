@@ -255,6 +255,17 @@ public class TinturasScreenHandler extends ScreenHandler {
         public int getMaxItemCount() { return 1; }
     }
 
+    /**
+     * Arranque único de las 5 máquinas (2026-10-12, plan de GUIs, "la acción corre con el botón Y también al cerrar la
+     * GUI"): si quedó una prenda cruda en la Entrada y se puede teñir, arranca sola al salir, como Modelar y Prensar.
+     * Si no se puede (sin diseño fijado, sin tinta) queda esperando en silencio.
+     */
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+        if (!player.getWorld().isClient() && be.puedeReintentar()) be.reintentarTenido();
+    }
+
     @Override
     public boolean onButtonClick(PlayerEntity player, int id) {
         if (id == TinturasBlockEntity.BTN_TENIR) {

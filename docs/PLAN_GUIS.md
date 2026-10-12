@@ -30,7 +30,7 @@ Reglas de C: sin selección, un texto guía de una línea; un solo contexto a la
    - Hecho: rótulos de los canales de Tintes traducidos (`modamod.tinturas.canal.*`).
    - Se reparte con cada fase y no en bloque (están enredados con el guardado y los handlers): rangos de ids de botón por máquina, y el código muerto de la Modeladora (botones ocultos, slot Activo) y de la Estilista (Fijar).
    - Pendiente de la fase 0: capturas de referencia (las saca el usuario en el juego).
-1. **Esqueleto común:** clase base de pantalla con la cabecera fija (Acción, Salida, Línea, barra de progreso) y la regla de arranque única.
+1. **Esqueleto común** (2026-10-12: hecha la mitad de lógica — Tintes y Estilista ya arrancan al cerrar la GUI; falta la clase base visual): clase base de pantalla con la cabecera fija (Acción, Salida, Línea, barra de progreso) y la regla de arranque única.
 2. **Componente del sector contextual** (panel con selección, título y filas) y primera migración: **Sublimadora**.
 3. **Tintes:** controles de capa a las 4 pestañas.
 4. **Modeladora:** sector C por pin, ventana a tamaño estándar.
@@ -48,3 +48,7 @@ Reglas de C: sin selección, un texto guía de una línea; un solo contexto a la
 - Estencil de la Sublimadora por capa de Tintes (slot en el sector contextual; escala, X/Y y ángulo dentro de `DistribucionPatron`).
 - Desplazamiento X/Y del patrón.
 - Giro azar: botón hecho (No/90°/±45°/Libre); falta el slider de cantidad.
+
+## Estado (2026-10-12)
+- Hecho: regla de arranque única en las 5 (`TinturasScreenHandler.onClosed`, `EstilistaBlockEntity.aplicarAlCerrar`).
+- Lo que sigue es **de layout** (cabecera fija, sector C, ventana estándar, fondos horneados): no se puede validar sin verlo. Punto de consulta con el usuario: capturas de las 5 GUIs actuales y elegir cuál migrar primero (propuesta: Sublimadora).

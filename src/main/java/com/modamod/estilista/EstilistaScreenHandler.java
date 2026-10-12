@@ -87,6 +87,9 @@ public class EstilistaScreenHandler extends EstiladoScreenHandler {
     public void onClosed(PlayerEntity player) {
         super.onClosed(player);
         host.alCerrarGui();
+        // Arranque único de las 5 máquinas (2026-10-12, plan de GUIs): al salir con una prenda en la Entrada y un
+        // diseño para ese tipo, aplica solo; si faltan insumos avisa, si no hay diseño no hace nada.
+        if (!player.getWorld().isClient()) host.aplicarAlCerrar(player);
     }
 
     @Override
