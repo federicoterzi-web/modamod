@@ -164,7 +164,7 @@ public final class PolleraMalla {
         float giro = 0.18f * mov.paso() / 32f;
         // Cuánto se mueve según la forma (2026-10-05): el tubo casi no vuela, el globo un poco menos que la campana
         // y la circular más.
-        float movimiento = colDesde >= 0 ? 0.7f : movimientoDe(forma);
+        float movimiento = colDesde >= 0 ? 0.4f : movimientoDe(forma);
         // Twirl (2026-09-30, "que se abran y giren"): la campana se abre casi
         // horizontal a mitad de la vuelta y el ruedo queda atrasado respecto
         // del giro del cuerpo (la tela arrastra). Vale también en rígida.
@@ -176,7 +176,8 @@ public final class PolleraMalla {
         }
         atras *= movimiento;
         costado *= movimiento;
-        abrir *= movimiento;
+        // Delantal (2026-10-12, "se abre mucho sobre la falda"): casi no se abre al caer ni al girar, cuelga derecho sobre la pollera.
+        abrir *= colDesde >= 0 ? 0.2f : movimiento;
         giro *= movimiento;
 
         // La tela sale del perfil QUIETO (no del que se mueve): así el dibujo
