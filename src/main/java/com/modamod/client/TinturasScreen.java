@@ -50,7 +50,8 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
     private static final int M_MEDIO = TinturasScreenHandler.M_MEDIO;
     private static final int M_DERECHA = TinturasScreenHandler.M_DERECHA;
     /** Etiquetas de los 5 sliders — el quinto es la Transparencia de la tinta (2026-09-28). */
-    private static final String[] NOMBRE_CANAL = { "Cyan", "Magenta", "Yellow", "Key", "Transp." };
+    /** Claves de traducción de los 5 canales (2026-10-12, plan de GUIs fase 0: antes eran rótulos escritos a mano). */
+    private static final String[] NOMBRE_CANAL = { "cian", "magenta", "amarillo", "negro", "transparencia" };
     /** Color del líquido de cada tanque C/M/Y/K — los mismos que la Sublimadora. */
     private static final int[] COLOR_TANQUE = { 0xFF1FB3D6, 0xFFD6287F, 0xFFE8C21E, 0xFF2A2A2A };
 
@@ -845,7 +846,7 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
         protected void updateMessage() {
             int nivel = Math.round((float) (this.value * (TinturasBlockEntity.NIVELES_MEZCLA - 1)));
             int porcentaje = Math.round(nivel * 100f / (TinturasBlockEntity.NIVELES_MEZCLA - 1));
-            this.setMessage(Text.literal(NOMBRE_CANAL[canal] + ": " + porcentaje + "%"));
+            this.setMessage(Text.translatable("modamod.tinturas.canal." + NOMBRE_CANAL[canal]).append(Text.literal(": " + porcentaje + "%")));
         }
 
         @Override
