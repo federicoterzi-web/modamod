@@ -42,3 +42,9 @@ Reglas de C: sin selección, un texto guía de una línea; un solo contexto a la
 - Los fondos de las pantallas están horneados por `tools/generar_textura_*.py`: regenerar al mover zonas.
 - Mover botones cambia ids de red: cada fase renumera los de su máquina de una vez.
 - Cambiar el arranque de Tintes y la Estilista cambia el comportamiento de la línea de producción: probarlo con cinta.
+
+
+## Acuerdos extra para la fase 3 (2026-10-12)
+- Estencil de la Sublimadora por capa de Tintes (slot en el sector contextual; escala, X/Y y ángulo dentro de `DistribucionPatron`).
+- Desplazamiento X/Y del patrón.
+- Giro azar: botón hecho (No/90°/±45°/Libre); falta el slider de cantidad.

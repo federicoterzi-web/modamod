@@ -87,7 +87,7 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
     private ButtonWidget btnAngulo;
     private ButtonWidget btnGiro, btnGiroAtras, btnGiroAdelante;
     private DistanciaSlider sliderDistH, sliderDistV;
-    private ButtonWidget btnEspejo, btnAlternancia, btnSimetria;
+    private ButtonWidget btnEspejo, btnAlternancia, btnSimetria, btnGiroAzar;
     private ButtonWidget btnPosicion;
     private ButtonWidget btnForma;
     private ButtonWidget btnSemilla;
@@ -245,6 +245,7 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
 
         // Espejos (2026-09-30, "vamos con todo"): a la derecha del inventario,
         // en la columna del medio (el hueco entre la fila de 9 y la línea de puntos).
+        btnGiroAzar = boton(M_MEDIO + 166, 308, 72, Text.empty(), "modamod.tinturas.tooltip.giro_azar", TinturasBlockEntity.BTN_GIRO_AZAR);
         btnEspejo = boton(M_MEDIO + 166, 324, 72, Text.empty(), "modamod.tinturas.tooltip.espejo", TinturasBlockEntity.BTN_ESPEJO);
         btnAlternancia = boton(M_MEDIO + 166, 344, 72, Text.empty(), "modamod.tinturas.tooltip.alternancia", TinturasBlockEntity.BTN_ALTERNANCIA);
         btnSimetria = boton(M_MEDIO + 166, 364, 72, Text.empty(), "modamod.tinturas.tooltip.simetria", TinturasBlockEntity.BTN_SIMETRIA);
@@ -439,7 +440,9 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
         // El giro de cada motivo no tiene sentido en rayas ni en el vichy (simétrico).
         boolean giraMotivo = motivo != null && !motivo.esProcedural();
         btnGiro.active = btnGiroAtras.active = btnGiroAdelante.active = giraMotivo;
-        btnEspejo.active = btnAlternancia.active = giraMotivo;
+        btnEspejo.active = btnAlternancia.active = btnGiroAzar.active = giraMotivo;
+        btnGiroAzar.setMessage(Text.translatable("modamod.tinturas.giro_azar",
+                Text.translatable(casilla.giroAzar.traduccion())));
         btnEspejo.setMessage(Text.translatable(casilla.espejo.traduccion()));
         btnAlternancia.setMessage(Text.translatable(casilla.alternancia.traduccion()));
         btnSimetria.setMessage(Text.translatable("modamod.tinturas.simetria",

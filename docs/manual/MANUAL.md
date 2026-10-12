@@ -773,3 +773,6 @@ Los volados de los costados y del borde de arriba del delantal ahora forman plie
 
 ### Delantal como pieza única
 La cinta de la cintura y los tirantes del delantal ahora son cintas de la misma malla de tela (en vez de cajas aparte), con las esquinas redondeadas. Para comparar con la versión anterior: `/modamoddebug delantal partes` y `/modamoddebug delantal pieza`.
+
+### Estación de Tintes: giro al azar de los motivos
+Con un molde de motivo, el botón **Giro azar** (a la derecha del inventario) hace que cada motivo gire un ángulo distinto: No, 90°, ±45° o Libre (cualquier ángulo). El ángulo sale de la semilla del botón **Azar**, así que se guarda con el diseño y no cambia solo; se suma al Giro fijo.

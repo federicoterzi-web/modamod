@@ -585,7 +585,12 @@ public final class PatronGenerador {
                     lu -= (((hash >> 8) & 0xFF) / 255.0 * 2 - 1) * libreX;
                     lv -= (((hash >> 16) & 0xFF) / 255.0 * 2 - 1) * libreY;
                 }
-                int rol = rolEn(m, lu, lv, giro, k, dist.alternancia().espeja(colId, fila), dist.espejo());
+                double giroCelda = giro;
+                if (dist.giroAzar() != DistribucionPatron.GiroAzar.NINGUNO) {
+                    long hAzar = mezclarHash(colId, fila, semilla + 7919);
+                    giroCelda += dist.giroAzar().angulo(((hAzar >>> 4) & 0xFFFF) / 65536.0);
+                }
+                int rol = rolEn(m, lu, lv, giroCelda, k, dist.alternancia().espeja(colId, fila), dist.espejo());
                 if (rol == ROL_RELLENO) {
                     celda[0] = colId;
                     celda[1] = fila;

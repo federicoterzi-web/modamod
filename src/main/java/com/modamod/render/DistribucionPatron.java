@@ -27,14 +27,49 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
  * que admite {@code RecordCodecBuilder}.
  */
 public record DistribucionPatron(float giroMotivo, float distanciaH, float distanciaV,
-                                 Espejo espejo, Alternancia alternancia, boolean simetria) {
+                                 Espejo espejo, Alternancia alternancia, boolean simetria,
+                                 GiroAzar giroAzar) {
 
     public static final float MINIMO = 0.5f, MAXIMO = 3.0f, PASO = 0.05f;
     public static final DistribucionPatron DEFECTO =
-            new DistribucionPatron(0f, 1f, 1f, Espejo.NINGUNO, Alternancia.NINGUNA, false);
+            new DistribucionPatron(0f, 1f, 1f, Espejo.NINGUNO, Alternancia.NINGUNA, false, GiroAzar.NINGUNO);
 
     public DistribucionPatron(float giroMotivo, float distanciaH, float distanciaV) {
-        this(giroMotivo, distanciaH, distanciaV, Espejo.NINGUNO, Alternancia.NINGUNA, false);
+        this(giroMotivo, distanciaH, distanciaV, Espejo.NINGUNO, Alternancia.NINGUNA, false, GiroAzar.NINGUNO);
+    }
+
+    public DistribucionPatron(float giroMotivo, float distanciaH, float distanciaV,
+                              Espejo espejo, Alternancia alternancia, boolean simetria) {
+        this(giroMotivo, distanciaH, distanciaV, espejo, alternancia, simetria, GiroAzar.NINGUNO);
+    }
+
+    /**
+     * Giro al azar de cada motivo (2026-10-12, "una rotacion random cuando
+     * hay varios patrones"): el ángulo sale de la semilla (botón Azar) y de la
+     * celda, así es estable y se guarda con el diseño. Se suma al Giro fijo.
+     * Se guarda por nombre; agregar valores al final.
+     */
+    public enum GiroAzar implements net.minecraft.util.StringIdentifiable {
+        NINGUNO(0), CUARTOS(90), OCTAVOS(45), LIBRE(360);
+
+        /** Paso en grados de los modos discretos; en LIBRE, 360 = cualquier ángulo. */
+        public final int grados;
+
+        GiroAzar(int grados) { this.grados = grados; }
+
+        /** Ángulo en radianes para un número al azar {@code r} en [0,1). */
+        public double angulo(double r) {
+            return switch (this) {
+                case NINGUNO -> 0;
+                case CUARTOS -> Math.toRadians(Math.floor(r * 4) * 90);
+                case OCTAVOS -> Math.toRadians(r < 0.5 ? -45 : 45);
+                case LIBRE -> Math.toRadians(r * 360);
+            };
+        }
+
+        public GiroAzar siguiente() { return values()[(ordinal() + 1) % values().length]; }
+        public String traduccion() { return "modamod.tinturas.giro_azar." + asString(); }
+        @Override public String asString() { return name().toLowerCase(java.util.Locale.ROOT); }
     }
 
     /** Cómo se da vuelta cada motivo. Se guarda por nombre. */
@@ -80,7 +115,9 @@ public record DistribucionPatron(float giroMotivo, float distanciaH, float dista
                     .optionalFieldOf("espejo", Espejo.NINGUNO).forGetter(DistribucionPatron::espejo),
             net.minecraft.util.StringIdentifiable.createCodec(Alternancia::values)
                     .optionalFieldOf("alternancia", Alternancia.NINGUNA).forGetter(DistribucionPatron::alternancia),
-            Codec.BOOL.optionalFieldOf("simetria", false).forGetter(DistribucionPatron::simetria)
+            Codec.BOOL.optionalFieldOf("simetria", false).forGetter(DistribucionPatron::simetria),
+            net.minecraft.util.StringIdentifiable.createCodec(GiroAzar::values)
+                    .optionalFieldOf("giro_azar", GiroAzar.NINGUNO).forGetter(DistribucionPatron::giroAzar)
     ).apply(i, DistribucionPatron::new));
 
     /** Cantidad de escalones de un slider de distancia (0.5..3.0 de a 0.05). */
@@ -97,6 +134,6 @@ public record DistribucionPatron(float giroMotivo, float distanciaH, float dista
     /** Clave estable para caches (redondeada a los escalones). */
     public String clave() {
         return Math.round(giroMotivo) + "/" + nivelDeDistancia(distanciaH) + "/" + nivelDeDistancia(distanciaV)
-                + "/" + espejo.ordinal() + "/" + alternancia.ordinal() + "/" + (simetria ? 1 : 0);
+                + "/" + espejo.ordinal() + "/" + alternancia.ordinal() + "/" + (simetria ? 1 : 0) + "/" + giroAzar.ordinal();
     }
 }

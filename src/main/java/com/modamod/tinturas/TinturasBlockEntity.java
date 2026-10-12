@@ -273,10 +273,12 @@ public class TinturasBlockEntity extends BlockEntity
         public com.modamod.render.DistribucionPatron.Alternancia alternancia =
                 com.modamod.render.DistribucionPatron.Alternancia.NINGUNA;
         public boolean simetria = false;
+        public com.modamod.render.DistribucionPatron.GiroAzar giroAzar =
+                com.modamod.render.DistribucionPatron.GiroAzar.NINGUNO;
 
         public com.modamod.render.DistribucionPatron distribucion() {
             return new com.modamod.render.DistribucionPatron(giroMotivo, distanciaH, distanciaV,
-                    espejo, alternancia, simetria);
+                    espejo, alternancia, simetria, giroAzar);
         }
 
         public int color() { return colorDeMezcla(mezcla); }
@@ -312,6 +314,7 @@ public class TinturasBlockEntity extends BlockEntity
             c.espejo = espejo;
             c.alternancia = alternancia;
             c.simetria = simetria;
+            c.giroAzar = giroAzar;
             return c;
         }
 
@@ -342,6 +345,7 @@ public class TinturasBlockEntity extends BlockEntity
             c.putString("Espejo", espejo.name());
             c.putString("Alternancia", alternancia.name());
             c.putBoolean("Simetria", simetria);
+            c.putString("GiroAzar", giroAzar.name());
             return c;
         }
 
@@ -365,6 +369,7 @@ public class TinturasBlockEntity extends BlockEntity
             r.distanciaV = c.contains("DistanciaV") ? c.getFloat("DistanciaV") : 1f;
             try {
                 if (c.contains("Espejo")) r.espejo = com.modamod.render.DistribucionPatron.Espejo.valueOf(c.getString("Espejo"));
+                if (c.contains("GiroAzar")) r.giroAzar = com.modamod.render.DistribucionPatron.GiroAzar.valueOf(c.getString("GiroAzar"));
                 if (c.contains("Alternancia")) {
                     r.alternancia = com.modamod.render.DistribucionPatron.Alternancia.valueOf(c.getString("Alternancia"));
                 }
@@ -977,6 +982,8 @@ public class TinturasBlockEntity extends BlockEntity
     public static final int BTN_ESPEJO = BTN_GIRO_MOTIVO_ATRAS + 1;
     public static final int BTN_ALTERNANCIA = BTN_ESPEJO + 1;
     public static final int BTN_SIMETRIA = BTN_ALTERNANCIA + 1;
+    /** Cicla el giro al azar de cada motivo: No / 90° / ±45° / Libre (2026-10-12). */
+    public static final int BTN_GIRO_AZAR = BTN_SIMETRIA + 1;
     /** + nivel (0..{@code DistribucionPatron.NIVELES}-1): sliders de distancia horizontal y vertical (2026-09-30). */
     public static final int BTN_DISTANCIA_H_BASE = 170;
     public static final int BTN_DISTANCIA_V_BASE = 230;
@@ -1057,6 +1064,10 @@ public class TinturasBlockEntity extends BlockEntity
             }
             case BTN_ALTERNANCIA -> {
                 sel.alternancia = sel.alternancia.siguiente();
+                return true;
+            }
+            case BTN_GIRO_AZAR -> {
+                sel.giroAzar = sel.giroAzar.siguiente();
                 return true;
             }
             case BTN_SIMETRIA -> {
