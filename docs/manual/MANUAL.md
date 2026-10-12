@@ -776,3 +776,6 @@ La cinta de la cintura y los tirantes del delantal ahora son cintas de la misma 
 
 ### Estación de Tintes: giro al azar de los motivos
 Con un molde de motivo, el botón **Giro azar** (a la derecha del inventario) hace que cada motivo gire un ángulo distinto: No, 90°, ±45° o Libre (cualquier ángulo). El ángulo sale de la semilla del botón **Azar**, así que se guarda con el diseño y no cambia solo; se suma al Giro fijo.
+
+### Estación de Tintes: corrimiento horizontal
+El botón **X** (a la derecha de Invertir) corre la grilla de motivos hacia los costados, de a 10 %. La Posición de siempre la corre hacia arriba y abajo.

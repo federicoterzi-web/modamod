@@ -621,6 +621,7 @@
   "modamod.tinturas.giro_azar.cuartos": "90°",
   "modamod.tinturas.giro_azar.octavos": "±45°",
   "modamod.tinturas.giro_azar.libre": "Free",
+  "modamod.tinturas.tooltip.posicion_x": "Shifts the motif grid sideways (10 % steps)",
   "modamod.tinturas.simetria": "Symmetry: %s",
   "modamod.tinturas.tooltip.espejo": "Flips each motif: left↔right, up↔down or both",
   "modamod.tinturas.tooltip.alternancia": "Every other motif (by rows, columns or checkerboard) is mirrored; with Turn it makes a zigzag",

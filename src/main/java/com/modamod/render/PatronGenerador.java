@@ -564,8 +564,10 @@ public final class PatronGenerador {
             gu = du * cos - dv * sin + centroFrente;
             gv = du * sin + dv * cos + h / 2.0;
         }
-        // Posición corre la grilla en vertical (0.5 = sin corrimiento).
+        // Posición corre la grilla en vertical (0.5 = sin corrimiento); X, en horizontal
+        // (2026-10-12): la grilla es periódica en el perímetro, así que no deja costura.
         gv += (posicion - 0.5) * celdaY;
+        gu += (dist.posX() - 0.5) * celdaX;
 
         int fila0 = (int) Math.floor(gv / celdaY);
         int resultado = ROL_NADA;

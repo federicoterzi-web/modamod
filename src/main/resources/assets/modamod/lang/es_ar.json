@@ -621,6 +621,7 @@
   "modamod.tinturas.giro_azar.cuartos": "90°",
   "modamod.tinturas.giro_azar.octavos": "±45°",
   "modamod.tinturas.giro_azar.libre": "Libre",
+  "modamod.tinturas.tooltip.posicion_x": "Corre la grilla de motivos hacia los costados (de a 10 %)",
   "modamod.tinturas.simetria": "Simetría: %s",
   "modamod.tinturas.tooltip.espejo": "Da vuelta cada motivo: izquierda↔derecha, arriba↔abajo o los dos",
   "modamod.tinturas.tooltip.alternancia": "De por medio (por filas, columnas o en damero) el motivo sale espejado; con Giro arma un zigzag",

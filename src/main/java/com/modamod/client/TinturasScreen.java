@@ -87,7 +87,7 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
     private ButtonWidget btnAngulo;
     private ButtonWidget btnGiro, btnGiroAtras, btnGiroAdelante;
     private DistanciaSlider sliderDistH, sliderDistV;
-    private ButtonWidget btnEspejo, btnAlternancia, btnSimetria, btnGiroAzar;
+    private ButtonWidget btnEspejo, btnAlternancia, btnSimetria, btnGiroAzar, btnPosX;
     private ButtonWidget btnPosicion;
     private ButtonWidget btnForma;
     private ButtonWidget btnSemilla;
@@ -228,7 +228,9 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
         // Otra semilla para Repetición: Disperso (2026-09-28, motivos).
         btnSemilla = boton(M_MEDIO + 86, 272, 32, Text.translatable("modamod.tinturas.boton.semilla"),
                 "modamod.tinturas.tooltip.semilla", TinturasBlockEntity.BTN_SEMILLA);
-        btnInvertir = boton(M_MEDIO + 120, 272, 116, Text.empty(), "modamod.tinturas.tooltip.invertir", TinturasBlockEntity.BTN_INVERTIR);
+        btnInvertir = boton(M_MEDIO + 120, 272, 78, Text.empty(), "modamod.tinturas.tooltip.invertir", TinturasBlockEntity.BTN_INVERTIR);
+
+        btnPosX = boton(M_MEDIO + 200, 272, 36, Text.empty(), "modamod.tinturas.tooltip.posicion_x", TinturasBlockEntity.BTN_POSICION_X);
 
         // Fila 4 (2026-09-30, "que los patrones si se puedan girar y que haya
         // un slider vertical y horizontal para ponerlos mas juntos"): giro de
@@ -440,7 +442,8 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
         // El giro de cada motivo no tiene sentido en rayas ni en el vichy (simétrico).
         boolean giraMotivo = motivo != null && !motivo.esProcedural();
         btnGiro.active = btnGiroAtras.active = btnGiroAdelante.active = giraMotivo;
-        btnEspejo.active = btnAlternancia.active = btnGiroAzar.active = giraMotivo;
+        btnEspejo.active = btnAlternancia.active = btnGiroAzar.active = btnPosX.active = giraMotivo;
+        btnPosX.setMessage(Text.literal("X " + Math.round(casilla.posX * 100)));
         btnGiroAzar.setMessage(Text.translatable("modamod.tinturas.giro_azar",
                 Text.translatable(casilla.giroAzar.traduccion())));
         btnEspejo.setMessage(Text.translatable(casilla.espejo.traduccion()));

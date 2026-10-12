@@ -28,19 +28,24 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
  */
 public record DistribucionPatron(float giroMotivo, float distanciaH, float distanciaV,
                                  Espejo espejo, Alternancia alternancia, boolean simetria,
-                                 GiroAzar giroAzar) {
+                                 GiroAzar giroAzar, float posX) {
 
     public static final float MINIMO = 0.5f, MAXIMO = 3.0f, PASO = 0.05f;
     public static final DistribucionPatron DEFECTO =
-            new DistribucionPatron(0f, 1f, 1f, Espejo.NINGUNO, Alternancia.NINGUNA, false, GiroAzar.NINGUNO);
+            new DistribucionPatron(0f, 1f, 1f, Espejo.NINGUNO, Alternancia.NINGUNA, false, GiroAzar.NINGUNO, 0.5f);
 
     public DistribucionPatron(float giroMotivo, float distanciaH, float distanciaV) {
-        this(giroMotivo, distanciaH, distanciaV, Espejo.NINGUNO, Alternancia.NINGUNA, false, GiroAzar.NINGUNO);
+        this(giroMotivo, distanciaH, distanciaV, Espejo.NINGUNO, Alternancia.NINGUNA, false, GiroAzar.NINGUNO, 0.5f);
     }
 
     public DistribucionPatron(float giroMotivo, float distanciaH, float distanciaV,
                               Espejo espejo, Alternancia alternancia, boolean simetria) {
-        this(giroMotivo, distanciaH, distanciaV, espejo, alternancia, simetria, GiroAzar.NINGUNO);
+        this(giroMotivo, distanciaH, distanciaV, espejo, alternancia, simetria, GiroAzar.NINGUNO, 0.5f);
+    }
+
+    public DistribucionPatron(float giroMotivo, float distanciaH, float distanciaV,
+                              Espejo espejo, Alternancia alternancia, boolean simetria, GiroAzar giroAzar) {
+        this(giroMotivo, distanciaH, distanciaV, espejo, alternancia, simetria, giroAzar, 0.5f);
     }
 
     /**
@@ -117,7 +122,8 @@ public record DistribucionPatron(float giroMotivo, float distanciaH, float dista
                     .optionalFieldOf("alternancia", Alternancia.NINGUNA).forGetter(DistribucionPatron::alternancia),
             Codec.BOOL.optionalFieldOf("simetria", false).forGetter(DistribucionPatron::simetria),
             net.minecraft.util.StringIdentifiable.createCodec(GiroAzar::values)
-                    .optionalFieldOf("giro_azar", GiroAzar.NINGUNO).forGetter(DistribucionPatron::giroAzar)
+                    .optionalFieldOf("giro_azar", GiroAzar.NINGUNO).forGetter(DistribucionPatron::giroAzar),
+            Codec.FLOAT.optionalFieldOf("pos_x", 0.5f).forGetter(DistribucionPatron::posX)
     ).apply(i, DistribucionPatron::new));
 
     /** Cantidad de escalones de un slider de distancia (0.5..3.0 de a 0.05). */
@@ -134,6 +140,6 @@ public record DistribucionPatron(float giroMotivo, float distanciaH, float dista
     /** Clave estable para caches (redondeada a los escalones). */
     public String clave() {
         return Math.round(giroMotivo) + "/" + nivelDeDistancia(distanciaH) + "/" + nivelDeDistancia(distanciaV)
-                + "/" + espejo.ordinal() + "/" + alternancia.ordinal() + "/" + (simetria ? 1 : 0) + "/" + giroAzar.ordinal();
+                + "/" + espejo.ordinal() + "/" + alternancia.ordinal() + "/" + (simetria ? 1 : 0) + "/" + giroAzar.ordinal() + "/" + Math.round(posX * 10);
     }
 }

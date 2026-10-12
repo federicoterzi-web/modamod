@@ -275,10 +275,12 @@ public class TinturasBlockEntity extends BlockEntity
         public boolean simetria = false;
         public com.modamod.render.DistribucionPatron.GiroAzar giroAzar =
                 com.modamod.render.DistribucionPatron.GiroAzar.NINGUNO;
+        /** Corrimiento horizontal de la grilla de motivos, 0..1 (0,5 = sin corrimiento). */
+        public float posX = 0.5f;
 
         public com.modamod.render.DistribucionPatron distribucion() {
             return new com.modamod.render.DistribucionPatron(giroMotivo, distanciaH, distanciaV,
-                    espejo, alternancia, simetria, giroAzar);
+                    espejo, alternancia, simetria, giroAzar, posX);
         }
 
         public int color() { return colorDeMezcla(mezcla); }
@@ -315,6 +317,7 @@ public class TinturasBlockEntity extends BlockEntity
             c.alternancia = alternancia;
             c.simetria = simetria;
             c.giroAzar = giroAzar;
+            c.posX = posX;
             return c;
         }
 
@@ -346,6 +349,7 @@ public class TinturasBlockEntity extends BlockEntity
             c.putString("Alternancia", alternancia.name());
             c.putBoolean("Simetria", simetria);
             c.putString("GiroAzar", giroAzar.name());
+            c.putFloat("PosX", posX);
             return c;
         }
 
@@ -377,6 +381,7 @@ public class TinturasBlockEntity extends BlockEntity
                 // Valor que ya no existe: queda el default.
             }
             r.simetria = c.getBoolean("Simetria");
+            r.posX = c.contains("PosX") ? c.getFloat("PosX") : 0.5f;
             r.posicion = c.contains("Posicion") ? c.getFloat("Posicion") : 0.5f;
             r.invertido = c.getBoolean("Invertido");
             r.opacidad = c.contains("Opacidad") ? MathHelper.clamp(c.getInt("Opacidad"), PASO_OPACIDAD, 100) : 100;
@@ -984,6 +989,8 @@ public class TinturasBlockEntity extends BlockEntity
     public static final int BTN_SIMETRIA = BTN_ALTERNANCIA + 1;
     /** Cicla el giro al azar de cada motivo: No / 90° / ±45° / Libre (2026-10-12). */
     public static final int BTN_GIRO_AZAR = BTN_SIMETRIA + 1;
+    /** Corre la grilla de motivos en horizontal, de a 10 % (2026-10-12). */
+    public static final int BTN_POSICION_X = BTN_GIRO_AZAR + 1;
     /** + nivel (0..{@code DistribucionPatron.NIVELES}-1): sliders de distancia horizontal y vertical (2026-09-30). */
     public static final int BTN_DISTANCIA_H_BASE = 170;
     public static final int BTN_DISTANCIA_V_BASE = 230;
@@ -1064,6 +1071,10 @@ public class TinturasBlockEntity extends BlockEntity
             }
             case BTN_ALTERNANCIA -> {
                 sel.alternancia = sel.alternancia.siguiente();
+                return true;
+            }
+            case BTN_POSICION_X -> {
+                sel.posX = ((Math.round(sel.posX * 10) + 1) % 11) / 10f;
                 return true;
             }
             case BTN_GIRO_AZAR -> {
