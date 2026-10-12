@@ -14,9 +14,11 @@ import net.minecraft.util.math.BlockPos;
  */
 public class TelarScreenHandler extends ScreenHandler {
 
-    public static final int ANCHO = 176, ALTO = 226;
-    public static final int X_LANA = 22, Y_LANA = 34, X_HILO = 22, Y_HILO = 62, X_SALIDA = 138, Y_SALIDA = 48;
-    public static final int Y_INV = 146;
+    // 2026-10-12 (plan de GUIs, "empezar con el telar"): ventana más ancha con cabecera fija — Entrada (lana, hilo) a la
+    // izquierda, barra de progreso y estado en el medio, Salida a la derecha — y las prendas y el lote debajo.
+    public static final int ANCHO = 220, ALTO = 240;
+    public static final int X_LANA = 12, Y_LANA = 24, X_HILO = 12, Y_HILO = 46, X_SALIDA = 192, Y_SALIDA = 34;
+    public static final int Y_INV = 156, X_INV = (ANCHO - 162) / 2;
 
     public final TelarBlockEntity host;
 
@@ -39,8 +41,8 @@ public class TelarScreenHandler extends ScreenHandler {
         addSlot(new Slot(host, TelarBlockEntity.SLOT_SALIDA, X_SALIDA, Y_SALIDA) {
             @Override public boolean canInsert(ItemStack stack) { return false; }
         });
-        for (int f = 0; f < 3; f++) for (int c = 0; c < 9; c++) addSlot(new Slot(inv, 9 + f * 9 + c, 8 + c * 18, Y_INV + f * 18));
-        for (int c = 0; c < 9; c++) addSlot(new Slot(inv, c, 8 + c * 18, Y_INV + 58));
+        for (int f = 0; f < 3; f++) for (int c = 0; c < 9; c++) addSlot(new Slot(inv, 9 + f * 9 + c, X_INV + c * 18, Y_INV + f * 18));
+        for (int c = 0; c < 9; c++) addSlot(new Slot(inv, c, X_INV + c * 18, Y_INV + 58));
     }
 
     @Override
