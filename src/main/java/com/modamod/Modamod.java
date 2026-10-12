@@ -213,8 +213,8 @@ public class Modamod implements ModInitializer {
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_DELANTAL_TIRANTES_CRUZADOS);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_VOLADO_RECTO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_VOLADO_CIRCULAR);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_RUEDO_REDONDEADO);
-            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_RUEDO_COLA);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RUEDO_REDONDEADO);
+            entries.add(com.modamod.modelado.ModeladoMod.MOLDE_RUEDO_COLA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_CON_CAPUCHA);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_CUELLO_ALTO);
             entries.add(com.modamod.modelado.ModeladoMod.MOLDE_CAPA_BORDE_EMBOZO);

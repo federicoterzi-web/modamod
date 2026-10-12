@@ -523,12 +523,10 @@
   "modamod.capa.ruedo.recto": "recto",
   "modamod.capa.ruedo.redondeado": "redondeado",
   "modamod.capa.ruedo.cola": "con cola (arrastra)",
-  "item.modamod.molde_capa_ruedo_cola": "Molde de Capa: Ruedo con cola",
   "modamod.modelado.categoria.capa": "Capa",
   "modamod.region_pintura.capa_exterior": "Exterior",
   "modamod.region_pintura.capa_forro": "Forro",
   "modamod.region_pintura.capa_detalles": "Capucha y cuello",
-  "item.modamod.molde_capa_ruedo_redondeado": "Molde de Capa: Ruedo redondeado",
   "item.modamod.molde_capa_con_capucha": "Molde de Capa: Con capucha",
   "item.modamod.molde_capa_cuello_alto": "Molde de Capa: Cuello alto",
   "modamod.prenda.capa": "Capa",
@@ -1188,5 +1186,9 @@
   "modamod.blanco.patron.ayuda": "Materia prima de patrones y motivos para la Estación de Tintes.",
   "modamod.blanco.mascara.ayuda": "Materia prima de máscaras de sublimado.",
   "modamod.blanco.plantilla.ayuda": "Materia prima de plantillas de aplique y de correa.",
-  "modamod.blanco.quitar": "En un casillero de la Modeladora: quita ese rasgo (vuelve al de fábrica)."
+  "modamod.blanco.quitar": "En un casillero de la Modeladora: quita ese rasgo (vuelve al de fábrica).",
+  "item.modamod.molde_ruedo_redondeado": "Molde de Ruedo: Redondeado",
+  "item.modamod.molde_ruedo_cola": "Molde de Ruedo: Con cola",
+  "modamod.ruedo.redondeado": "redondeado",
+  "modamod.ruedo.cola": "con cola"
 }

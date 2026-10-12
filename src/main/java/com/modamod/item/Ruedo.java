@@ -22,7 +22,13 @@ public enum Ruedo implements StringIdentifiable {
     FESTONEADO("festoneado"),
     PICO("pico"),
     /** Volado de malla en un puño, botamanga o borde de calentador/media (2026-10-11); ver {@code render.VoladoMalla}. */
-    VOLADO_RECTO("volado_recto"), VOLADO_CIRCULAR("volado_circular");
+    VOLADO_RECTO("volado_recto"), VOLADO_CIRCULAR("volado_circular"),
+    /**
+     * Esquinas redondeadas y cola (2026-10-12, "los ruedos de todo los podemos unificar con moldes de ruedo"): los dos
+     * remates de la capa (y las esquinas del delantal) pasan a ser moldes de ruedo. Solo valen en el ruedo de la capa
+     * y en las esquinas del delantal; no se guardan en {@link Ruedos}, van a {@code CapaRuedo}.
+     */
+    REDONDEADO("redondeado"), COLA("cola");
 
     public final String clave;
 
@@ -54,6 +60,9 @@ public enum Ruedo implements StringIdentifiable {
         };
     }
 
+    /** Los remates que son de la capa (y de las esquinas del delantal): cambian la forma o el largo del paño. */
+    public boolean esDeCapa() { return this == REDONDEADO || this == COLA; }
+
     /** Si vale para una zona que no es la pollera (el borde decorativo hoy solo existe ahí). */
-    public boolean valeEnTela() { return borde() == null; }
+    public boolean valeEnTela() { return borde() == null && !esDeCapa(); }
 }

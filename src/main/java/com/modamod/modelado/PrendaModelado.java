@@ -307,6 +307,7 @@ public final class PrendaModelado {
 
     /** Si el ruedo {@code r} tiene sentido en esa zona de esta prenda (el borde decorativo solo en la pollera). */
     private static boolean ruedoVale(ItemStack prenda, com.modamod.item.ZonaRuedo zona, com.modamod.item.Ruedo r) {
+        if (r.esDeCapa()) return false;
         return switch (zona) {
             case TORSO -> prenda.getItem() instanceof com.modamod.sublimadora.RemeraItem && r.valeEnTela();
             case PUNO_IZQ, PUNO_DER -> prenda.getItem() instanceof com.modamod.sublimadora.RemeraItem;

@@ -102,10 +102,6 @@ public final class ModeladoMod {
 
     // ── moldes de capa (a pedido 2026-09-29, "podemos agregar todo eso como patrones de corte?") ──
     // Ruedo, capucha y cuello alto de la capa, cada uno para su pin. Exclusivos de la capa.
-    public static final MoldeCapaItem MOLDE_CAPA_RUEDO_COLA = new MoldeCapaItem(new Item.Settings().maxCount(1),
-            MoldeCapaItem.Tipo.RUEDO_COLA);
-    public static final MoldeCapaItem MOLDE_CAPA_RUEDO_REDONDEADO = new MoldeCapaItem(new Item.Settings().maxCount(1),
-            MoldeCapaItem.Tipo.RUEDO_REDONDEADO);
     public static final MoldeCapaItem MOLDE_CAPA_CON_CAPUCHA = new MoldeCapaItem(new Item.Settings().maxCount(1),
             MoldeCapaItem.Tipo.CON_CAPUCHA);
     public static final MoldeCapaItem MOLDE_CAPA_CUELLO_ALTO = new MoldeCapaItem(new Item.Settings().maxCount(1),
@@ -219,6 +215,11 @@ public final class ModeladoMod {
     public static final MoldeEnBlancoItem MASCARA_EN_BLANCO = new MoldeEnBlancoItem(new Item.Settings().maxCount(64), MoldeEnBlancoItem.Tipo.MASCARA);
     public static final MoldeEnBlancoItem PLANTILLA_EN_BLANCO = new MoldeEnBlancoItem(new Item.Settings().maxCount(64), MoldeEnBlancoItem.Tipo.PLANTILLA);
 
+    public static final MoldeRuedoItem MOLDE_RUEDO_REDONDEADO = new MoldeRuedoItem(new Item.Settings().maxCount(1),
+            com.modamod.item.Ruedo.REDONDEADO);
+    public static final MoldeRuedoItem MOLDE_RUEDO_COLA = new MoldeRuedoItem(new Item.Settings().maxCount(1),
+            com.modamod.item.Ruedo.COLA);
+
     public static void register() {
         Identifier bloqueId = Identifier.of(Modamod.MOD_ID, "modelado");
         Registry.register(Registries.BLOCK, bloqueId, MODELADO_BLOCK);
@@ -273,8 +274,8 @@ public final class ModeladoMod {
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_tirantes_cruzados"), MOLDE_DELANTAL_TIRANTES_CRUZADOS);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_volado_recto"), MOLDE_VOLADO_RECTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_volado_circular"), MOLDE_VOLADO_CIRCULAR);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_ruedo_redondeado"), MOLDE_CAPA_RUEDO_REDONDEADO);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_ruedo_cola"), MOLDE_CAPA_RUEDO_COLA);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_redondeado"), MOLDE_RUEDO_REDONDEADO);
+        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_cola"), MOLDE_RUEDO_COLA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_con_capucha"), MOLDE_CAPA_CON_CAPUCHA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_capa_cuello_alto"), MOLDE_CAPA_CUELLO_ALTO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_delantal_cobertura_frente"), MOLDE_DELANTAL_COBERTURA_FRENTE);

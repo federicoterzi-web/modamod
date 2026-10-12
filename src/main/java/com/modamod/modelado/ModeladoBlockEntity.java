@@ -492,15 +492,15 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                     || (item instanceof MoldeRuedoItem r && r.valor.valeEnTela());
             case PANTALON, MEDIAS -> false;
             case CALIENTABRAZOS -> item instanceof MoldeItem m && m.eje == MoldeItem.Eje.MANGA;
-            case POLLERA -> item instanceof MoldePolleraItem || item instanceof MoldeVoladoItem || item instanceof MoldeRuedoItem;
-            case CAPA -> item instanceof MoldeCapaItem;
+            case POLLERA -> item instanceof MoldePolleraItem || item instanceof MoldeVoladoItem
+                    || (item instanceof MoldeRuedoItem q && !q.valor.esDeCapa());
+            case CAPA -> item instanceof MoldeCapaItem || (item instanceof MoldeRuedoItem q && q.valor.esDeCapa());
             case SOMBRERO -> item instanceof MoldeSombreroItem;
             case BANDA -> item instanceof MoldeBandaItem;
             case CALZADO -> item instanceof MoldeBorcegoItem;
             case DELANTAL -> item instanceof MoldeFormaDelantalItem || item instanceof MoldeTirantesDelantalItem
                     || item instanceof MoldeCoberturaDelantalItem || item instanceof MoldeVoladoItem
-                    || item instanceof MoldeRuedoItem
-                    || (item instanceof MoldeCapaItem c && (c.tipo == MoldeCapaItem.Tipo.RUEDO_RECTO || c.tipo == MoldeCapaItem.Tipo.RUEDO_REDONDEADO));
+                    || (item instanceof MoldeRuedoItem q && q.valor != com.modamod.item.Ruedo.COLA);
         };
     }
 
@@ -1036,7 +1036,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 }
             }
             case RUEDO_POLLERA -> {
-                if (item instanceof MoldeRuedoItem m) c = ComboCorte.ruedo(com.modamod.item.ZonaRuedo.POLLERA, m.valor, false);
+                if (item instanceof MoldeRuedoItem m && !m.valor.esDeCapa()) c = ComboCorte.ruedo(com.modamod.item.ZonaRuedo.POLLERA, m.valor, false);
             }
             case VOLADO_INFERIOR -> {
                 if (item instanceof MoldeVoladoItem m) c = ComboCorte.voladoRuedo(m.valor);
@@ -1062,7 +1062,11 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 if (item instanceof MoldeRangoItem m) c = ComboCorte.capaLargo(com.modamod.item.CapaLargo.valueOf(m.rango.name()));
             }
             case RUEDO_CAPA -> {
-                if (item instanceof MoldeCapaItem m && m.tipo.esRuedo()) c = comboDeMoldeCapa(item);
+                // Los remates de la capa son moldes de ruedo (2026-10-12): redondeado y cola.
+                if (item instanceof MoldeRuedoItem m && m.valor.esDeCapa()) {
+                    c = ComboCorte.capaRuedo(m.valor == com.modamod.item.Ruedo.COLA
+                            ? com.modamod.item.CapaRuedo.COLA : com.modamod.item.CapaRuedo.REDONDEADO);
+                }
             }
             case CAPUCHA_CAPA -> {
                 if (item instanceof MoldeCapaItem m && m.tipo.esCapucha()) c = comboDeMoldeCapa(item);
@@ -1117,9 +1121,10 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 if (item instanceof MoldeRangoItem m) c = ComboCorte.delantalInicio(m.rango.nivel());
             }
             case ESQUINAS_DELANTAL -> {
-                // Los moldes de ruedo de la capa (recto / redondeado) son las esquinas de abajo del delantal.
-                if (item instanceof MoldeCapaItem m && m.tipo == MoldeCapaItem.Tipo.RUEDO_RECTO) c = ComboCorte.delantalEsquinas(com.modamod.item.CapaRuedo.RECTO);
-                else if (item instanceof MoldeCapaItem m && m.tipo == MoldeCapaItem.Tipo.RUEDO_REDONDEADO) c = ComboCorte.delantalEsquinas(com.modamod.item.CapaRuedo.REDONDEADO);
+                // Las esquinas de abajo del delantal: el molde de ruedo redondeado (el recto es el blanco).
+                if (item instanceof MoldeRuedoItem m && m.valor == com.modamod.item.Ruedo.REDONDEADO) {
+                    c = ComboCorte.delantalEsquinas(com.modamod.item.CapaRuedo.REDONDEADO);
+                }
             }
             case TIRANTES_DELANTAL -> {
                 if (item instanceof MoldeTirantesDelantalItem m) c = ComboCorte.delantalTirantes(m.valor);
@@ -1134,7 +1139,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 if (item instanceof MoldeVoladoItem m) c = ComboCorte.delantalSuperior(m.valor);
             }
             case RUEDO_DELANTAL -> {
-                if (item instanceof MoldeRuedoItem m) c = ComboCorte.ruedo(com.modamod.item.ZonaRuedo.DELANTAL, m.valor, false);
+                if (item instanceof MoldeRuedoItem m && !m.valor.esDeCapa()) c = ComboCorte.ruedo(com.modamod.item.ZonaRuedo.DELANTAL, m.valor, false);
             }
             case ALA_SOMBRERO -> {
                 if (item instanceof MoldeSombreroItem m && m.tipo.esAla()) c = comboDeMoldeSombrero(item);
@@ -1179,7 +1184,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
     @Nullable
     private static com.modamod.item.Ruedo ruedoDeMolde(Item item) {
         // Los bordes decorativos también valen en las extremidades (2026-10-11): una faldilla con ese recorte.
-        if (item instanceof MoldeRuedoItem m) return m.valor;
+        if (item instanceof MoldeRuedoItem m) return m.valor.esDeCapa() ? null : m.valor;
         if (item instanceof MoldeVoladoItem v) {
             return v.valor == com.modamod.item.PolleraVolado.CIRCULAR
                     ? com.modamod.item.Ruedo.VOLADO_CIRCULAR : com.modamod.item.Ruedo.VOLADO_RECTO;
@@ -1229,9 +1234,6 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         }
         if (!(item instanceof MoldeCapaItem m)) return null;
         return switch (m.tipo) {
-            case RUEDO_RECTO -> ComboCorte.capaRuedo(com.modamod.item.CapaRuedo.RECTO);
-            case RUEDO_REDONDEADO -> ComboCorte.capaRuedo(com.modamod.item.CapaRuedo.REDONDEADO);
-            case RUEDO_COLA -> ComboCorte.capaRuedo(com.modamod.item.CapaRuedo.COLA);
             case CON_CAPUCHA -> ComboCorte.capaCapucha(true);
             case SIN_CAPUCHA -> ComboCorte.capaCapucha(false);
             case CUELLO_ALTO -> ComboCorte.capaCuello(true);

@@ -523,12 +523,10 @@
   "modamod.capa.ruedo.recto": "straight",
   "modamod.capa.ruedo.redondeado": "rounded",
   "modamod.capa.ruedo.cola": "with train (trailing)",
-  "item.modamod.molde_capa_ruedo_cola": "Cape Template: Trailing hem",
   "modamod.modelado.categoria.capa": "Cape",
   "modamod.region_pintura.capa_exterior": "Outside",
   "modamod.region_pintura.capa_forro": "Lining",
   "modamod.region_pintura.capa_detalles": "Hood and collar",
-  "item.modamod.molde_capa_ruedo_redondeado": "Cape Pattern: Rounded hem",
   "item.modamod.molde_capa_con_capucha": "Cape Pattern: Hood",
   "item.modamod.molde_capa_cuello_alto": "Cape Pattern: High collar",
   "modamod.prenda.capa": "Cape",
@@ -1188,5 +1186,9 @@
   "modamod.blanco.patron.ayuda": "Raw material for dye-station motifs.",
   "modamod.blanco.mascara.ayuda": "Raw material for sublimation masks.",
   "modamod.blanco.plantilla.ayuda": "Raw material for appliqué and strap templates.",
-  "modamod.blanco.quitar": "In a Modeler slot: removes that feature (back to the factory value)."
+  "modamod.blanco.quitar": "In a Modeler slot: removes that feature (back to the factory value).",
+  "item.modamod.molde_ruedo_redondeado": "Hem Pattern: Rounded",
+  "item.modamod.molde_ruedo_cola": "Hem Pattern: Train",
+  "modamod.ruedo.redondeado": "rounded",
+  "modamod.ruedo.cola": "train"
 }

@@ -28,7 +28,11 @@ public class MoldeRuedoItem extends Item {
     @Override
     public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
         super.appendTooltip(stack, context, tooltip, type);
-        if (valor.valeEnTela()) {
+        if (valor == Ruedo.COLA) {
+            PrendaLore.molde(tooltip, "ruedo", PrendaLore.Maquina.MODELADORA, "capa");
+        } else if (valor == Ruedo.REDONDEADO) {
+            PrendaLore.molde(tooltip, "ruedo", PrendaLore.Maquina.MODELADORA, "capa", "delantal");
+        } else if (valor.valeEnTela()) {
             PrendaLore.molde(tooltip, "ruedo", PrendaLore.Maquina.MODELADORA, "remera", "chaqueta", "pantalon", "pollera");
         } else {
             PrendaLore.molde(tooltip, "ruedo", PrendaLore.Maquina.MODELADORA, "pollera");
