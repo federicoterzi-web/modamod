@@ -578,6 +578,13 @@ Para probar sin esperas ni insumos ya no hay comandos: están las **máquinas cr
 | Cinta transportadora (x10) | `I I I / C C C / I R I` |
 | Empalme | tolva / bloque de redstone / cinta (en columna) |
 | Medias 3/4 y de Red (armadura), Traje de Maid | sin cambios (las recetas viejas) |
+| **Moldes en blanco** (Molde, Patrón, Máscara, Trama, Plantilla; rinden 4) | Molde: `papel carbón papel / papel tijeras papel / papel carbón papel`. Patrón: `papel papel papel / hilo tinta hilo / papel papel papel`. Máscara: `papel tinta papel / papel tijeras papel / papel tinta papel`. Trama: `hilo hilo hilo / hilo papel hilo / hilo hilo hilo`. Plantilla: `papel cuero papel / cuero tijeras cuero / papel cuero papel` |
+| **Molde de rango** | Molde en blanco + tijeras + 1 a 7 hilos (del Más alto al Más bajo) |
+| **Molde de calce** | Molde en blanco + tijeras + lanas: 1 pegado, 2 ajustado, 4 suelto, 5 oversize (normal = el blanco) |
+| **Molde de ruedo** | Molde en blanco + tijeras + cueros: 1 ajustado, 2 campana, 3 ondulado, 4 festoneado, 5 pico, 6 redondeado, 7 con cola |
+| **Molde de volado** | Molde en blanco + tijeras + plumas: 1 recto, 2 circular |
+| **Moldes de trama** | Con forma, trama en blanco al centro y tijeras abajo; el hilo (o el cuero en los arneses) dibuja la trama (fina = cuatro esquinas, gruesa = llena, rayas = fila de arriba, etc.) |
+| **Materiales y texturas** | Trama en blanco + denim: tinte azul y 2 hilos; cuero: 2 cueros; acolchado: lana e hilo; fruncido: 3 hilos |
 | Rayas | Papel / hilo / papel (filas) y las dos variantes (la receta vieja) |
 
 
