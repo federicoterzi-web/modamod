@@ -762,3 +762,8 @@ El delantal lleva siempre una cinta alrededor de la cintura, del mismo color, qu
 ### Cobertura del delantal, embozo de la capa
 
 El delantal tiene un pin de cobertura: Envolvente (da la vuelta a los costados), Solo el frente o Angosto. La capa puede llevar un embozo sobre los hombros (el largo sale de los moldes de rango, y hay un molde para quitarlo) con un borde que recorre el contorno y cierra por el frente; la tecla J (la de abrir la chaqueta) abre un poco el frente del embozo. El borde se tiñe con la zona Detalles. El choker quedó más angosto y más alto.
+
+
+### Capucha de malla
+
+La capucha del hoodie (puesta con la tecla H o caída sobre la espalda) ahora es de tela continua y más amplia, con un borde de forro que enmarca la cara.

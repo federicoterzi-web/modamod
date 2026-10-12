@@ -93,20 +93,17 @@ public final class CuelloYCapucha {
         if (chaqueta == null && capa != null && com.modamod.item.CapaItem.capucha(capa)
                 && TopCorte.capuchaArriba(capa) && biped.head.visible) {
             int color = com.modamod.region.RegionResolver.colorBase(capa, com.modamod.region.Lado.IZQUIERDA);
-            GarmentFeatureRenderer.dibujarModelPart(capuchaPuesta(0F), CuerpoGeometria.Superficie.CUERPO,
-                    texturaLisa(color, false), biped.head, matrices, vertexConsumers, luz);
+            CapuchaMalla.puesta(texturaLisa(color, false), 0F, biped.head, matrices, vertexConsumers, luz);
         }
         if (chaqueta != null) {
             float d = Math.max(0F, Calce.dilatacionEfectiva(chaqueta));
             Identifier tela = texturaLisa(RemeraItem.color(chaqueta), false);
             if (TopCorte.capuchaArriba(chaqueta)) {
                 if (biped.head.visible) {
-                    GarmentFeatureRenderer.dibujarModelPart(capuchaPuesta(d), CuerpoGeometria.Superficie.CUERPO,
-                            tela, biped.head, matrices, vertexConsumers, luz);
+                    CapuchaMalla.puesta(tela, d, biped.head, matrices, vertexConsumers, luz);
                 }
             } else if (biped.body.visible) {
-                GarmentFeatureRenderer.dibujarModelPart(capuchaCaida(d), CuerpoGeometria.Superficie.CUERPO,
-                        tela, biped.body, matrices, vertexConsumers, luz);
+                CapuchaMalla.caida(tela, d, biped.body, matrices, vertexConsumers, luz);
             }
             if (biped.body.visible) {
                 // La caída abre el frente hacia abajo: los cordones se separan lo mismo.

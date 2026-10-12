@@ -778,7 +778,7 @@ public class GarmentFeatureRenderer<T extends LivingEntity, M extends EntityMode
             }
             if (com.modamod.item.TopCorte.tieneCapucha(s) && !com.modamod.item.TopCorte.capuchaArriba(s)) {
                 // La bolsa de la capucha caída (CuelloYCapucha.capuchaCaida): 2.4 de grosor desde 2 + d + 0.2.
-                extra = Math.max(extra, Math.max(0f, com.modamod.item.Calce.dilatacionEfectiva(s)) + 2.7f);
+                extra = Math.max(extra, Math.max(0f, com.modamod.item.Calce.dilatacionEfectiva(s)) + 4.0f);
             }
         }
         return extra;
