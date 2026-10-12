@@ -195,8 +195,6 @@ public final class ModeladoMod {
     // ── moldes de la chaqueta (2026-10-07) ──
     public static final MoldeChaquetaItem MOLDE_CHAQUETA_FRENTE_ABIERTA = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
             MoldeChaquetaItem.Tipo.FRENTE_ABIERTA);
-    public static final MoldeChaquetaItem MOLDE_CHAQUETA_CAPUCHA_CON = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
-            MoldeChaquetaItem.Tipo.CAPUCHA_CON);
 
     public static final MoldeChaquetaItem MOLDE_CHAQUETA_SOLAPA_PICO = new MoldeChaquetaItem(new Item.Settings().maxCount(1),
             MoldeChaquetaItem.Tipo.SOLAPA_PICO);
@@ -305,7 +303,6 @@ public final class ModeladoMod {
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_festoneado"), MOLDE_RUEDO_FESTONEADO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_ruedo_pico"), MOLDE_RUEDO_PICO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_frente_abierta"), MOLDE_CHAQUETA_FRENTE_ABIERTA);
-        Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_capucha_con"), MOLDE_CHAQUETA_CAPUCHA_CON);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_solapa_pico"), MOLDE_CHAQUETA_SOLAPA_PICO);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_solapa_redonda"), MOLDE_CHAQUETA_SOLAPA_REDONDA);
         Registry.register(Registries.ITEM, Identifier.of(Modamod.MOD_ID, "molde_chaqueta_solapa_chal"), MOLDE_CHAQUETA_SOLAPA_CHAL);

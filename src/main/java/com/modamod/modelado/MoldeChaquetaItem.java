@@ -21,7 +21,6 @@ public class MoldeChaquetaItem extends Item {
 
     public enum Tipo {
         FRENTE_CERRADA(ChaquetaFrente.CERRADA, null, null), FRENTE_ABIERTA(ChaquetaFrente.ABIERTA, null, null),
-        CAPUCHA_CON(null, true, null), CAPUCHA_SIN(null, false, null),
         // Solapas (2026-10-07, "traje separado... varios tipos de solapa"): nuevos al final.
         SOLAPA_NINGUNA(null, null, ChaquetaSolapa.NINGUNA), SOLAPA_PICO(null, null, ChaquetaSolapa.PICO),
         SOLAPA_REDONDA(null, null, ChaquetaSolapa.REDONDA), SOLAPA_CHAL(null, null, ChaquetaSolapa.CHAL),

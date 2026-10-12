@@ -85,7 +85,7 @@ primer plano:
 
 ### A7. Chaqueta / Top (8) — PROVISORIOS (hoy copias del ancho de banda)
 Campera de frente: `molde_chaqueta_frente_cerrada` (cierre vertical completo), `molde_chaqueta_frente_abierta` (franja
-del medio vacía, con las dos orillas marcadas), `molde_chaqueta_capucha_con` (capucha caída detrás del cuello),
+del medio vacía, con las dos orillas marcadas), `molde_capa_con_capucha` (capucha caída detrás del cuello; ahora sirve para remera y capa),
 `molde_chaqueta_capucha_sin` (cuello simple y una cruz roja chica), `molde_chaqueta_solapa_ninguna` (cuello de saco liso y
 cruz roja chica), `molde_chaqueta_solapa_pico` (solapas en pico), `molde_chaqueta_solapa_redonda` (solapas redondeadas
 anchas), `molde_chaqueta_solapa_chal` (esmoquin con solapa chal larga y curva).

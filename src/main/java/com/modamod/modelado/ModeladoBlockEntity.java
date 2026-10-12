@@ -488,6 +488,7 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
         return switch (cat) {
             case REMERA -> item instanceof MoldeCuelloItem
                     || item instanceof MoldeChaquetaItem
+                    || (item instanceof MoldeCapaItem k && k.tipo == MoldeCapaItem.Tipo.CON_CAPUCHA)
                     || (item instanceof MoldeItem m && m.eje == MoldeItem.Eje.MANGA)
                     || (item instanceof MoldeRuedoItem r && r.valor.valeEnTela());
             case PANTALON, MEDIAS -> false;
@@ -1088,7 +1089,8 @@ public class ModeladoBlockEntity extends BlockEntity implements SidedInventory, 
                 if (item instanceof MoldeChaquetaItem m && m.tipo.esFrente()) c = comboDeMoldeChaqueta(item);
             }
             case CAPUCHA_CHAQUETA -> {
-                if (item instanceof MoldeChaquetaItem m && m.tipo.esCapucha()) c = comboDeMoldeChaqueta(item);
+                // Un solo molde de capucha para remera y capa (2026-10-12, "el molde de capucha no es uno solo...").
+                if (item instanceof MoldeCapaItem m && m.tipo == MoldeCapaItem.Tipo.CON_CAPUCHA) c = ComboCorte.chaquetaCapucha(true);
             }
             case SOLAPA_CHAQUETA -> {
                 if (item instanceof MoldeChaquetaItem m && m.tipo.esSolapa()) c = comboDeMoldeChaqueta(item);
