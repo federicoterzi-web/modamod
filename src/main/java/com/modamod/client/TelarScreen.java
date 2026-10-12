@@ -22,19 +22,24 @@ import java.util.List;
  */
 public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledScreen<TelarScreenHandler> {
 
-    // Las prendas son íconos tildables (13 entran en dos filas de 7); la cabecera tiene tres insumos a la izquierda.
-    private static final int LADO_ICONO = 22, PASO_ICONO = 28, POR_FILA = 7, Y_BOTONES = 92, X_BOTONES = 14;
-    private static final int Y_LOTE = 148, X_BARRA = 62, Y_BARRA = 30, ANCHO_BARRA = 124, X_TEXTO = 62, ANCHO_TEXTO = 126;
+    // Layout de las máquinas hermanas (2026-10-12): izquierda la prenda grande, centro las prendas a tejer y la franja
+    // insumos → barra → Salida, derecha Línea y lote.
+    private static final int LADO_ICONO = 22, PASO_ICONO = 28, POR_FILA = 5, Y_BOTONES = 40;
+    private static final int X_BOTONES = TelarScreenHandler.M_MEDIO + (TelarScreenHandler.M_MEDIO_ANCHO - (POR_FILA * PASO_ICONO - 6)) / 2;
+    private static final int X_BARRA = TelarScreenHandler.M_MEDIO + 74, Y_BARRA = TelarScreenHandler.Y_IO + 4, ANCHO_BARRA = 94;
+    private static final int X_VISTA1 = 8, Y_VISTA1 = 18, X_VISTA2 = 94, Y_VISTA2 = 214;
+    private static final int X_DER = TelarScreenHandler.M_DERECHA, ANCHO_DER = 173, Y_LOTE = 76;
+    private static final int Y_SIGUE = 132;
     private final List<ButtonWidget> botones = new ArrayList<>();
 
     public TelarScreen(TelarScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
         this.backgroundWidth = TelarScreenHandler.ANCHO;
         this.backgroundHeight = TelarScreenHandler.ALTO;
-        this.titleX = 8;
-        this.titleY = 6;
-        this.playerInventoryTitleX = TelarScreenHandler.X_INV;
-        this.playerInventoryTitleY = TelarScreenHandler.Y_INV - 12;
+        this.titleX = TelarScreenHandler.M_MEDIO;
+        this.titleY = 9;
+        this.playerInventoryTitleX = TelarScreenHandler.M_MEDIO;
+        this.playerInventoryTitleY = 314;
     }
 
     @Override
@@ -51,16 +56,16 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
                     btn -> this.client.interactionManager.clickButton(this.handler.syncId, TelarBlockEntity.BTN_PRENDA_BASE + idx));
             this.addDrawableChild(b);
         }
-        // El lote: −10 − + +10 y reiniciar.
+        // El lote: −10 − + +10 y reiniciar, en la columna derecha.
         int ly = this.y + Y_LOTE;
-        boton("-10", this.x + 40, ly, 24, 16, TelarBlockEntity.BTN_LOTE_MENOS_10);
-        boton("-", this.x + 66, ly, 16, 16, TelarBlockEntity.BTN_LOTE_MENOS);
-        boton("+", this.x + 84, ly, 16, 16, TelarBlockEntity.BTN_LOTE_MAS);
-        boton("+10", this.x + 102, ly, 24, 16, TelarBlockEntity.BTN_LOTE_MAS_10);
-        this.addDrawableChild(new EstiloPergamino.BotonLinea(this.x + TelarScreenHandler.ANCHO - 8 - 64, this.y + 4, 64, 14,
+        boton("-10", this.x + X_DER, ly, 28, 16, TelarBlockEntity.BTN_LOTE_MENOS_10);
+        boton("-", this.x + X_DER + 30, ly, 18, 16, TelarBlockEntity.BTN_LOTE_MENOS);
+        boton("+", this.x + X_DER + 50, ly, 18, 16, TelarBlockEntity.BTN_LOTE_MAS);
+        boton("+10", this.x + X_DER + 70, ly, 28, 16, TelarBlockEntity.BTN_LOTE_MAS_10);
+        this.addDrawableChild(new EstiloPergamino.BotonLinea(this.x + X_DER, this.y + 18, 96, 16,
                 () -> handler.host.linea(),
                 b -> this.client.interactionManager.clickButton(this.handler.syncId, TelarBlockEntity.BTN_LINEA)));
-        ButtonWidget reiniciar = boton("↻", this.x + 128, ly, 18, 16, TelarBlockEntity.BTN_LOTE_REINICIAR);
+        ButtonWidget reiniciar = boton("↻", this.x + X_DER + 100, ly, 18, 16, TelarBlockEntity.BTN_LOTE_REINICIAR);
         reiniciar.setTooltip(Tooltip.of(Text.translatable("modamod.telar.tooltip.reiniciar")));
     }
 
@@ -113,8 +118,27 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
             c.fill(x0, y0 + h - 1 - i, x0 + 9 - i, y0 + h - i, tema.claro);
             c.fill(x0 + w - 9 + i, y0 + h - 1 - i, x0 + w, y0 + h - i, tema.claro);
         }
-        // Línea de puntos entre la cabecera y los controles.
-        for (int px = x0 + 8; px < x0 + w - 8; px += 4) c.fill(px, y0 + 82, px + 2, y0 + 83, tema.oscuro);
+        // Separadores de puntos: entre las tres columnas y sobre el inventario.
+        for (int py = y0 + 18; py < y0 + 214; py += 4) {
+            c.fill(x0 + 114, py, x0 + 115, py + 2, tema.oscuro);
+            c.fill(x0 + TelarScreenHandler.M_DERECHA - 8, py, x0 + TelarScreenHandler.M_DERECHA - 7, py + 2, tema.oscuro);
+        }
+        for (int px = x0 + 8; px < x0 + w - 8; px += 4) c.fill(px, y0 + 304, px + 2, y0 + 305, tema.oscuro);
+        // Columna izquierda: la prenda grande (la tejida, o la que sigue) sobre un fondo oscuro.
+        TelarBlockEntity be = handler.host;
+        c.fill(x0 + X_VISTA1 - 1, y0 + Y_VISTA1 - 1, x0 + X_VISTA2 + 1, y0 + Y_VISTA2 + 1, 0xFF2A180C);
+        c.fill(x0 + X_VISTA1, y0 + Y_VISTA1, x0 + X_VISTA2, y0 + Y_VISTA2, 0xFF4A3828);
+        ItemStack vista = be.vistaPrevia();
+        if (!vista.isEmpty()) {
+            float esc = 4.5f;
+            float cx = x0 + (X_VISTA1 + X_VISTA2) / 2f, cy = y0 + 92;
+            c.getMatrices().push();
+            c.getMatrices().translate(cx - 8 * esc, cy - 8 * esc, 0);
+            c.getMatrices().scale(esc, esc, 1f);
+            c.drawItem(vista, 0, 0);
+            c.getMatrices().pop();
+            c.drawCenteredTextWithShadow(textRenderer, vista.getName(), x0 + (X_VISTA1 + X_VISTA2) / 2, y0 + Y_VISTA2 - 14, 0xFFFFFFFF);
+        }
         // Marcos de los slots.
         marco(c, x0 + TelarScreenHandler.X_LANA, y0 + TelarScreenHandler.Y_LANA);
         marco(c, x0 + TelarScreenHandler.X_HILO, y0 + TelarScreenHandler.Y_HILO);
@@ -123,12 +147,14 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
         int yi = y0 + TelarScreenHandler.Y_INV, xi = x0 + TelarScreenHandler.X_INV;
         for (int f = 0; f < 3; f++) for (int col = 0; col < 9; col++) marco(c, xi + col * 18, yi + f * 18);
         for (int col = 0; col < 9; col++) marco(c, xi + col * 18, yi + 58);
-        // Rótulos de la cabecera: Entrada → barra → Salida.
-        TelarBlockEntity be = handler.host;
-        contador(c, "modamod.telar.lana", be.lana(), x0 + 32, y0 + TelarScreenHandler.Y_LANA + 4);
-        contador(c, "modamod.telar.hilo", be.hilo(), x0 + 32, y0 + TelarScreenHandler.Y_HILO + 4);
-        contador(c, "modamod.telar.cuero", be.cuero(), x0 + 32, y0 + TelarScreenHandler.Y_CUERO + 4);
-        c.drawText(textRenderer, Text.translatable("modamod.telar.lote"), x0 + 8, y0 + Y_LOTE + 4, EstiloPergamino.TEXTO, false);
+        // Contadores de los insumos, bajo cada slot.
+        contador(c, be.lana(), x0 + TelarScreenHandler.X_LANA + 8, y0 + TelarScreenHandler.Y_LANA + 20);
+        contador(c, be.hilo(), x0 + TelarScreenHandler.X_HILO + 8, y0 + TelarScreenHandler.Y_HILO + 20);
+        contador(c, be.cuero(), x0 + TelarScreenHandler.X_CUERO + 8, y0 + TelarScreenHandler.Y_CUERO + 20);
+        // Rótulos de los insumos (arriba de cada slot, abreviados al ancho de 22 px).
+        rotulo(c, "modamod.telar.lana", x0 + TelarScreenHandler.X_LANA + 8, y0 + TelarScreenHandler.Y_LANA - 10);
+        rotulo(c, "modamod.telar.hilo", x0 + TelarScreenHandler.X_HILO + 8, y0 + TelarScreenHandler.Y_HILO - 10);
+        rotulo(c, "modamod.telar.cuero", x0 + TelarScreenHandler.X_CUERO + 8, y0 + TelarScreenHandler.Y_CUERO - 10);
         // Barra de progreso de la prenda en curso.
         float nivel = switch (be.estado()) {
             case PROCESANDO -> be.progreso() / (float) be.duracion();
@@ -139,15 +165,18 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
         c.fill(bx - 1, by - 1, bx + bw + 1, by + 7, 0xFF2A180C);
         c.fill(bx, by, bx + bw, by + 6, 0xFF111111);
         c.fill(bx, by, bx + (int) (bw * nivel), by + 6, 0xFFB3283F);
-        // Estado de la cabecera, recortado al ancho del medio: lote, la que sigue y si alcanza.
+        // Columna derecha: el lote.
+        c.drawText(textRenderer, Text.translatable("modamod.telar.lote"), x0 + X_DER, y0 + Y_LOTE - 12, EstiloPergamino.TEXTO, false);
         Text lote = be.lote() == 0 ? Text.translatable("modamod.telar.lote_sin_limite")
                 : Text.translatable("modamod.telar.lote_n", be.lote(), be.restantes());
-        linea(c, lote, x0 + X_TEXTO, y0 + Y_BARRA + 12, EstiloPergamino.TEXTO);
+        linea(c, lote, x0 + X_DER, y0 + Y_LOTE + 24, ANCHO_DER, EstiloPergamino.TEXTO);
+        // Centro, bajo las prendas: la que sigue y si alcanzan los insumos.
         int v = be.prendaVista();
         Text sigue = v < 0 ? Text.translatable("modamod.telar.nada_tildado")
                 : Text.translatable("modamod.telar.sigue", Text.translatable("modamod.telar.prenda." + TelarPrenda.values()[v].clave()),
                         TelarPrenda.values()[v].lana, TelarPrenda.values()[v].hilo, TelarPrenda.values()[v].cuero);
-        linea(c, sigue, x0 + X_TEXTO, y0 + Y_BARRA + 22, EstiloPergamino.TEXTO);
+        int xc = x0 + TelarScreenHandler.M_MEDIO;
+        linea(c, sigue, xc, y0 + Y_SIGUE, TelarScreenHandler.M_MEDIO_ANCHO, EstiloPergamino.TEXTO);
         if (be.estado() == TelarBlockEntity.Estado.REPOSO && v >= 0) {
             TelarPrenda p = TelarPrenda.values()[v];
             int faltaLana = Math.max(0, p.lana - be.lana());
@@ -157,17 +186,27 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
             Text estado = lista
                     ? Text.translatable("modamod.telar.estado.listo")
                     : Text.translatable("modamod.telar.estado.falta", faltaLana, faltaHilo, faltaCuero);
-            linea(c, estado, x0 + X_TEXTO, y0 + Y_BARRA + 32, lista ? 0xFF3F7A38 : 0xFF8A2E2E);
+            linea(c, estado, xc, y0 + Y_SIGUE + 12, TelarScreenHandler.M_MEDIO_ANCHO, lista ? 0xFF3F7A38 : 0xFF8A2E2E);
         }
     }
 
-    private void contador(DrawContext c, String clave, int n, int tx, int ty) {
-        c.drawText(textRenderer, Text.translatable(clave).append(": " + n + "/64"), tx, ty, EstiloPergamino.TEXTO, false);
+    @Override
+    protected void drawForeground(DrawContext c, int mx, int my) {
+        c.drawText(textRenderer, this.title, this.titleX, this.titleY, EstiloPergamino.TEXTO, false);
+        c.drawText(textRenderer, this.playerInventoryTitle, this.playerInventoryTitleX, this.playerInventoryTitleY, EstiloPergamino.TEXTO, false);
     }
 
-    /** Una línea de texto recortada al ancho del medio de la cabecera (sin pisar el slot de Salida). */
-    private void linea(DrawContext c, Text t, int tx, int ty, int color) {
-        c.drawText(textRenderer, net.minecraft.util.Language.getInstance().reorder(textRenderer.trimToWidth(t, ANCHO_TEXTO)),
+    private void contador(DrawContext c, int n, int cx, int ty) {
+        c.drawCenteredTextWithShadow(textRenderer, Text.literal(n + "/64"), cx, ty, 0xFF3A2A18);
+    }
+
+    private void rotulo(DrawContext c, String clave, int cx, int ty) {
+        c.drawCenteredTextWithShadow(textRenderer, net.minecraft.util.Language.getInstance().reorder(textRenderer.trimToWidth(Text.translatable(clave), 40)), cx, ty, 0xFF3A2A18);
+    }
+
+    /** Una línea de texto recortada al ancho de su columna. */
+    private void linea(DrawContext c, Text t, int tx, int ty, int ancho, int color) {
+        c.drawText(textRenderer, net.minecraft.util.Language.getInstance().reorder(textRenderer.trimToWidth(t, ancho)),
                 tx, ty, color, false);
     }
 

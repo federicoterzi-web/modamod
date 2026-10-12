@@ -14,11 +14,16 @@ import net.minecraft.util.math.BlockPos;
  */
 public class TelarScreenHandler extends ScreenHandler {
 
-    // 2026-10-12 (plan de GUIs, "empezar con el telar"): ventana más ancha con cabecera fija — Entrada (lana, hilo) a la
-    // izquierda, barra de progreso y estado en el medio, Salida a la derecha — y las prendas y el lote debajo.
-    public static final int ANCHO = 220, ALTO = 250;
-    public static final int X_LANA = 12, Y_LANA = 20, X_HILO = 12, Y_HILO = 40, X_CUERO = 12, Y_CUERO = 60, X_SALIDA = 192, Y_SALIDA = 38;
-    public static final int Y_INV = 168, X_INV = (ANCHO - 162) / 2;
+    // 2026-10-12 (plan de GUIs, "no veo que tenga un layout parecido" a las otras máquinas): mismo panel de 560x408 y mismas
+    // columnas que Tintes/Sublimadora (izquierda: la prenda grande, centro: las prendas a tejer y, en la franja de y 184,
+    // insumos → barra de progreso → Salida; derecha: Línea y lote; inventario abajo en x = M_MEDIO).
+    public static final int ANCHO = 560, ALTO = 408;
+    public static final int M_MEDIO = 119, M_MEDIO_ANCHO = 240, M_DERECHA = M_MEDIO + M_MEDIO_ANCHO + 20;
+    public static final int Y_IO = 184;
+    public static final int X_LANA = M_MEDIO + 4, X_HILO = M_MEDIO + 26, X_CUERO = M_MEDIO + 48;
+    public static final int Y_LANA = Y_IO, Y_HILO = Y_IO, Y_CUERO = Y_IO;
+    public static final int X_SALIDA = M_MEDIO + 176, Y_SALIDA = Y_IO;
+    public static final int Y_INV = 324, X_INV = M_MEDIO;
 
     public final TelarBlockEntity host;
 
