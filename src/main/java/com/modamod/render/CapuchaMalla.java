@@ -20,17 +20,18 @@ final class CapuchaMalla {
     private CapuchaMalla() {}
 
     // Anillos de la capucha puesta, de abajo (cuello) a la coronilla, en el marco de la cabeza (y −8..0 es la cabeza):
-    // {y, semieje x, profundidad hacia el frente, profundidad hacia atrás}. Más amplia que la cabeza (4 × 4) y con la
-    // espalda más holgada, como una capucha de hoodie de verdad.
+    // {y, semieje x, profundidad hacia el frente, profundidad hacia atrás, corrimiento hacia atrás, caída de los costados}.
+    // 2026-10-12, "para la puesta queria yo para que se vea mas natural" → nada de cúpula perfecta: abajo se pega al
+    // cuello y cae sobre los hombros, en el medio se abomba atrás como bolsa y la coronilla cae hacia atrás en punta.
     private static final float[][] ANILLOS = {
-        {2.4F, 5.4F, 4.6F, 6.0F},
-        {0.2F, 5.9F, 5.0F, 6.8F},
-        {-2.8F, 6.3F, 5.3F, 7.3F},
-        {-5.8F, 6.4F, 5.4F, 7.5F},
-        {-8.4F, 6.0F, 5.2F, 7.1F},
-        {-10.2F, 4.6F, 4.4F, 5.6F},
-        {-11.3F, 2.5F, 2.5F, 3.1F},
-        {-11.8F, 0.0F, 0.0F, 0.0F},
+        {2.6F, 4.9F, 4.3F, 3.7F, 0.0F, 1.9F},
+        {0.6F, 5.3F, 4.7F, 4.7F, 0.0F, 0.7F},
+        {-2.4F, 5.6F, 5.0F, 6.1F, 0.2F, 0.0F},
+        {-5.4F, 5.6F, 5.1F, 6.8F, 0.4F, 0.0F},
+        {-8.0F, 5.2F, 4.9F, 6.6F, 0.8F, 0.0F},
+        {-10.0F, 4.0F, 4.0F, 5.4F, 1.5F, 0.0F},
+        {-11.3F, 2.1F, 2.2F, 3.2F, 2.4F, 0.0F},
+        {-11.5F, 0.0F, 0.0F, 0.0F, 3.4F, 0.0F},
     };
     private static final int SEG = 40, SUBFILAS = 3;
     /** La cara queda por una elipse de este tamaño (px) centrada en y −4: lo de la capucha que cae adentro se corre al borde. */
@@ -57,13 +58,18 @@ final class CapuchaMalla {
             float ax = lerp(ANILLOS[a][1], ANILLOS[a + 1][1], s) + inf;
             float zf = lerp(ANILLOS[a][2], ANILLOS[a + 1][2], s) + inf;
             float zb = lerp(ANILLOS[a][3], ANILLOS[a + 1][3], s) + inf;
+            float dz = lerp(ANILLOS[a][4], ANILLOS[a + 1][4], s);
+            float cae = lerp(ANILLOS[a][5], ANILLOS[a + 1][5], s);
             for (int k = 0; k <= SEG; k++) {
                 // φ = 0 al frente (−z), π atrás; superelipse para que no sea un óvalo perfecto.
                 double phi = 2 * Math.PI * k / SEG;
                 float sn = (float) Math.sin(phi), cs = (float) Math.cos(phi);
                 float x = ax * super_(sn);
                 // cs > 0 = mitad del frente (z negativo), cs < 0 = mitad de atrás (z positivo).
-                p[j][k] = new Vector3f(x, y, cs >= 0F ? -zf * super_(cs) : zb * super_(-cs));
+                // Los costados caen sobre los hombros y la coronilla se corre hacia atrás (cae en punta).
+                float yy = y + cae * (float) Math.pow(Math.abs(sn), 1.5);
+                float zz = (cs >= 0F ? -zf * super_(cs) : zb * super_(-cs)) + dz;
+                p[j][k] = new Vector3f(x, yy, zz);
                 // Lo que cae adentro de la abertura de la cara se corre al borde de la elipse.
                 if (p[j][k].z < -0.5F) {
                     float ex = p[j][k].x / ABRE_X, ey = (p[j][k].y - ABRE_C) / ABRE_Y;
