@@ -46,7 +46,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 public class TelarBlockEntity extends BlockEntity implements SidedInventory, com.modamod.util.ConSalida,
         ExtendedScreenHandlerFactory<BlockPos>, GeoBlockEntity {
 
-    public static final int SLOT_LANA = 0, SLOT_HILO = 1, SLOT_SALIDA = 2, TAMANO = 3;
+    public static final int SLOT_LANA = 0, SLOT_HILO = 1, SLOT_SALIDA = 2, SLOT_CUERO = 3, TAMANO = 4;
     /** Lo que dura tejer: los 4 s de la animación `trabajo`, hasta tres pasadas (12 s) por prenda. */
     public static final int TICKS_PROCESO = 240;
     /** Botones de la pantalla: tildar o destildar la prenda {@code BTN_PRENDA_BASE + ordinal}, y los del lote. */
@@ -94,8 +94,9 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
     public int lote() { return lote; }
     public int restantes() { return restantes; }
 
-    private static boolean alcanzaCon(ItemStack lana, ItemStack hilo, TelarPrenda p) {
-        return lana.getCount() >= p.lana && hilo.getCount() >= p.hilo;
+    private boolean alcanza(TelarPrenda p) {
+        return items.get(SLOT_LANA).getCount() >= p.lana && items.get(SLOT_HILO).getCount() >= p.hilo
+                && items.get(SLOT_CUERO).getCount() >= p.cuero;
     }
 
     /** La próxima prenda a tejer (la rotación sigue el orden fijo desde {@code cursor}), o -1 si no hay: lote cumplido, nada tildado o faltan insumos. */
@@ -106,7 +107,7 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
         for (int k = 0; k < n; k++) {
             int i = (cursor + k) % n;
             if (!elegida(i)) continue;
-            if (gratis || alcanzaCon(items.get(SLOT_LANA), items.get(SLOT_HILO), TelarPrenda.values()[i])) return i;
+            if (gratis || alcanza(TelarPrenda.values()[i])) return i;
         }
         return -1;
     }
@@ -160,14 +161,11 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
         return tejiendo;
     }
 
-    private static ItemStack tejer(TelarPrenda p, int rgb) {
-        ItemStack s = new ItemStack(p.item());
-        s.set(DataComponentTypes.DYED_COLOR, new DyedColorComponent(rgb, true));
-        return s;
-    }
+    private static ItemStack tejer(TelarPrenda p, int rgb) { return p.crear(rgb); }
 
     public int lana() { return items.get(SLOT_LANA).getCount(); }
     public int hilo() { return items.get(SLOT_HILO).getCount(); }
+    public int cuero() { return items.get(SLOT_CUERO).getCount(); }
 
     public boolean hayInsumos() { return proxima() >= 0; }
 
@@ -215,6 +213,7 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
         if (!esCreativa) {
             items.get(SLOT_LANA).decrement(p.lana);
             items.get(SLOT_HILO).decrement(p.hilo);
+            items.get(SLOT_CUERO).decrement(p.cuero);
         }
         prendaEnCurso = elegida;
         cursor = (elegida + 1) % TelarPrenda.values().length;
@@ -308,7 +307,7 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
     @Override
     public int[] getAvailableSlots(Direction side) {
         if (side == ladoDerecho()) return new int[]{SLOT_SALIDA};
-        return new int[]{SLOT_LANA, SLOT_HILO, SLOT_SALIDA};      // se llena por cualquier lado; solo se saca la prenda
+        return new int[]{SLOT_LANA, SLOT_HILO, SLOT_CUERO, SLOT_SALIDA};      // se llena por cualquier lado; solo se saca la prenda
     }
 
     @Override
@@ -360,6 +359,7 @@ public class TelarBlockEntity extends BlockEntity implements SidedInventory, com
         return switch (slot) {
             case SLOT_LANA -> TelarPrenda.esLana(stack.getItem());
             case SLOT_HILO -> stack.isOf(Items.STRING);
+            case SLOT_CUERO -> stack.isOf(Items.LEATHER);
             default -> false;
         };
     }

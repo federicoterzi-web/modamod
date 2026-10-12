@@ -97,7 +97,8 @@ public class TelarBlock extends BlockWithEntity {
             return ItemActionResult.SUCCESS;
         }
         int slot = be.isValid(TelarBlockEntity.SLOT_LANA, stack) ? TelarBlockEntity.SLOT_LANA
-                : be.isValid(TelarBlockEntity.SLOT_HILO, stack) ? TelarBlockEntity.SLOT_HILO : -1;
+                : be.isValid(TelarBlockEntity.SLOT_HILO, stack) ? TelarBlockEntity.SLOT_HILO
+                : be.isValid(TelarBlockEntity.SLOT_CUERO, stack) ? TelarBlockEntity.SLOT_CUERO : -1;
         if (slot < 0) return ItemActionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (world.isClient) return ItemActionResult.SUCCESS;
         ItemStack actual = be.getStack(slot);

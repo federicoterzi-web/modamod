@@ -228,9 +228,7 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
         // Otra semilla para Repetición: Disperso (2026-09-28, motivos).
         btnSemilla = boton(M_MEDIO + 86, 272, 32, Text.translatable("modamod.tinturas.boton.semilla"),
                 "modamod.tinturas.tooltip.semilla", TinturasBlockEntity.BTN_SEMILLA);
-        btnInvertir = boton(M_MEDIO + 120, 272, 78, Text.empty(), "modamod.tinturas.tooltip.invertir", TinturasBlockEntity.BTN_INVERTIR);
-
-        btnPosX = boton(M_MEDIO + 200, 272, 36, Text.empty(), "modamod.tinturas.tooltip.posicion_x", TinturasBlockEntity.BTN_POSICION_X);
+        btnInvertir = boton(M_MEDIO + 120, 272, 116, Text.empty(), "modamod.tinturas.tooltip.invertir", TinturasBlockEntity.BTN_INVERTIR);
 
         // Fila 4 (2026-09-30, "que los patrones si se puedan girar y que haya
         // un slider vertical y horizontal para ponerlos mas juntos"): giro de
@@ -250,6 +248,10 @@ public class TinturasScreen extends HandledScreen<TinturasScreenHandler> {
         btnGiroAzar = boton(M_MEDIO + 166, 308, 72, Text.empty(), "modamod.tinturas.tooltip.giro_azar", TinturasBlockEntity.BTN_GIRO_AZAR);
         btnEspejo = boton(M_MEDIO + 166, 324, 72, Text.empty(), "modamod.tinturas.tooltip.espejo", TinturasBlockEntity.BTN_ESPEJO);
         btnAlternancia = boton(M_MEDIO + 166, 344, 72, Text.empty(), "modamod.tinturas.tooltip.alternancia", TinturasBlockEntity.BTN_ALTERNANCIA);
+        // Corrimiento X con flechitas, como la Posición de arriba (2026-10-12, "tendria que funcionar como el corrimiento en x y tener flechitas").
+        boton(M_MEDIO + 166, 384, 14, Text.literal("<"), "modamod.tinturas.tooltip.posicion_x", TinturasBlockEntity.BTN_POSICION_X_ATRAS);
+        btnPosX = boton(M_MEDIO + 181, 384, 42, Text.empty(), "modamod.tinturas.tooltip.posicion_x", TinturasBlockEntity.BTN_POSICION_X);
+        boton(M_MEDIO + 224, 384, 14, Text.literal(">"), "modamod.tinturas.tooltip.posicion_x", TinturasBlockEntity.BTN_POSICION_X);
         btnSimetria = boton(M_MEDIO + 166, 364, 72, Text.empty(), "modamod.tinturas.tooltip.simetria", TinturasBlockEntity.BTN_SIMETRIA);
 
         // Teñir, ENCIMA de la flecha Entrada->Salida (2026-09-28, "la unica

@@ -16,9 +16,9 @@ public class TelarScreenHandler extends ScreenHandler {
 
     // 2026-10-12 (plan de GUIs, "empezar con el telar"): ventana más ancha con cabecera fija — Entrada (lana, hilo) a la
     // izquierda, barra de progreso y estado en el medio, Salida a la derecha — y las prendas y el lote debajo.
-    public static final int ANCHO = 220, ALTO = 240;
-    public static final int X_LANA = 12, Y_LANA = 24, X_HILO = 12, Y_HILO = 46, X_SALIDA = 192, Y_SALIDA = 34;
-    public static final int Y_INV = 156, X_INV = (ANCHO - 162) / 2;
+    public static final int ANCHO = 220, ALTO = 250;
+    public static final int X_LANA = 12, Y_LANA = 20, X_HILO = 12, Y_HILO = 40, X_CUERO = 12, Y_CUERO = 60, X_SALIDA = 192, Y_SALIDA = 38;
+    public static final int Y_INV = 168, X_INV = (ANCHO - 162) / 2;
 
     public final TelarBlockEntity host;
 
@@ -37,6 +37,9 @@ public class TelarScreenHandler extends ScreenHandler {
         });
         addSlot(new Slot(host, TelarBlockEntity.SLOT_HILO, X_HILO, Y_HILO) {
             @Override public boolean canInsert(ItemStack stack) { return host.isValid(TelarBlockEntity.SLOT_HILO, stack); }
+        });
+        addSlot(new Slot(host, TelarBlockEntity.SLOT_CUERO, X_CUERO, Y_CUERO) {
+            @Override public boolean canInsert(ItemStack stack) { return host.isValid(TelarBlockEntity.SLOT_CUERO, stack); }
         });
         addSlot(new Slot(host, TelarBlockEntity.SLOT_SALIDA, X_SALIDA, Y_SALIDA) {
             @Override public boolean canInsert(ItemStack stack) { return false; }
@@ -65,6 +68,8 @@ public class TelarScreenHandler extends ScreenHandler {
             if (!insertItem(stack, TelarBlockEntity.SLOT_LANA, TelarBlockEntity.SLOT_LANA + 1, false)) return ItemStack.EMPTY;
         } else if (host.isValid(TelarBlockEntity.SLOT_HILO, stack)) {
             if (!insertItem(stack, TelarBlockEntity.SLOT_HILO, TelarBlockEntity.SLOT_HILO + 1, false)) return ItemStack.EMPTY;
+        } else if (host.isValid(TelarBlockEntity.SLOT_CUERO, stack)) {
+            if (!insertItem(stack, TelarBlockEntity.SLOT_CUERO, TelarBlockEntity.SLOT_CUERO + 1, false)) return ItemStack.EMPTY;
         } else {
             return ItemStack.EMPTY;
         }

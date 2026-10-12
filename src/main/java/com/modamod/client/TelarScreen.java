@@ -7,6 +7,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -21,8 +22,9 @@ import java.util.List;
  */
 public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledScreen<TelarScreenHandler> {
 
-    private static final int ANCHO_BOTON = 66, ALTO_BOTON = 18, PASO_X = 70, PASO_Y = 20, Y_BOTONES = 82;
-    private static final int Y_LOTE = 126, X_BARRA = 62, Y_BARRA = 34, ANCHO_BARRA = 124, X_TEXTO = 62, ANCHO_TEXTO = 126;
+    // Las prendas son íconos tildables (13 entran en dos filas de 7); la cabecera tiene tres insumos a la izquierda.
+    private static final int LADO_ICONO = 22, PASO_ICONO = 28, POR_FILA = 7, Y_BOTONES = 92, X_BOTONES = 14;
+    private static final int Y_LOTE = 148, X_BARRA = 62, Y_BARRA = 30, ANCHO_BARRA = 124, X_TEXTO = 62, ANCHO_TEXTO = 126;
     private final List<ButtonWidget> botones = new ArrayList<>();
 
     public TelarScreen(TelarScreenHandler handler, PlayerInventory inventory, Text title) {
@@ -42,10 +44,12 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
         botones.clear();
         TelarPrenda[] prendas = TelarPrenda.values();
         for (int i = 0; i < prendas.length; i++) {
-            int bx = this.x + 8 + (i % 3) * PASO_X, by = this.y + Y_BOTONES + (i / 3) * PASO_Y;
-            ButtonWidget b = boton("", bx, by, ANCHO_BOTON, ALTO_BOTON, TelarBlockEntity.BTN_PRENDA_BASE + i);
-            b.setTooltip(Tooltip.of(Text.translatable("modamod.telar.tooltip.prenda", prendas[i].lana, prendas[i].hilo)));
-            botones.add(b);
+            int bx = this.x + X_BOTONES + (i % POR_FILA) * PASO_ICONO, by = this.y + Y_BOTONES + (i / POR_FILA) * PASO_ICONO;
+            int idx = i;
+            BotonPrenda b = new BotonPrenda(bx, by, prendas[i],
+                    () -> handler.host.elegida(idx),
+                    btn -> this.client.interactionManager.clickButton(this.handler.syncId, TelarBlockEntity.BTN_PRENDA_BASE + idx));
+            this.addDrawableChild(b);
         }
         // El lote: −10 − + +10 y reiniciar.
         int ly = this.y + Y_LOTE;
@@ -67,13 +71,31 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
         return b;
     }
 
-    @Override
-    protected void handledScreenTick() {
-        super.handledScreenTick();
-        TelarPrenda[] prendas = TelarPrenda.values();
-        for (int i = 0; i < botones.size(); i++) {
-            Text nombre = Text.translatable("modamod.telar.prenda." + prendas[i].clave());
-            botones.get(i).setMessage(handler.host.elegida(i) ? Text.literal("✔ ").append(nombre) : nombre);
+    /** Un ícono de prenda que se tilda: marco claro si está elegida, tooltip con el nombre y el costo. */
+    private static final class BotonPrenda extends ButtonWidget {
+        private final TelarPrenda prenda;
+        private final java.util.function.BooleanSupplier elegida;
+        private ItemStack icono;
+
+        BotonPrenda(int x, int y, TelarPrenda prenda, java.util.function.BooleanSupplier elegida, PressAction accion) {
+            super(x, y, LADO_ICONO, LADO_ICONO, Text.empty(), accion, DEFAULT_NARRATION_SUPPLIER);
+            this.prenda = prenda;
+            this.elegida = elegida;
+            Text nombre = Text.translatable("modamod.telar.prenda." + prenda.clave());
+            setTooltip(Tooltip.of(Text.empty().append(nombre).append("\n")
+                    .append(Text.translatable("modamod.telar.tooltip.prenda", prenda.lana, prenda.hilo, prenda.cuero))));
+        }
+
+        @Override
+        protected void renderWidget(DrawContext c, int mx, int my, float delta) {
+            if (icono == null) icono = prenda.crear(0xFFFFFF);
+            boolean on = elegida.getAsBoolean();
+            int x0 = getX(), y0 = getY();
+            c.fill(x0 - 1, y0 - 1, x0 + width + 1, y0 + height + 1, on ? EstiloPergamino.tema().claro : 0xFF2A180C);
+            c.fill(x0, y0, x0 + width, y0 + height, isHovered() ? 0xFFB59B6A : on ? 0xFFD9C08C : 0xFF8B7355);
+            c.drawItem(icono, x0 + 3, y0 + 3);
+            if (on) c.drawText(net.minecraft.client.MinecraftClient.getInstance().textRenderer, "✔",
+                    x0 + width - 7, y0 + height - 9, 0xFF3F7A38, false);
         }
     }
 
@@ -92,18 +114,20 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
             c.fill(x0 + w - 9 + i, y0 + h - 1 - i, x0 + w, y0 + h - i, tema.claro);
         }
         // Línea de puntos entre la cabecera y los controles.
-        for (int px = x0 + 8; px < x0 + w - 8; px += 4) c.fill(px, y0 + 72, px + 2, y0 + 73, tema.oscuro);
+        for (int px = x0 + 8; px < x0 + w - 8; px += 4) c.fill(px, y0 + 82, px + 2, y0 + 83, tema.oscuro);
         // Marcos de los slots.
         marco(c, x0 + TelarScreenHandler.X_LANA, y0 + TelarScreenHandler.Y_LANA);
         marco(c, x0 + TelarScreenHandler.X_HILO, y0 + TelarScreenHandler.Y_HILO);
+        marco(c, x0 + TelarScreenHandler.X_CUERO, y0 + TelarScreenHandler.Y_CUERO);
         marco(c, x0 + TelarScreenHandler.X_SALIDA, y0 + TelarScreenHandler.Y_SALIDA);
         int yi = y0 + TelarScreenHandler.Y_INV, xi = x0 + TelarScreenHandler.X_INV;
         for (int f = 0; f < 3; f++) for (int col = 0; col < 9; col++) marco(c, xi + col * 18, yi + f * 18);
         for (int col = 0; col < 9; col++) marco(c, xi + col * 18, yi + 58);
         // Rótulos de la cabecera: Entrada → barra → Salida.
         TelarBlockEntity be = handler.host;
-        c.drawText(textRenderer, Text.translatable("modamod.telar.lana"), x0 + 32, y0 + 28, EstiloPergamino.TEXTO, false);
-        c.drawText(textRenderer, Text.translatable("modamod.telar.hilo"), x0 + 32, y0 + 50, EstiloPergamino.TEXTO, false);
+        contador(c, "modamod.telar.lana", be.lana(), x0 + 32, y0 + TelarScreenHandler.Y_LANA + 4);
+        contador(c, "modamod.telar.hilo", be.hilo(), x0 + 32, y0 + TelarScreenHandler.Y_HILO + 4);
+        contador(c, "modamod.telar.cuero", be.cuero(), x0 + 32, y0 + TelarScreenHandler.Y_CUERO + 4);
         c.drawText(textRenderer, Text.translatable("modamod.telar.lote"), x0 + 8, y0 + Y_LOTE + 4, EstiloPergamino.TEXTO, false);
         // Barra de progreso de la prenda en curso.
         float nivel = switch (be.estado()) {
@@ -122,18 +146,23 @@ public class TelarScreen extends net.minecraft.client.gui.screen.ingame.HandledS
         int v = be.prendaVista();
         Text sigue = v < 0 ? Text.translatable("modamod.telar.nada_tildado")
                 : Text.translatable("modamod.telar.sigue", Text.translatable("modamod.telar.prenda." + TelarPrenda.values()[v].clave()),
-                        TelarPrenda.values()[v].lana, TelarPrenda.values()[v].hilo);
+                        TelarPrenda.values()[v].lana, TelarPrenda.values()[v].hilo, TelarPrenda.values()[v].cuero);
         linea(c, sigue, x0 + X_TEXTO, y0 + Y_BARRA + 22, EstiloPergamino.TEXTO);
         if (be.estado() == TelarBlockEntity.Estado.REPOSO && v >= 0) {
             TelarPrenda p = TelarPrenda.values()[v];
             int faltaLana = Math.max(0, p.lana - be.lana());
             int faltaHilo = Math.max(0, p.hilo - be.hilo());
-            boolean lista = be.creativa() || (faltaLana == 0 && faltaHilo == 0);
+            int faltaCuero = Math.max(0, p.cuero - be.cuero());
+            boolean lista = be.creativa() || (faltaLana == 0 && faltaHilo == 0 && faltaCuero == 0);
             Text estado = lista
                     ? Text.translatable("modamod.telar.estado.listo")
-                    : Text.translatable("modamod.telar.estado.falta", faltaLana, faltaHilo);
+                    : Text.translatable("modamod.telar.estado.falta", faltaLana, faltaHilo, faltaCuero);
             linea(c, estado, x0 + X_TEXTO, y0 + Y_BARRA + 32, lista ? 0xFF3F7A38 : 0xFF8A2E2E);
         }
+    }
+
+    private void contador(DrawContext c, String clave, int n, int tx, int ty) {
+        c.drawText(textRenderer, Text.translatable(clave).append(": " + n + "/64"), tx, ty, EstiloPergamino.TEXTO, false);
     }
 
     /** Una línea de texto recortada al ancho del medio de la cabecera (sin pisar el slot de Salida). */

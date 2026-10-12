@@ -2,6 +2,7 @@ package com.modamod.telar;
 
 import com.modamod.item.ModamodItems;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.DyeColor;
 
@@ -13,21 +14,57 @@ import java.util.function.Supplier;
  * (viajan por la red por ordinal en la pantalla).
  */
 public enum TelarPrenda {
-    REMERA(() -> com.modamod.sublimadora.ModItems.REMERA, 4, 2),
-    PANTALON(() -> ModamodItems.PANTALON, 5, 2),
-    MEDIAS(() -> ModamodItems.SOCKS_SOLID, 2, 1),
-    CALIENTABRAZOS(() -> ModamodItems.CALIENTABRAZOS, 2, 1),
-    POLLERA(() -> ModamodItems.POLLERA, 3, 2),
-    CAPA(() -> ModamodItems.CAPA, 6, 3);
+    REMERA(() -> com.modamod.sublimadora.ModItems.REMERA, 4, 2, 0),
+    PANTALON(() -> ModamodItems.PANTALON, 5, 2, 0),
+    MEDIAS(() -> ModamodItems.SOCKS_SOLID, 2, 1, 0),
+    CALIENTABRAZOS(() -> ModamodItems.CALIENTABRAZOS, 2, 1, 0),
+    POLLERA(() -> ModamodItems.POLLERA, 3, 2, 0),
+    CAPA(() -> ModamodItems.CAPA, 6, 3, 0),
+    // 2026-10-12, "agregarle las nuevas prendas cinto delantal calzado sombrero etc con lo cual habria que agregarle
+    // carga de cuero": los de cuero no gastan lana (salen con sus colores de fábrica); sombrero, vincha y cofia
+    // salen del color de la lana.
+    CINTO(() -> ModamodItems.BANDA, 0, 1, 2),
+    COLLAR(() -> ModamodItems.BANDA, 0, 1, 1),
+    DELANTAL(() -> ModamodItems.DELANTAL, 3, 2, 0),
+    BORCEGOS(() -> ModamodItems.BORCEGOS, 0, 2, 4),
+    SOMBRERO(() -> ModamodItems.SOMBRERO_BRUJA, 4, 2, 1),
+    VINCHA(() -> ModamodItems.SOMBRERO_BRUJA, 1, 1, 0),
+    COFIA(() -> ModamodItems.SOMBRERO_BRUJA, 2, 1, 0);
 
     private final Supplier<? extends Item> item;
-    /** Cuántas lanas (bloques) y cuántos hilos gasta cada prenda. */
-    public final int lana, hilo;
+    /** Cuántas lanas (bloques), hilos y cueros gasta cada prenda. */
+    public final int lana, hilo, cuero;
 
-    TelarPrenda(Supplier<? extends Item> item, int lana, int hilo) {
+    TelarPrenda(Supplier<? extends Item> item, int lana, int hilo, int cuero) {
         this.item = item;
         this.lana = lana;
         this.hilo = hilo;
+        this.cuero = cuero;
+    }
+
+    /** La prenda tejida: lisa y del color de la lana, o el accesorio con su corte de fábrica. */
+    public ItemStack crear(int rgb) {
+        ItemStack s = new ItemStack(item());
+        switch (this) {
+            case CINTO -> com.modamod.item.BandaItem.setZona(s, com.modamod.item.BandaZona.CINTURA);
+            case COLLAR -> {
+                com.modamod.item.BandaItem.setZona(s, com.modamod.item.BandaZona.CUELLO);
+                com.modamod.item.BandaItem.setAncho(s, com.modamod.item.BandaAncho.FINO);
+            }
+            case BORCEGOS -> { }
+            case SOMBRERO -> com.modamod.item.SombreroBrujaItem.conColores(s, rgb, rgb, rgb);
+            case VINCHA -> {
+                com.modamod.item.SombreroBrujaItem.setAla(s, com.modamod.item.SombreroAla.VINCHA);
+                com.modamod.item.SombreroBrujaItem.conColores(s, rgb, rgb, rgb);
+            }
+            case COFIA -> {
+                com.modamod.item.SombreroBrujaItem.setAla(s, com.modamod.item.SombreroAla.COFIA);
+                com.modamod.item.SombreroBrujaItem.conColores(s, rgb, rgb, rgb);
+            }
+            default -> s.set(net.minecraft.component.DataComponentTypes.DYED_COLOR,
+                    new net.minecraft.component.type.DyedColorComponent(rgb, true));
+        }
+        return s;
     }
 
     public Item item() { return item.get(); }

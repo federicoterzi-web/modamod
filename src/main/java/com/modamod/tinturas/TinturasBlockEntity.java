@@ -991,6 +991,7 @@ public class TinturasBlockEntity extends BlockEntity
     public static final int BTN_GIRO_AZAR = BTN_SIMETRIA + 1;
     /** Corre la grilla de motivos en horizontal, de a 10 % (2026-10-12). */
     public static final int BTN_POSICION_X = BTN_GIRO_AZAR + 1;
+    public static final int BTN_POSICION_X_ATRAS = BTN_POSICION_X + 1;
     /** + nivel (0..{@code DistribucionPatron.NIVELES}-1): sliders de distancia horizontal y vertical (2026-09-30). */
     public static final int BTN_DISTANCIA_H_BASE = 170;
     public static final int BTN_DISTANCIA_V_BASE = 230;
@@ -1075,6 +1076,11 @@ public class TinturasBlockEntity extends BlockEntity
             }
             case BTN_POSICION_X -> {
                 sel.posX = ((Math.round(sel.posX * 10) + 1) % 11) / 10f;
+                return true;
+            }
+            case BTN_POSICION_X_ATRAS -> {
+                int anteriorX = Math.round(sel.posX * 10) - 1;
+                sel.posX = ((anteriorX % 11 + 11) % 11) / 10f;
                 return true;
             }
             case BTN_GIRO_AZAR -> {
